@@ -1,5 +1,11 @@
 <div id='flowtest_main'>
-  <div id='flowtest_container'>
-    <h1>flowtest</h1>
+  <br>
+  <div style="margin-left: 10px">
+   <button mat-raised-button color="primary" (click)="this.AddFlow()"  >Add</button>
   </div>
+
+  <div id='canvas_container'>
+    <drawcanvas #fcvs  ></drawcanvas>
+  </div>
+
 </div>
