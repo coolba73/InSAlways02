@@ -1,0 +1,11 @@
+#flowtest_main {
+  width: 1200px;
+  margin: 0 auto;
+  background:#fdfdfd;  
+}
+#flowtest_container {
+  height: 600px;
+  overflow: auto;
+  border: 1px solid #ebebeb;
+  margin: 10px;
+}
