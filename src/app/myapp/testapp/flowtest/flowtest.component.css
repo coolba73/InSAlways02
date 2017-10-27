@@ -2,7 +2,7 @@
   width: 1200px;
   margin: 0 auto;
   background:#ffffff;  
-
+  box-shadow: 0 0 1em rgb(116, 112, 112);
 }
 #flowtest_container {
   height: 600px;
