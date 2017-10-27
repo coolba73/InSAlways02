@@ -1,0 +1,25 @@
+#content {
+    width: 100%;
+    margin: 0 auto;
+    padding: 60px 0;
+}
+
+.navbar {
+  overflow: hidden;
+  position: fixed;
+  background: #04222F;
+  top: 0;
+  left:0;
+  width: 100%;
+  height: 40px;
+}
+
+.navbar a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}

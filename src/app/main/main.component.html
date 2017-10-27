@@ -1,0 +1,13 @@
+<div id="content">
+    <router-outlet></router-outlet>
+  </div>
+
+<div class="navbar">
+
+  <button mat-button [matMenuTriggerFor]="menu" style="color:white">Test</button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+
+</div>
