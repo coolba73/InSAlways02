@@ -21,12 +21,12 @@ export class FlowTestComponent{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     AddFlow(){
         
-                let flowBox = new FlowBox();
-        
-                flowBox.x = 10;
-                flowBox.y = 10;
-        
-                this.finCanvas.AddObject(flowBox);
+        let flowBox = new FlowBox();
+
+        flowBox.x = 10;
+        flowBox.y = 10;
+
+        this.finCanvas.AddObject(flowBox);
         
     }
 
