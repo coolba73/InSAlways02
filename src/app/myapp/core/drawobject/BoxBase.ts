@@ -33,7 +33,7 @@ export class BoxBase extends BaseObject{
     constructor(){
 
         super();
-        this.FillColor = 'lightgreen';
+        this.FillColor = 'Lavender       ';
         this.LineColor = 'black';
         this.Type = BoxBase.name;
         this.Width = 100;
