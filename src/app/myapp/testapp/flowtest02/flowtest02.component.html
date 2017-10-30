@@ -18,7 +18,14 @@
         <mat-tab label="Data">
             <dx-data-grid id="gridContainer" 
             [dataSource]="customers"  
-            [columns]="['CompanyName', 'City', 'State', 'Phone', 'Fax']">
+            [columns]="['CompanyName', 'City', 'State', 'Phone', 'Fax']"
+            (onContentReady)="onContentReady($event)"
+            
+            >
+            <dxo-load-panel [enabled]="true"></dxo-load-panel>
+            <dxo-scrolling mode="virtual"></dxo-scrolling>
+            <dxo-sorting mode="none"></dxo-sorting>
+
           </dx-data-grid>
         </mat-tab>
 
