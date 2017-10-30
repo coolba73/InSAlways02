@@ -5,14 +5,14 @@
     box-shadow: 0 0 1em rgb(116, 112, 112);
   }
   #flowtest02_container {
-    height: 600px;
+    height: 450px;
     overflow: auto;
-    border: 1px solid #d6d1d1;
     margin: 10px;
+    
   }
   
   #canvas_container {
-    height: 400px;
+    height: 300px;
     overflow: auto;
     border: 1px solid #ebebeb;
     margin: 10px;
