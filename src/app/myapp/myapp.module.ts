@@ -5,6 +5,7 @@ import { FlowTestComponent } from "./testapp/flowtest/flowtest.component";
 import { FlowTest02Component } from "./testapp/flowtest02/flowtest02.component";
 import { DrawCanvasComponent } from "./core/material/drawcanvas/drawcanvas.component";
 import { MatCommonModule, MatButtonModule, MatTabsModule } from "@angular/material";
+import { DevExtremeModule } from "devextreme-angular";
 
 // TODO: this should go in a shared module. 
 import { DomSanitizer } from '@angular/platform-browser'
@@ -29,6 +30,7 @@ export class EscapeHtmlPipe implements PipeTransform {
         ,MatButtonModule
         ,MatTabsModule
         ,CommonModule
+        ,DevExtremeModule
     ],
     declarations:[
         FlowTestComponent,
