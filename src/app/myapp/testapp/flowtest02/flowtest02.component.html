@@ -1,7 +1,11 @@
 <div id='flowtest02_main'>
     <br>
     <div style="margin-left: 10px">
-     <button mat-raised-button color="primary" (click)="this.AddFlow()"  >Add</button>
+        <button mat-raised-button color="warn" (click)="this.NewFlow()" >New</button>
+        <button mat-raised-button color="primary" (click)="this.SaveFlow()" >Save</button>
+        <button mat-raised-button color="primary" (click)="this.OpenFlow()" >Open</button>
+        <button mat-raised-button color="accent" (click)="this.AddFlow()"  >Add Flow</button>
+        <i> 테스트 flow</i>
     </div>
   
     <div id='canvas_container'>
@@ -18,9 +22,8 @@
         <mat-tab label="Data">
             <dx-data-grid id="gridContainer" 
             [dataSource]="customers"  
-            [columns]="['CompanyName', 'City', 'State', 'Phone', 'Fax']"
             (onContentReady)="onContentReady($event)"
-            
+            style="height: 280px"
             >
             <dxo-load-panel [enabled]="true"></dxo-load-panel>
             <dxo-scrolling mode="virtual"></dxo-scrolling>
