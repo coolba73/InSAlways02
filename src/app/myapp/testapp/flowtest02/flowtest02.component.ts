@@ -1,4 +1,4 @@
-import { Component,ViewChild, OnInit, ViewEncapsulation, AfterViewInit } from "@angular/core";
+import { Component,ViewChild, OnInit, ViewEncapsulation, AfterViewInit, Inject } from "@angular/core";
 import { DrawCanvasComponent } from "../../core/material/drawcanvas/drawcanvas.component";
 import { BaseObject }          from "../../core/drawobject/BaseObject";
 import { BoxBase }             from "../../core/drawobject/BoxBase";
@@ -6,6 +6,8 @@ import { FlowBox }             from "../../core/drawobject/FlowBox";
 import { LineBase }            from "../../core/drawobject/LineBase";
 import { SelectBox }           from "../../core/drawobject/SelectBox";
 import { UUID }                from "angular2-uuid";
+
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 
 declare var $: any;
 
@@ -19,10 +21,13 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     
     customers: Customer[];
 
+    title : string = '';
+    popupVisible = false;
+
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
 
-    constructor(){
+    constructor( public dialog : MatDialog ){
         this.SetData();
     }
 
@@ -61,7 +66,18 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     NewFlow(){
-        alert("new flow");
+        // alert("new flow");
+
+        // let dialogRef = this.dialog.open(InputDialog,{
+        //     data: {inputstring:this.title}
+        // });
+        
+        // dialogRef.afterClosed().subscribe(result => {
+        //     alert(result);
+        // });
+
+        this.popupVisible = true;
+
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -224,3 +240,30 @@ export class Customer {
     Fax: string;
     Website: string;
 }//class customer
+
+
+@Component({
+    selector:"inputdialog",
+    template:`
+                <div mat-dialog-content>
+                    <mat-form-field>
+                        <input matInput tabindex="1" [(ngModel)]="inputstring">
+                    </mat-form-field>
+                </div>
+                <div mat-dialog-actions>
+                    <button mat-button [mat-dialog-close]="inputstring" tabindex="2">Ok</button>
+                    <button mat-button (click)="onNoClick()" tabindex="-1">No Thanks</button>
+                </div>
+                            `
+})
+export class InputDialog{
+
+        constructor(public dialogRef:MatDialogRef<FlowTest02Component>,
+        @Inject(MAT_DIALOG_DATA) public data:any){}
+
+        //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+        onNoClick():void{
+            this.dialogRef.close();
+        }
+
+}//class InputDialog

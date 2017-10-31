@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
+import { Component,Inject } from "@angular/core";
 import { Router } from "@angular/router";
+
 
 @Component({
     selector : 'main',
@@ -21,4 +22,10 @@ export class MainComponent{
         this._router.navigate(['/myapp/flowtest02']);
     }
 
+
+
 }//class
+
+
+
+

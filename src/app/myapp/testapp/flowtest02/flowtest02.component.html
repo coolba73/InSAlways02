@@ -37,14 +37,24 @@
         </mat-tab>
 
       </mat-tab-group>
-
-    
-
-    
-
-    
   
   </div>
 
+  <dx-popup
+  class="popup"
+  [width]="300"
+  [height]="250"
+  [showTitle]="true"
+  title="Information"
+  [dragEnabled]="false"
+  [closeOnOutsideClick]="true"
+  [(visible)]="popupVisible">
+  <div *dxTemplate="let data of 'content'">
+      <p>
+          Full Name:
+      </p>
+      <button mat-raised-button color="warn" >New</button>
+  </div>
+</dx-popup>
 
 

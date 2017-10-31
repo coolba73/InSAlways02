@@ -10,6 +10,7 @@ import {
          MatCommonModule 
         ,MatButtonModule
         ,MatMenuModule
+        ,MatDialogModule
        } from "@angular/material";
 
 @NgModule({
@@ -25,7 +26,8 @@ import {
     BrowserAnimationsModule,
     MatCommonModule,
     MatButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

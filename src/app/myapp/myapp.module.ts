@@ -4,8 +4,22 @@ import { MyAppRouting } from "./myapp.routing";
 import { FlowTestComponent } from "./testapp/flowtest/flowtest.component";
 import { FlowTest02Component } from "./testapp/flowtest02/flowtest02.component";
 import { DrawCanvasComponent } from "./core/material/drawcanvas/drawcanvas.component";
-import { MatCommonModule, MatButtonModule, MatTabsModule } from "@angular/material";
-import { DevExtremeModule } from "devextreme-angular";
+
+import { DevExtremeModule , DxPopupModule, } from "devextreme-angular";
+
+import { NgModel } from "@angular/forms";
+
+import { 
+      MatCommonModule
+    , MatButtonModule
+    , MatTabsModule
+    , MatDialogModule 
+    , MatInputModule
+    
+    
+} from "@angular/material";
+
+
 
 // TODO: this should go in a shared module. 
 import { DomSanitizer } from '@angular/platform-browser'
@@ -29,6 +43,8 @@ export class EscapeHtmlPipe implements PipeTransform {
         ,MatCommonModule
         ,MatButtonModule
         ,MatTabsModule
+        ,MatInputModule
+        ,MatDialogModule
         ,CommonModule
         ,DevExtremeModule
     ],
