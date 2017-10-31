@@ -1,18 +1,22 @@
 <div id='flowtest02_main'>
     <br>
-    <div style="margin-left: 10px">
-        <button mat-raised-button color="warn" (click)="this.NewFlow()" >New</button>
-        <button mat-raised-button color="primary" (click)="this.SaveFlow()" >Save</button>
-        <button mat-raised-button color="primary" (click)="this.OpenFlow()" >Open</button>
-        <button mat-raised-button color="accent" (click)="this.AddFlow()"  >Add Flow</button>
-        <i> 테스트 flow</i>
-    </div>
-  
-    <div id='canvas_container'>
-      <drawcanvas #fcvs  ></drawcanvas>
-    </div>
 
     <div id="flowtest02_container">
+        <div style="margin-left: 10px">
+            <button mat-raised-button color="warn" (click)="this.NewFlow()" >New</button>
+            <button mat-raised-button color="primary" (click)="this.SaveFlow()" >Save</button>
+            <button mat-raised-button color="primary" (click)="this.OpenFlow()" >Open</button>
+            <button mat-raised-button color="primary" (click)="this.FullScreen()" >Full</button>
+            <button mat-raised-button color="accent" (click)="this.AddFlow()"  >Add Flow</button>
+            <i> 테스트 flow</i>
+        </div>
+      
+        <div id='canvas_container'>
+          <drawcanvas #fcvs  ></drawcanvas>
+        </div>
+    </div>
+    
+
       <mat-tab-group>
           
         <mat-tab label="Description">
@@ -23,7 +27,7 @@
             <dx-data-grid id="gridContainer" 
             [dataSource]="customers"  
             (onContentReady)="onContentReady($event)"
-            style="height: 280px"
+            style="height: 350px"
             >
             <dxo-load-panel [enabled]="true"></dxo-load-panel>
             <dxo-scrolling mode="virtual"></dxo-scrolling>
@@ -33,7 +37,6 @@
         </mat-tab>
 
       </mat-tab-group>
-    </div>
 
     
 

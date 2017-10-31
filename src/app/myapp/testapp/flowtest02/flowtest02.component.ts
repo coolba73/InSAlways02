@@ -29,7 +29,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     ngAfterViewInit(){
          // $ init summernote
          $('#summernote').summernote({
-            height:300,
+            height:270,
             maxHeight:null,
             minHeight:null
             });
@@ -78,6 +78,12 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     onContentReady(e) {
         e.component.option("loadPanel.enabled", false);
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    FullScreen(){
+        $('#flowtest02_container').toggleClass('fullscreen'); 
+    }
+
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     SetData(){
