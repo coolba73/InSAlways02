@@ -7,7 +7,6 @@ import { LineBase }            from "../../core/drawobject/LineBase";
 import { SelectBox }           from "../../core/drawobject/SelectBox";
 import { UUID }                from "angular2-uuid";
 
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 
 declare var $: any;
 
@@ -27,7 +26,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
 
-    constructor( public dialog : MatDialog ){
+    constructor(  ){
         this.SetData();
     }
 
@@ -226,6 +225,11 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             "Website": "http://www.nowebsitescreenshop.com"
         }];
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    OK_Click(){
+        this.popupVisible = false;
+    }
     
 }//class
 
@@ -242,28 +246,3 @@ export class Customer {
 }//class customer
 
 
-@Component({
-    selector:"inputdialog",
-    template:`
-                <div mat-dialog-content>
-                    <mat-form-field>
-                        <input matInput tabindex="1" [(ngModel)]="inputstring">
-                    </mat-form-field>
-                </div>
-                <div mat-dialog-actions>
-                    <button mat-button [mat-dialog-close]="inputstring" tabindex="2">Ok</button>
-                    <button mat-button (click)="onNoClick()" tabindex="-1">No Thanks</button>
-                </div>
-                            `
-})
-export class InputDialog{
-
-        constructor(public dialogRef:MatDialogRef<FlowTest02Component>,
-        @Inject(MAT_DIALOG_DATA) public data:any){}
-
-        //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-        onNoClick():void{
-            this.dialogRef.close();
-        }
-
-}//class InputDialog

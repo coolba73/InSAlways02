@@ -41,20 +41,27 @@
   </div>
 
   <dx-popup
-  class="popup"
-  [width]="300"
-  [height]="250"
-  [showTitle]="true"
-  title="Information"
-  [dragEnabled]="false"
-  [closeOnOutsideClick]="true"
-  [(visible)]="popupVisible">
+    class="popup"
+    [width]="300"
+    [height]="250"
+    [showTitle]="true"
+    title="Input Title"
+    [dragEnabled]="false"
+    [closeOnOutsideClick]="true"
+    [(visible)]="popupVisible"
+  >
   <div *dxTemplate="let data of 'content'">
-      <p>
-          Full Name:
-      </p>
-      <button mat-raised-button color="warn" >New</button>
+    <div style="margin-top: 10px">
+        <p>
+            Full Name:
+        </p>
+        <br>
+        <button mat-raised-button color="primary" (click)="OK_Click()"  >OK</button>
+        <button mat-raised-button color="warn" >Cancel</button>
+    </div>
+      
   </div>
+  
 </dx-popup>
 
 
