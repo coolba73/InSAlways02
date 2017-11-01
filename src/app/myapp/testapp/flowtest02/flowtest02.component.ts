@@ -6,6 +6,7 @@ import { FlowBox }             from "../../core/drawobject/FlowBox";
 import { LineBase }            from "../../core/drawobject/LineBase";
 import { SelectBox }           from "../../core/drawobject/SelectBox";
 import { UUID }                from "angular2-uuid";
+import { FlowTest2Service } from "./flowtest02.service";
 
 
 declare var $: any;
@@ -13,24 +14,32 @@ declare var $: any;
 @Component({
     selector : 'flowtest02',
     templateUrl : './flowtest02.component.html',
-    styleUrls : ['./flowtest02.component.css']
+    styleUrls : ['./flowtest02.component.css'],
+    providers:[FlowTest2Service]
 })
 
 export class FlowTest02Component implements OnInit, AfterViewInit{
     
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    flowUid : string = '';
     customers: Customer[];
-
     title : string = '';
     popupVisible = false;
     @ViewChild('txtTitle') txtTitle : any;
     loadingVisible = false;
+    popupVisible_FlowList = false;
+
+    @ViewChild('grdFlowList') grdFlowList :any;
+
+    dsFlowList : any[];
+
+    dsFlowList2:string;
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
 
-    constructor(  ){
+    constructor(  private service : FlowTest2Service  ){
         this.SetData();
     }
 
@@ -94,11 +103,44 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     OpenFlow(){
-        alert("Open flow");
+        // alert("Open flow");
+        this.popupVisible_FlowList = true;
+
+        //this.dsFlowList = this.service.GetFlowList();
+
+        let re = this.service.GetFlowList();
+
+        console.log(re);
+
+        this.dsFlowList = re;
+
+        // for(var key in re)
+        // {
+        //     console.log('key : ' + key);
+        // }
+
+        this.dsFlowList2 = JSON.stringify(re);
+
+        console.log(this.dsFlowList2);
+
+        // this.dsFlowList2 = re;
+
+        // console.log(re);
+
+        // let re2 = JSON.parse(re);
+
+        // console.log(re2);
+
+        // this.dsFlowList = re2;
+        
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     onContentReady(e) {
+        e.component.option("loadPanel.enabled", false);
+    }
+
+    onContentReady2(e) {
         e.component.option("loadPanel.enabled", false);
     }
 
