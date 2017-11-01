@@ -1,4 +1,5 @@
 <div id='flowtest02_main'>
+
     <br>
 
     <div id="flowtest02_container">
@@ -40,29 +41,40 @@
   
   </div>
 
-  <dx-popup
-    class="popup"
-    [width]="600"
-    [height]="250"
-    [showTitle]="true"
-    title="New Flow"
-    [dragEnabled]="true"
-    [closeOnOutsideClick]="true"
-    [(visible)]="popupVisible"
-  >
-<div *dxTemplate="let data of 'content'">
+<dx-popup   class="popup" 
+            [width]="600" 
+            [height]="250" 
+            [showTitle]="true" 
+            title="New Flow" 
+            [dragEnabled]="false" 
+            [closeOnOutsideClick]="true"
+            [(visible)]="popupVisible"
+            >
+    <div *dxTemplate="let data of 'content'">
 
-    <mat-form-field class="example-full-width" style="width:550px">
-        <input  #txtTitle matInput  placeholder="Title" type="text" (keyup.enter) = "OK_Click(txtTitle.value)" >
-    </mat-form-field>
+        <mat-form-field class="example-full-width" style="width:550px">
+            <input #txtTitle matInput placeholder="Title" type="text" (keyup.enter)="OK_Click(txtTitle.value)">
+        </mat-form-field>
 
-    <div style="margin-top: 10px" >
-        <button mat-raised-button color="warn" style="float: right;  margin-left: 10px">Cancel</button>
-        <button mat-raised-button color="primary" (click)="OK_Click(txtTitle.value)" style="float: right;">OK</button>
+        <div style="margin-top: 10px">
+            <button mat-raised-button color="warn" style="float: right;  margin-left: 10px" (click)="btnNewCancel_Click()" >Cancel</button>
+            <button mat-raised-button color="primary" (click)="OK_Click(txtTitle.value)" style="float: right;">OK</button>
+        </div>
+
     </div>
 
-</div>
-  
 </dx-popup>
 
 
+<dx-load-panel
+#loadPanel
+shadingColor="rgba(0,0,0,0.4)"
+[position]="{ of: '#flowtest02_main' }"
+[(visible)]="loadingVisible"
+[showIndicator]="true"
+[showPane]="true"
+[shading]="true"
+[closeOnOutsideClick]="false"
+(onShown)="onShown()"
+>
+</dx-load-panel>

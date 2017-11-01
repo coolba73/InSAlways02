@@ -5,7 +5,7 @@ import { FlowTestComponent } from "./testapp/flowtest/flowtest.component";
 import { FlowTest02Component } from "./testapp/flowtest02/flowtest02.component";
 import { DrawCanvasComponent } from "./core/material/drawcanvas/drawcanvas.component";
 
-import { DevExtremeModule , DxPopupModule, } from "devextreme-angular";
+import { DevExtremeModule , DxPopupModule, DxLoadPanelModule } from "devextreme-angular";
 
 import { FormsModule }             from "@angular/forms";
 
@@ -48,6 +48,7 @@ export class EscapeHtmlPipe implements PipeTransform {
         ,CommonModule
         ,DevExtremeModule
         ,FormsModule
+        ,DxLoadPanelModule
     ],
     declarations:[
         FlowTestComponent,
