@@ -8,7 +8,7 @@
             <button mat-raised-button color="primary" (click)="this.OpenFlow()" >Open</button>
             <button mat-raised-button color="primary" (click)="this.FullScreen()" >Full</button>
             <button mat-raised-button color="accent" (click)="this.AddFlow()"  >Add Flow</button>
-            <i> 테스트 flow</i>
+            <i> {{this.title}}</i>
         </div>
       
         <div id='canvas_container'>
@@ -42,25 +42,26 @@
 
   <dx-popup
     class="popup"
-    [width]="300"
+    [width]="600"
     [height]="250"
     [showTitle]="true"
-    title="Input Title"
+    title="New Flow"
     [dragEnabled]="true"
     [closeOnOutsideClick]="true"
     [(visible)]="popupVisible"
   >
-  <div *dxTemplate="let data of 'content'">
-    <div style="margin-top: 10px">
-        <p>
-            Full Name:
-        </p>
-        <br>
-        <button mat-raised-button color="primary" (click)="OK_Click()"  >OK</button>
-        <button mat-raised-button color="warn" >Cancel</button>
+<div *dxTemplate="let data of 'content'">
+
+    <mat-form-field class="example-full-width" style="width:550px">
+        <input  #txtTitle matInput  placeholder="Title" type="text" (keyup.enter) = "OK_Click(txtTitle.value)" >
+    </mat-form-field>
+
+    <div style="margin-top: 10px" >
+        <button mat-raised-button color="warn" style="float: right;  margin-left: 10px">Cancel</button>
+        <button mat-raised-button color="primary" (click)="OK_Click(txtTitle.value)" style="float: right;">OK</button>
     </div>
-      
-  </div>
+
+</div>
   
 </dx-popup>
 

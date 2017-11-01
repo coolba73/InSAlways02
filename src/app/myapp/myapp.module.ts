@@ -7,7 +7,7 @@ import { DrawCanvasComponent } from "./core/material/drawcanvas/drawcanvas.compo
 
 import { DevExtremeModule , DxPopupModule, } from "devextreme-angular";
 
-import { NgModel } from "@angular/forms";
+import { FormsModule }             from "@angular/forms";
 
 import { 
       MatCommonModule
@@ -47,6 +47,7 @@ export class EscapeHtmlPipe implements PipeTransform {
         ,MatDialogModule
         ,CommonModule
         ,DevExtremeModule
+        ,FormsModule
     ],
     declarations:[
         FlowTestComponent,

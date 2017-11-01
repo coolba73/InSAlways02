@@ -22,6 +22,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     title : string = '';
     popupVisible = false;
+    @ViewChild('txtTitle') txtTitle : any;
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
@@ -75,7 +76,10 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         //     alert(result);
         // });
 
+        
         this.popupVisible = true;
+        this.txtTitle.nativeElement.value = '';
+        
 
     }
 
@@ -227,7 +231,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    OK_Click(){
+    OK_Click(aTitle : string){
+        
+        this.title = aTitle;
         this.popupVisible = false;
     }
     
