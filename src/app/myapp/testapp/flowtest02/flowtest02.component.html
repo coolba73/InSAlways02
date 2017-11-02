@@ -5,7 +5,7 @@
     <div id="flowtest02_container">
         <div style="margin-left: 10px">
             <button mat-raised-button color="warn" (click)="this.NewFlow()" >New</button>
-            <button mat-raised-button color="primary" (click)="this.SaveFlow()" >Save</button>
+            <button mat-raised-button color="primary" (click)="this.SaveFlow_Click()" >Save</button>
             <button mat-raised-button color="primary" (click)="this.OpenFlow()" >Open</button>
             <button mat-raised-button color="primary" (click)="this.FullScreen()" >Full</button>
             <button mat-raised-button color="accent" (click)="this.AddFlow()"  >Add Flow</button>
@@ -120,6 +120,7 @@
             [selectedRowKeys]="[]"
             [dataSource]="dsFlowList" 
             style="height: 350px"
+            [columns]="['title']"
         >
             <dxo-load-panel [enabled]="true"></dxo-load-panel>
             <dxo-scrolling mode="virtual"></dxo-scrolling>
@@ -130,7 +131,7 @@
 
         <div style="margin-top: 10px">
             <button mat-raised-button color="warn" style="float: right;  margin-left: 10px"  >Cancel</button>
-            <button mat-raised-button color="primary"  style="float: right;">Open</button>
+            <button mat-raised-button color="primary"  style="float: right;" (click)='Open_Click()' >Open</button>
         </div>
 
     </div>

@@ -7,6 +7,11 @@ import { LineBase }            from "../../core/drawobject/LineBase";
 import { SelectBox }           from "../../core/drawobject/SelectBox";
 import { UUID }                from "angular2-uuid";
 import { FlowTest2Service } from "./flowtest02.service";
+import { DxDataGridComponent } from "devextreme-angular";
+import { Http, RequestOptions, Headers, Response } from "@angular/http";
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import { Observable } from "rxjs/Observable";
 
 
 declare var $: any;
@@ -25,12 +30,13 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     flowUid : string = '';
     customers: Customer[];
     title : string = '';
+    id : string = '';
     popupVisible = false;
     @ViewChild('txtTitle') txtTitle : any;
     loadingVisible = false;
     popupVisible_FlowList = false;
 
-    @ViewChild('grdFlowList') grdFlowList :any;
+    @ViewChild('grdFlowList') grdFlowList : DxDataGridComponent;
 
     dsFlowList : any[];
 
@@ -39,7 +45,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
 
-    constructor(  private service : FlowTest2Service  ){
+    constructor(  private service : FlowTest2Service , private http : Http ){
         this.SetData();
     }
 
@@ -92,13 +98,23 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.popupVisible = true;
         this.txtTitle.nativeElement.value = '';
         
+        
 
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    SaveFlow(){
+    SaveFlow_Click(){
         // alert("Save flow");
         this.loadingVisible = true;
+
+        this.SaveFlow().subscribe(
+            data => {
+                this.loadingVisible = false;
+            }, 
+            error => {
+                this.loadingVisible = false;
+                alert("Error");
+            });
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -119,9 +135,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         //     console.log('key : ' + key);
         // }
 
-        this.dsFlowList2 = JSON.stringify(re);
+        // this.dsFlowList2 = JSON.stringify(re);
 
-        console.log(this.dsFlowList2);
+        // console.log(this.dsFlowList2);
 
         // this.dsFlowList2 = re;
 
@@ -280,14 +296,34 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     OK_Click(aTitle : string){
         
         this.title = aTitle;
+        this.id = UUID.UUID();
+        this.finCanvas.objects = [];
+
+        this.loadingVisible = true;
+
+        this.SaveFlow().subscribe(
+            data =>
+            {
+                this.loadingVisible = false;
+            },
+            error =>
+            {
+                this.loadingVisible = false;
+                console.log(error);
+                alert('error');
+            }
+        )
+
         this.popupVisible = false;
+
+
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     onShown() {
-        setTimeout(() => {
-            this.loadingVisible = false;
-        }, 3000);
+        // setTimeout(() => {
+        //     this.loadingVisible = false;
+        // }, 3000);
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -301,8 +337,30 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.popupVisible = false;
     }
 
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Open_Click(){
 
+        let sel = this.grdFlowList.instance.getSelectedRowKeys();
+        console.log(sel[0]["id"]);
+    }
 
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    SaveFlow()
+    {
+        let body = JSON.stringify({
+            title : this.title,
+            id : this.id,
+            flowobject : JSON.stringify(this.finCanvas.objects)
+        });
+
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        let url = "https://insalwaysfuncapp01.azurewebsites.net/api/SaveFlow?code=ZcN2ZGHPkpqy6EVxPUaMfx6goOAhbNGahobgkGsYDQBaL0Kd801lBA==";
+
+        return this.http.post(url, body, options).map(res=>res.json());
+
+    }
     
 }//class
 
