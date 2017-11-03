@@ -119,36 +119,20 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     OpenFlow(){
-        // alert("Open flow");
+
         this.popupVisible_FlowList = true;
 
-        //this.dsFlowList = this.service.GetFlowList();
-
-        let re = this.service.GetFlowList();
-
-        console.log(re);
-
-        this.dsFlowList = re;
-
-        // for(var key in re)
-        // {
-        //     console.log('key : ' + key);
-        // }
-
-        // this.dsFlowList2 = JSON.stringify(re);
-
-        // console.log(this.dsFlowList2);
-
-        // this.dsFlowList2 = re;
-
-        // console.log(re);
-
-        // let re2 = JSON.parse(re);
-
-        // console.log(re2);
-
-        // this.dsFlowList = re2;
-        
+        this.service.CallService("https://insalwaysfuncapp01.azurewebsites.net/api/GetFlowList?code=ZynursoTea6fTDXGX4aTTX24Iayme/yZx6p/HgHllLUoWzh6K6Qb1Q==")
+        .subscribe(
+            data =>
+            {
+                this.dsFlowList = data;
+            },
+            error =>
+            {
+                alert('error');
+            }
+        );
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -340,8 +324,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     Open_Click(){
 
-        let sel = this.grdFlowList.instance.getSelectedRowKeys();
-        console.log(sel[0]["id"]);
+        // let sel = this.grdFlowList.instance.getSelectedRowKeys();
+        // console.log(sel[0]["id"]);
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -353,12 +337,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             flowobject : JSON.stringify(this.finCanvas.objects)
         });
 
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
         let url = "https://insalwaysfuncapp01.azurewebsites.net/api/SaveFlow?code=ZcN2ZGHPkpqy6EVxPUaMfx6goOAhbNGahobgkGsYDQBaL0Kd801lBA==";
-
-        return this.http.post(url, body, options).map(res=>res.json());
+        return this.service.CallService(url, body)
 
     }
     
