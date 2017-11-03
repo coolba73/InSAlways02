@@ -46,7 +46,7 @@
 <!--
     #########################################################################################
 
-    pop new flow
+    pop input box
 
     #########################################################################################
 -->
@@ -54,7 +54,7 @@
             [width]="600" 
             [height]="250" 
             [showTitle]="true" 
-            title="New Flow" 
+            [title]="inputBoxTitle"
             [dragEnabled]="false" 
             [closeOnOutsideClick]="true"
             [(visible)]="popupVisible"
@@ -62,7 +62,7 @@
     <div *dxTemplate="let data of 'content'">
 
         <mat-form-field class="example-full-width" style="width:550px">
-            <input #txtTitle matInput placeholder="Title" type="text" (keyup.enter)="OK_Click(txtTitle.value)">
+            <input #txtTitle matInput placeholder="Input Text" type="text" (keyup.enter)="OK_Click(txtTitle.value)">
         </mat-form-field>
 
         <div style="margin-top: 10px">

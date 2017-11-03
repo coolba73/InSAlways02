@@ -16,13 +16,18 @@ import { Observable } from "rxjs/Observable";
 
 declare var $: any;
 
+enum InputType{
+     None
+    ,NewFlow
+    ,AddBox    
+}
+
 @Component({
     selector : 'flowtest02',
     templateUrl : './flowtest02.component.html',
     styleUrls : ['./flowtest02.component.css'],
     providers:[FlowTest2Service]
 })
-
 export class FlowTest02Component implements OnInit, AfterViewInit{
     
 
@@ -41,6 +46,10 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     dsFlowList : any[];
 
     dsFlowList2:string;
+
+    inputBoxTitle:string='Input Box';
+    inputBoxType : InputType = InputType.None;
+    
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
@@ -73,12 +82,16 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     AddFlow(){
         
-        let flowBox = new FlowBox();
+        // let flowBox = new FlowBox();
 
-        flowBox.x = 10;
-        flowBox.y = 10;
+        // flowBox.x = 10;
+        // flowBox.y = 10;
 
-        this.finCanvas.AddObject(flowBox);
+        // this.finCanvas.AddObject(flowBox);
+
+        this.inputBoxTitle = "Add Flow Box";
+        this.inputBoxType = InputType.AddBox;
+        this.popupVisible = true;
         
     }
 
@@ -94,7 +107,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         //     alert(result);
         // });
 
-        
+        this.inputBoxType = InputType.NewFlow;
+        this.inputBoxTitle = "New Flow";
         this.popupVisible = true;
         this.txtTitle.nativeElement.value = '';
         
@@ -278,25 +292,41 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     OK_Click(aTitle : string){
+    
+        if (this.inputBoxType == InputType.NewFlow)
+        {
+            this.title = aTitle;
+            this.id = UUID.UUID();
+            this.finCanvas.objects = [];
+    
+            this.loadingVisible = true;
+    
+            this.SaveFlow().subscribe(
+                data =>
+                {
+                    this.loadingVisible = false;
+                },
+                error =>
+                {
+                    this.loadingVisible = false;
+                    console.log(error);
+                    alert('error');
+                }
+            )
+        }
+        else if (this.inputBoxType == InputType.AddBox)
+        {
+            let flowBox = new FlowBox();
+            
+            flowBox.x = 10;
+            flowBox.y = 10;
+            flowBox.Title = aTitle;
+    
+            this.finCanvas.AddObject(flowBox);            
+        }
+
+
         
-        this.title = aTitle;
-        this.id = UUID.UUID();
-        this.finCanvas.objects = [];
-
-        this.loadingVisible = true;
-
-        this.SaveFlow().subscribe(
-            data =>
-            {
-                this.loadingVisible = false;
-            },
-            error =>
-            {
-                this.loadingVisible = false;
-                console.log(error);
-                alert('error');
-            }
-        )
 
         this.popupVisible = false;
 
@@ -318,6 +348,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     btnNewCancel_Click(){
+
+        
         this.popupVisible = false;
     }
 
