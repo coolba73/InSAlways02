@@ -49,6 +49,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     inputBoxTitle:string='Input Box';
     inputBoxType : InputType = InputType.None;
+
     
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -134,8 +135,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     OpenFlow(){
 
-        this.popupVisible_FlowList = true;
-
         this.service.CallService("https://insalwaysfuncapp01.azurewebsites.net/api/GetFlowList?code=ZynursoTea6fTDXGX4aTTX24Iayme/yZx6p/HgHllLUoWzh6K6Qb1Q==")
         .subscribe(
             data =>
@@ -147,6 +146,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 alert('error');
             }
         );
+
+        this.popupVisible_FlowList = true;
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -356,8 +357,56 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     Open_Click(){
 
-        // let sel = this.grdFlowList.instance.getSelectedRowKeys();
-        // console.log(sel[0]["id"]);
+        let sel = this.grdFlowList.instance.getSelectedRowKeys();
+
+        this.title = sel[0]["title"];
+        let sel2 = this.dsFlowList.find(i=> i["title"] == this.title );
+        let objString = sel2["drawobject"];
+        this.id = sel2["id"];
+
+        console.log("title:" + this.title);
+        console.log("id:" + this.id);
+        
+
+        this.SetCanvasObject(objString);
+
+        this.popupVisible_FlowList = false;
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    FlowListCancel_Click(){
+        this.popupVisible_FlowList = false;
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    SetCanvasObject(objString:string){
+
+        let jsonObje = JSON.parse(objString);
+
+        let myBox : FlowBox;
+        let myLine : LineBase;
+
+        this.finCanvas.objects = [];
+
+        for (let obj of jsonObje){
+
+            if (obj.Type === FlowBox.name)
+            {
+                myBox = new FlowBox();
+                myBox.fillFromJSON(JSON.stringify( obj));
+                this.finCanvas.objects.push(myBox);
+            }
+            else if(obj.Type === LineBase.name)
+            {
+                myLine = new LineBase();
+                myLine.fillFromJSON(JSON.stringify(obj));
+                this.finCanvas.objects.push(myLine);
+            }
+        }
+
+        this.finCanvas.Draw();
+
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________

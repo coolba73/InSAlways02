@@ -8,8 +8,9 @@
             <button mat-raised-button color="primary" (click)="this.SaveFlow_Click()" >Save</button>
             <button mat-raised-button color="primary" (click)="this.OpenFlow()" >Open</button>
             <button mat-raised-button color="primary" (click)="this.FullScreen()" >Full</button>
-            <button mat-raised-button color="accent" (click)="this.AddFlow()"  >Add Flow</button>
+            <button mat-raised-button color="primary" (click)="this.AddFlow()"  >Add Flow</button>
             <i> {{this.title}}</i>
+            <button mat-raised-button color="accent"   >Run</button>
         </div>
       
         <div id='canvas_container'>
@@ -130,7 +131,7 @@
         </dx-data-grid>
 
         <div style="margin-top: 10px">
-            <button mat-raised-button color="warn" style="float: right;  margin-left: 10px"  >Cancel</button>
+            <button mat-raised-button color="warn" style="float: right;  margin-left: 10px" (click)="FlowListCancel_Click()"   >Cancel</button>
             <button mat-raised-button color="primary"  style="float: right;" (click)='Open_Click()' >Open</button>
         </div>
 
