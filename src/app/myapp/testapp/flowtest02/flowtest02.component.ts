@@ -502,16 +502,41 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         flowProperty.Type = this.BoxPropertyType;
         flowProperty.MyData = this.dsMyDataSource;
 
-        (<FlowBox>this.finCanvas.currentObj).property = JSON.stringify(flowProperty);
+        (<FlowBox>this.finCanvas.GetCurrentBox()).MyProperty = JSON.stringify(flowProperty);
 
         this.popupVisible_BoxProperty = false;
+
 
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     btnProperty_Click(){
+
+        if (this.finCanvas.GetCurrentBox() == null) 
+        {
+            alert('new selected box');
+            return;
+        }
+
         this.popupVisible_BoxProperty = true;
-        // this.popupVisible_popupStepper = true;
+
+        let prop = (<FlowBox>this.finCanvas.GetCurrentBox()).MyProperty;
+
+        if (prop != "")
+        {
+            let propObj = JSON.parse(prop);
+            
+            this.BoxPropertyType = propObj.Type;
+            this.dsMyDataSource = propObj.MyData;
+        }
+        else
+        {
+            this.BoxPropertyType = '';
+            this.dsMyDataSource = new Array();
+        }
+        
+
+        
     }
 
 

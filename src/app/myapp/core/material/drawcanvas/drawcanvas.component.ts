@@ -614,6 +614,17 @@ export class DrawCanvasComponent implements OnInit {
         })
     }
 
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    GetCurrentObject(){
+        if (this.objects.filter(i=>i.YesSelected).length == 1)
+        {
+            return this.objects.find(i=>i.YesSelected);
+        }
+        else
+        {
+            return null;
+        }
+    }
     
 
 
