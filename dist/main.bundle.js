@@ -246,7 +246,7 @@ module.exports = "<router-outlet></router-outlet>"
 /***/ 228:
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"content\">\r\n    <router-outlet></router-outlet>\r\n  </div>\r\n\r\n<div class=\"navbar\">\r\n\r\n  <button mat-button [matMenuTriggerFor]=\"menu\" style=\"color:white; left: 50px\">Test</button>\r\n  <mat-menu #menu=\"matMenu\">\r\n    <button mat-menu-item (click)=\"FlowTest_Click()\" >Flow Test</button>\r\n    <button mat-menu-item (click)=\"FlowTest02_Click()\" >Flow Test2</button>\r\n  </mat-menu>\r\n\r\n  \r\n</div>"
+module.exports = "<div id=\"content\">\r\n    <router-outlet></router-outlet>\r\n  </div>\r\n\r\n<div class=\"navbar\">\r\n\r\n  <button mat-button [matMenuTriggerFor]=\"menu\" style=\"color:white; left: 50px\">Test 2</button>\r\n  <mat-menu #menu=\"matMenu\">\r\n    <button mat-menu-item (click)=\"FlowTest_Click()\" >Flow Test</button>\r\n    <button mat-menu-item (click)=\"FlowTest02_Click()\" >Flow Test2</button>\r\n  </mat-menu>\r\n\r\n  \r\n</div>"
 
 /***/ }),
 
