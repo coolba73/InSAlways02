@@ -179,9 +179,33 @@
                 </div>
 
                 <div style="height: 400px">
-                    <button mat-raised-button color='primary' >Search</button>
+                    <button mat-raised-button color='primary' (click)='SearchDataSource()' >Search</button>
                     <button mat-raised-button color='primary' >Add</button>
                     <button mat-raised-button color='primary' >Delete</button>
+
+                    <mat-tab-group>
+
+                        <mat-tab label="Source">
+
+                            <dx-data-grid
+                                        #grdDataSource
+                                        [hoverStateEnabled]="true"
+                                        [selectedRowKeys]="[]"
+                                        [dataSource]="dsDataSource" 
+                                        style="height: 300px"
+                            >
+                                <dxo-load-panel [enabled]="true"></dxo-load-panel>
+                                <dxo-scrolling mode="virtual"></dxo-scrolling>
+                                <dxo-sorting mode="none"></dxo-sorting>
+                                <dxo-selection mode="single"></dxo-selection>
+                    
+                            </dx-data-grid>
+                            
+                        </mat-tab>
+
+                        <mat-tab label="MyData">Content 2</mat-tab>
+                    </mat-tab-group>
+
                 </div>
 
             </mat-tab>
@@ -198,6 +222,9 @@
     </div>
 
 </dx-popup>
+
+
+
 
 
 
