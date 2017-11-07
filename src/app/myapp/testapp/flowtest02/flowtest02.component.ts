@@ -58,6 +58,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     popupVisible_popupStepper = false;
 
     dsDataSource : any[];
+
+    BoxPropertyType : string;
+    
     
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -492,7 +495,17 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     BoxProperty_OK_Click(){
+
+        
+        let flowProperty : any = {};
+
+        flowProperty.Type = this.BoxPropertyType;
+        flowProperty.MyData = this.dsMyDataSource;
+
+        (<FlowBox>this.finCanvas.currentObj).property = JSON.stringify(flowProperty);
+
         this.popupVisible_BoxProperty = false;
+
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -533,7 +546,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 alert(error);
             }
         );
-
 
     }
 
