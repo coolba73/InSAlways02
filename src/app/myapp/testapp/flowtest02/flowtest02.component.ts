@@ -530,7 +530,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             },
             error =>
             {
-
+                alert(error);
             }
         );
 
