@@ -545,12 +545,10 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         d.ItemCode = sel[0]["ItemCode"];
         d.ItemName = sel[0]["ItemName"];
-
         
         this.dsMyDataSource.push(d);
 
         console.log(this.dsMyDataSource);
-
         
     }
     
