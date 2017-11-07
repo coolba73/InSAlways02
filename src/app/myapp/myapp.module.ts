@@ -55,11 +55,13 @@ export class EscapeHtmlPipe implements PipeTransform {
         ,MatSidenavModule
         ,MatRadioModule
         ,MatStepperModule
+        
     ],
     declarations:[
         FlowTestComponent,
         FlowTest02Component,
         DrawCanvasComponent,
+        EscapeHtmlPipe
     ]
 })
 export class MyAppModule{}
