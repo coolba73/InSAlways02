@@ -15,6 +15,8 @@ import {
     , MatTabsModule
     , MatDialogModule 
     , MatInputModule
+    ,MatSidenavModule
+    ,MatRadioModule
     
     
 } from "@angular/material";
@@ -49,6 +51,8 @@ export class EscapeHtmlPipe implements PipeTransform {
         ,DevExtremeModule
         ,FormsModule
         ,DxLoadPanelModule
+        ,MatSidenavModule
+        ,MatRadioModule
     ],
     declarations:[
         FlowTestComponent,

@@ -23,6 +23,10 @@ export class BoxBase extends BaseObject{
 
     Seq : number = 0;
 
+    RunStatus : boolean = false;
+    RunOK : boolean = false;
+    RunSeq : number = 0;
+
     /*
     ############################################################################################################################
     
@@ -109,6 +113,24 @@ export class BoxBase extends BaseObject{
 
 
         //this.DrawImage(ctx);
+
+        //-------------------------------------
+        // Run OK
+        //-------------------------------------
+        if (this.RunStatus)
+        {
+            if(this.RunOK)
+            {
+                ctx.fillStyle = 'green';
+                ctx.fillText( this.RunSeq.toString() + " OK", this.x + 50, this.y-10);
+            }
+            else
+            {
+                ctx.fillStyle = 'red';
+                ctx.fillText( this.RunSeq.toString() +  " Error", this.x + 50, this.y-10);
+            }
+
+        }
 
     }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input } from '@angular/core';
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/takeUntil';
@@ -27,6 +27,8 @@ export class DrawCanvasComponent implements OnInit {
     
     @Output()
     MouseUp : EventEmitter<any> = new EventEmitter<any>();
+
+    @Input() MyId : string;
 
     pre_x : number;
     pre_y : number;
@@ -198,14 +200,17 @@ export class DrawCanvasComponent implements OnInit {
         var rex;
         var rey;
 
-
         if (res.pageX || res.pageY) { 
-            rex = res.pageX + document.getElementById("canvas_container").scrollLeft ;
-            rey = res.pageY + document.getElementById("canvas_container").scrollTop;
+            // rex = res.pageX + document.getElementById("canvas_container").scrollLeft ;
+            // rey = res.pageY + document.getElementById("canvas_container").scrollTop;
+            rex = res.pageX + document.getElementById(this.MyId).scrollLeft ;
+            rey = res.pageY + document.getElementById(this.MyId).scrollTop;
         }
         else { 
-            rex = res.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + document.getElementById("canvas_container").scrollLeft; 
-            rey = res.clientY + document.body.scrollTop + document.documentElement.scrollTop + document.getElementById("canvas_container").scrollTop; 
+            // rex = res.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + document.getElementById("canvas_container").scrollLeft; 
+            // rey = res.clientY + document.body.scrollTop + document.documentElement.scrollTop + document.getElementById("canvas_container").scrollTop; 
+            rex = res.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + document.getElementById(this.MyId).scrollLeft; 
+            rey = res.clientY + document.body.scrollTop + document.documentElement.scrollTop + document.getElementById(this.MyId).scrollTop; 
         } 
 
         rex -= canvasEl.offsetLeft;
@@ -597,6 +602,16 @@ export class DrawCanvasComponent implements OnInit {
         this.ctx.scale(2,2);
 
 
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    RunStatusClear(){
+
+        this.objects.filter(i=>i instanceof BoxBase).forEach(i=>{
+            (<BoxBase>i).RunOK = false;
+            (<BoxBase>i).RunStatus = false;
+            (<BoxBase>i).RunSeq = 0;
+        })
     }
 
     

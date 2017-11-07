@@ -50,6 +50,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     inputBoxTitle:string='Input Box';
     inputBoxType : InputType = InputType.None;
 
+    popupVisible_BoxProperty = false;
     
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -60,6 +61,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     }
 
     ngAfterViewInit(){
+
          // $ init summernote
          $('#summernote').summernote({
             height:270,
@@ -67,16 +69,16 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             minHeight:null
             });
 
-        // var self = this;
-        // $('#summernote').on('summernote.change', 
-        //     function(){
-        //         self.Summernote_Change();
-        //     }
-        // );
+        var self = this;
+        $('#summernote').on('summernote.change', 
+            function(){
+                self.Summernote_Change();
+            }
+        );
     }
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     ngOnInit(){
-        
+       
     }    
     
 
@@ -90,9 +92,11 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         // this.finCanvas.AddObject(flowBox);
 
+        
         this.inputBoxTitle = "Add Flow Box";
         this.inputBoxType = InputType.AddBox;
         this.popupVisible = true;
+        this.txtTitle.nativeElement.value = '';
         
     }
 
@@ -366,7 +370,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         console.log("title:" + this.title);
         console.log("id:" + this.id);
-        
 
         this.SetCanvasObject(objString);
 
@@ -422,8 +425,78 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         return this.service.CallService(url, body)
 
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Run_Click(){
+
+        let obj  = <BoxBase[]>this.finCanvas.objects.filter(i=> i instanceof BoxBase);
+
+        this.finCanvas.RunStatusClear();
+        
+        for ( var  i= 1 ; i <= obj.length ; i++)
+        {
+            obj.filter(k=> (<BoxBase>k).Seq == i ).forEach(k=>
+                {
+                    k.RunStatus = true;
+                    k.RunOK = true;
+                    k.RunSeq = i;
+                    
+                });
+        }
+
+        this.finCanvas.Draw();
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Summernote_Change(){
+
+        let obj : BaseObject  = this.finCanvas.GetCurrentBox();
+
+        if (obj != null && obj instanceof FlowBox){
+
+            let text = $('#summernote').summernote('code');
+            let flowBox = <FlowBox>obj;
+            flowBox.document = text;
+        }
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Canvas_MouseUp(){
+        
+        // alert('mouse up');
+        let obj : BaseObject = this.finCanvas.GetCurrentBox();
+        
+        if (obj instanceof FlowBox){
+            let flowBox = <FlowBox>obj;
+            $('#summernote').summernote('code',flowBox.document);
+        }
+        else{
+            $('#summernote').summernote('code','');
+        }
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    BoxProperty_Cancel_Click(){
+        this.popupVisible_BoxProperty = false;
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    BoxProperty_OK_Click(){
+        this.popupVisible_BoxProperty = false;
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    btnProperty_Click(){
+        this.popupVisible_BoxProperty = true;
+    }
+
+
     
 }//class
+//############################################################################################################################################################################################################################################################
 
 export class Customer {
     ID: number;

@@ -7,15 +7,16 @@
             <button mat-raised-button color="warn" (click)="this.NewFlow()" >New</button>
             <button mat-raised-button color="primary" (click)="this.SaveFlow_Click()" >Save</button>
             <button mat-raised-button color="primary" (click)="this.OpenFlow()" >Open</button>
-            <button mat-raised-button color="primary" (click)="this.FullScreen()" >Full</button>
             <button mat-raised-button color="primary" (click)="this.AddFlow()"  >Add Flow</button>
+            <button mat-raised-button color="primary" (click)='btnProperty_Click()'  >Property</button>
             <i> {{this.title}}</i>
-            <button mat-raised-button color="accent"   >Run</button>
+            <button mat-raised-button color="accent" (click)="Run_Click()" >Run</button>
         </div>
       
-        <div id='canvas_container'>
-          <drawcanvas #fcvs  ></drawcanvas>
+        <div id='canvas_container2'>
+          <drawcanvas #fcvs (MouseUp)='Canvas_MouseUp()' [MyId]="'canvas_container2'" ></drawcanvas>
         </div>
+
     </div>
     
 
@@ -44,6 +45,7 @@
   </div>
 
 
+
 <!--
     #########################################################################################
 
@@ -56,7 +58,7 @@
             [height]="250" 
             [showTitle]="true" 
             [title]="inputBoxTitle"
-            [dragEnabled]="false" 
+            [dragEnabled]="true" 
             [closeOnOutsideClick]="true"
             [(visible)]="popupVisible"
             >
@@ -103,14 +105,14 @@
 
     #########################################################################################
 -->
-<dx-popup   class="popup" 
-        [width]="600" 
-        [height]="500" 
-        [showTitle]="true" 
-        title="Flow List" 
-        [dragEnabled]="false" 
-        [closeOnOutsideClick]="true"
-        [(visible)]="popupVisible_FlowList"
+<dx-popup   class='popup' 
+        [width]='600' 
+        [height]='500' 
+        [showTitle]='true' 
+        title='Flow List' 
+        [dragEnabled]='true' 
+        [closeOnOutsideClick]='true'
+        [(visible)]='popupVisible_FlowList'
 >
     <div *dxTemplate="let data of 'content'">
 
@@ -131,10 +133,72 @@
         </dx-data-grid>
 
         <div style="margin-top: 10px">
-            <button mat-raised-button color="warn" style="float: right;  margin-left: 10px" (click)="FlowListCancel_Click()"   >Cancel</button>
-            <button mat-raised-button color="primary"  style="float: right;" (click)='Open_Click()' >Open</button>
+            <button mat-raised-button color='warn' style='float: right;  margin-left: 10px' (click)='FlowListCancel_Click()'   >Cancel</button>
+            <button mat-raised-button color='primary'  style='float: right;' (click)='Open_Click()' >Open</button>
         </div>
 
     </div>
 
 </dx-popup>
+
+
+<!--
+    #########################################################################################
+
+    BoxProperty PopUp
+
+    #########################################################################################
+-->
+<dx-popup
+        class='popup'
+        [width]='600'
+        [height]='700'
+        [showTitle]='true'
+        title='BoxProperty'
+        [dragEnabled]='true'
+        [closeOnOutsideClick]='true'
+        [(visible)]='popupVisible_BoxProperty'
+        #popupProperty
+>
+    <div *dxTemplate=" let data of 'content' " >
+
+        <mat-radio-group class="example-radio-group">
+            <mat-radio-button value="DataSet">DataSet</mat-radio-button>
+            <mat-radio-button value="Calculation">Calculation</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-tab-group >
+            <mat-tab label="DataSet" >
+               
+                <div style="height: 50px; margin-top: 10px">
+                    <mat-radio-group style=" margin-left: 20px">
+                        <mat-radio-button value="Stock">Stock</mat-radio-button>
+                        <mat-radio-button value="Index">Index</mat-radio-button>
+                        <mat-radio-button value="MarketData">Market Data</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <div style="height: 400px">
+                    <button mat-raised-button color='primary' >Search</button>
+                    <button mat-raised-button color='primary' >Add</button>
+                    <button mat-raised-button color='primary' >Delete</button>
+                </div>
+
+            </mat-tab>
+
+            <mat-tab label="Calculation">Content 2</mat-tab>
+        </mat-tab-group>
+
+        
+        <div style='margin-top: 10px'>
+            <button mat-raised-button color='warn' style='float: right;  margin-left: 10px' (click)='BoxProperty_Cancel_Click()'>Cancel</button>
+            <button mat-raised-button color='primary'  style='float: right;' (click)='BoxProperty_OK_Click()'>OK</button>
+        </div>
+
+    </div>
+
+</dx-popup>
+
+
+
+
