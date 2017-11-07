@@ -42,6 +42,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     popupVisible_FlowList = false;
 
     @ViewChild('grdFlowList') grdFlowList : DxDataGridComponent;
+    @ViewChild('grdDataSource') grdDataSource : DxDataGridComponent;
+
+    dsMyDataSource = new Array();
 
     dsFlowList : any[];
 
@@ -532,6 +535,23 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         );
 
 
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    AddMyDataSource(){
+        let sel = this.grdDataSource.instance.getSelectedRowKeys();
+
+        let d : any = {};
+
+        d.ItemCode = sel[0]["ItemCode"];
+        d.ItemName = sel[0]["ItemName"];
+
+        
+        this.dsMyDataSource.push(d);
+
+        console.log(this.dsMyDataSource);
+
+        
     }
     
 }//class
