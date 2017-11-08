@@ -63,12 +63,28 @@ export class FlowTest2Service{
         {
             obj.filter(k=> (<FlowBox>k).Seq == i ).forEach(k=>
                 {
-                    if ( k.GetProperty().Type == "DataSet")
-                    {
-                        console.log(k.GetProperty().Type)
+                    switch(k.GetProperty().Type){
+
+                        case "DataSet":{
+                            this.Run_DataSet(k);
+                            break;
+                        }
                     }
                 });
         }
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Run_DataSet(flow : FlowBox){
+        
+        switch(flow.GetProperty().DataSetType)
+        {
+            case "Stock":{
+                console.log(flow.GetProperty().DataSetType);
+                break;
+            }
+        }
+        
     }
         
 
