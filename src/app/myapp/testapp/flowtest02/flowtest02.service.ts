@@ -1,5 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Http, RequestOptions, Headers, Response } from "@angular/http";
+import { BaseObject }          from "../../core/drawobject/BaseObject";
+import { BoxBase }             from "../../core/drawobject/BoxBase";
+import { FlowBox }             from "../../core/drawobject/FlowBox";
+import { LineBase }            from "../../core/drawobject/LineBase";
+import { SelectBox }           from "../../core/drawobject/SelectBox";
 
 @Injectable()
 export class FlowTest2Service{
@@ -48,5 +53,23 @@ export class FlowTest2Service{
         let options = new RequestOptions({ headers: headers });
         return this.http.post(url, body, options).map(res=>res.json());
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    RunProc( Objects : BaseObject[] ){
+
+        let obj  = <FlowBox[]>Objects.filter(i=> i instanceof FlowBox);
+        
+        for ( var  i= 0 ; i <= obj.length ; i++)
+        {
+            obj.filter(k=> (<FlowBox>k).Seq == i ).forEach(k=>
+                {
+                    if ( k.GetProperty().Type == "DataSet")
+                    {
+                        console.log(k.GetProperty().Type)
+                    }
+                });
+        }
+    }
+        
 
 }//class

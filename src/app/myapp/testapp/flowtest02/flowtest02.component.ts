@@ -322,23 +322,12 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         this.finCanvas.RunStatusClear();
         this.finCanvas.Draw();
+        
+        this.service.RunProc(this.finCanvas.objects);
 
     }
 
-    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    RunProc(){
-
-        let obj  = <FlowBox[]>this.finCanvas.objects.filter(i=> i instanceof FlowBox);
-
-        for ( var  i= 1 ; i <= obj.length ; i++)
-        {
-            obj.filter(k=> (<FlowBox>k).Seq == i ).forEach(k=>
-                {
-                    
-                });
-        }
-
-    }
+    
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     Summernote_Change(){
