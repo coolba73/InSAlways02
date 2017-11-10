@@ -112,7 +112,11 @@ export class FlowTest2Service{
 
                 re = await this.CallServiceAwait(url,JSON.stringify(itemlist) );
 
+                flow.ResultDataJsonString = JSON.stringify(re);
+
                 console.log(re);
+
+                // console.log(flow.ResultDataJsonString);
 
                 console.log('Run_DataSet End');
                 
