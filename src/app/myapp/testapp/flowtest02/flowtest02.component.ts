@@ -374,6 +374,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             {
                 this.datatables.push(key);
             }
+
+            // console.log(flowBox.ResultDataJsonString);
         }
         else
         {
