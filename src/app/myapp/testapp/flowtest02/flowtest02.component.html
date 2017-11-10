@@ -27,6 +27,14 @@
         </mat-tab>
 
         <mat-tab label="Data">
+
+            <div class="dx-field" style="width: 450px; margin-left: 10px">
+                <div class="dx-field-label">Data Table</div>
+                <div class="dx-field-value">
+                    <dx-select-box #cboDataTable [items]="datatables" (selectedItemChange) = 'cboDataTablesChanges()'></dx-select-box>
+                </div>
+            </div>
+
             <dx-data-grid id="gridContainer" 
             [dataSource]="dsflowResult"  
             style="height: 350px"

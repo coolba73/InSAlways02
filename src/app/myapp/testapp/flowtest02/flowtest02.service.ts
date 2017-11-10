@@ -79,11 +79,26 @@ export class FlowTest2Service{
 
         let obj2 = obj.sort(i=>i.Seq);
 
-        for (let f of obj2){
-            switch(f.GetProperty().Type)
+        let prop;
+        for (let f of obj2)
+        {
+            prop = f.GetProperty();
+
+            console.log(prop);
+
+            switch(prop.Type)
             {
                 case "DataSet":{
-                    await this.Run_DataSet(f);
+                    if(prop.UseExistData == false || f.ResultDataJsonString == '' )
+                    {
+                        await this.Run_DataSet(f);
+                    }
+                    else
+                    {
+                        console.log('no run');
+                        console.log(f.ResultDataJsonString);
+                    }
+                    
                     break; 
                 }
             }
@@ -109,6 +124,8 @@ export class FlowTest2Service{
                 });
 
                 console.log('Run_DataSet Start');
+
+                console.log(JSON.stringify(itemlist));
 
                 re = await this.CallServiceAwait(url,JSON.stringify(itemlist) );
 

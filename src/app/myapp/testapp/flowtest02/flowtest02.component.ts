@@ -7,12 +7,11 @@ import { LineBase }            from "../../core/drawobject/LineBase";
 import { SelectBox }           from "../../core/drawobject/SelectBox";
 import { UUID }                from "angular2-uuid";
 import { FlowTest2Service } from "./flowtest02.service";
-import { DxDataGridComponent } from "devextreme-angular";
+import { DxDataGridComponent, DxSelectBoxComponent } from "devextreme-angular";
 import { Http, RequestOptions, Headers, Response } from "@angular/http";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Observable } from "rxjs/Observable";
-
 
 declare var $: any;
 
@@ -42,6 +41,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     @ViewChild('grdFlowList') grdFlowList : DxDataGridComponent;
     @ViewChild('grdDataSource') grdDataSource : DxDataGridComponent;
+    @ViewChild('cboDataTable') cboDatatable : DxSelectBoxComponent;
 
     dsMyDataSource = new Array();
 
@@ -66,15 +66,14 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     DataSetType : string = '';
     
-    
-
-    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    datatables = new Array();;
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
 
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     constructor(  private service : FlowTest2Service , private http : Http ){
-
     }
 
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     ngAfterViewInit(){
 
          // $ init summernote
@@ -174,6 +173,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         this.dsFlowList = await this.service.CallServiceAwait(url);
 
+        console.log(this.dsFlowList);
 
 
         this.popupVisible_FlowList = true;
@@ -362,12 +362,23 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         
         // alert('mouse up');
         let obj : BaseObject = this.finCanvas.GetCurrentBox();
+        this.datatables = new Array();
         
-        if (obj instanceof FlowBox){
+        if (obj instanceof FlowBox)
+        {
             let flowBox = <FlowBox>obj;
+
             $('#summernote').summernote('code',flowBox.document);
+
+            let retData = JSON.parse(flowBox.ResultDataJsonString);
+            
+            for (var key in retData)
+            {
+                this.datatables.push(key);
+            }
         }
-        else{
+        else
+        {
             $('#summernote').summernote('code','');
         }
 
@@ -477,6 +488,26 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.dsMyDataSource.push(d);
 
         
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    cboDataTablesChanges(){
+        // alert(this.cboDatatable.selectedItem);
+
+        let obj = this.finCanvas.GetCurrentBox();
+
+        if (obj instanceof FlowBox){
+
+            let flowBox = <FlowBox>obj;
+
+            let id = this.cboDatatable.selectedItem;
+
+            let jobj = JSON.parse(flowBox.ResultDataJsonString);
+
+            console.log(jobj[id]);
+
+            this.dsflowResult = jobj[id];
+        }
     }
     
 }//class

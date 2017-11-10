@@ -19,6 +19,9 @@ import {
     , MatRadioModule
     , MatStepperModule
     , MatCheckboxModule
+    , MatOptionModule
+    , MatFormFieldModule
+    , MatSelectModule
     
 } from "@angular/material";
 
@@ -56,6 +59,9 @@ export class EscapeHtmlPipe implements PipeTransform {
         ,MatRadioModule
         ,MatStepperModule
         ,MatCheckboxModule
+        ,MatOptionModule
+        ,MatFormFieldModule
+        ,MatSelectModule
     ],
     declarations:[
         FlowTestComponent,
