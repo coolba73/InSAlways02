@@ -152,19 +152,29 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    OpenFlow(){
+    async OpenFlow(){
 
-        this.service.CallService("https://insalwaysfuncapp01.azurewebsites.net/api/GetFlowList?code=ZynursoTea6fTDXGX4aTTX24Iayme/yZx6p/HgHllLUoWzh6K6Qb1Q==")
-        .subscribe(
-            data =>
-            {
-                this.dsFlowList = data;
-            },
-            error =>
-            {
-                alert('error');
-            }
-        );
+        let url = "https://insalwaysfuncapp01.azurewebsites.net/api/GetFlowList?code=ZynursoTea6fTDXGX4aTTX24Iayme/yZx6p/HgHllLUoWzh6K6Qb1Q==";
+        
+
+        // this.service.CallService(url)
+        // .subscribe(
+        //     data =>
+        //     {
+        //         this.dsFlowList = data;
+        //         console.log('receive service');
+        //     },
+        //     error =>
+        //     {
+        //         alert('error');
+        //     }
+        // );
+
+        
+
+        this.dsFlowList = await this.service.CallServiceAwait(url);
+
+
 
         this.popupVisible_FlowList = true;
     }
@@ -205,7 +215,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 error =>
                 {
                     this.loadingVisible = false;
-                    console.log(error);
                     alert('error');
                 }
             )
@@ -259,8 +268,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         let objString = sel2["drawobject"];
         this.id = sel2["id"];
 
-        console.log("title:" + this.title);
-        console.log("id:" + this.id);
 
         this.SetCanvasObject(objString);
 
@@ -318,12 +325,19 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    Run_Click(){
+    async Run_Click(){
+
+        this.loadingVisible = true;
+
+        console.log('run start');
 
         this.finCanvas.RunStatusClear();
         this.finCanvas.Draw();
         
-        this.service.RunProc(this.finCanvas.objects);
+        await this.service.RunProc(this.finCanvas.objects);
+
+        this.loadingVisible = false;
+        console.log('run end');
 
     }
 
@@ -374,7 +388,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         flowProperty.UseExistData = this.UseExistData;
         flowProperty.DataSetType = this.DataSetType;
 
-        console.log(flowProperty);
 
         (<FlowBox>this.finCanvas.GetCurrentBox()).MyProperty = JSON.stringify(flowProperty);
 
@@ -425,7 +438,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    SearchDataSource(){
+    async SearchDataSource(){
 
         /**
          * 주식 리스트 조회
@@ -435,15 +448,20 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         this.dsDataSource = [];
 
-        this.service.CallService(url).subscribe(
-            data=>{
-                this.dsDataSource = data;
-            },
-            error =>
-            {
-                alert(error);
-            }
-        );
+        this.dsDataSource = await this.service.CallServiceAwait(url);
+
+
+
+
+        // this.service.CallService(url).subscribe(
+        //     data=>{
+        //         this.dsDataSource = data;
+        //     },
+        //     error =>
+        //     {
+        //         alert(error);
+        //     }
+        // );
 
     }
 
@@ -458,7 +476,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         
         this.dsMyDataSource.push(d);
 
-        console.log(this.dsMyDataSource);
         
     }
     

@@ -5,6 +5,7 @@ import { BoxBase }             from "../../core/drawobject/BoxBase";
 import { FlowBox }             from "../../core/drawobject/FlowBox";
 import { LineBase }            from "../../core/drawobject/LineBase";
 import { SelectBox }           from "../../core/drawobject/SelectBox";
+import { promised } from "q";
 
 @Injectable()
 export class FlowTest2Service{
@@ -51,40 +52,74 @@ export class FlowTest2Service{
     {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
+
+        console.log('pot start');
         return this.http.post(url, body, options).map(res=>res.json());
+       
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    RunProc( Objects : BaseObject[] ){
+    async CallServiceAwait(url:string, body:string = ""){
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        // return this.http.post(url, body, options).map(res=>res.json());
+
+        const response = await this.http.post(url, body, options).map(res=>res.json()).toPromise();
+
+        return response;
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async RunProc( Objects : BaseObject[] )  {
 
         let obj  = <FlowBox[]>Objects.filter(i=> i instanceof FlowBox);
-        
-        for ( var  i= 0 ; i <= obj.length ; i++)
-        {
-            obj.filter(k=> (<FlowBox>k).Seq == i ).forEach(k=>
-                {
-                    switch(k.GetProperty().Type){
+    
+        console.log('RunProc Start');
 
-                        case "DataSet":{
-                            this.Run_DataSet(k);
-                            break;
-                        }
-                    }
-                });
+        let obj2 = obj.sort(i=>i.Seq);
+
+        for (let f of obj2){
+            switch(f.GetProperty().Type)
+            {
+                case "DataSet":{
+                    await this.Run_DataSet(f);
+                    break; 
+                }
+            }
         }
+
+        console.log('RunProc End');
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    Run_DataSet(flow : FlowBox){
+    async Run_DataSet(flow : FlowBox)  {
         
+        let re;
+
         switch(flow.GetProperty().DataSetType)
         {
             case "Stock":{
-                console.log(flow.GetProperty().DataSetType);
+
+                let url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/GetStockListPrice?code=ohJFAuVFYt8GIEivr3S6Nmj5lPPaCzboKQebcZcnxfc6jgwIgUHbrQ==";
+                let itemlist = new Array();
+
+                flow.GetProperty().MyData.forEach(i => {
+                    itemlist.push(i.ItemCode);
+                });
+
+                console.log('Run_DataSet Start');
+
+                re = await this.CallServiceAwait(url,JSON.stringify(itemlist) );
+
+                console.log(re);
+
+                console.log('Run_DataSet End');
+                
                 break;
             }
         }
-        
+
     }
         
 
