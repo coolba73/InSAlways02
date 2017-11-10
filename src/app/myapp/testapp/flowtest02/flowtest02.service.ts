@@ -116,7 +116,7 @@ export class FlowTest2Service{
         {
             case "Stock":{
 
-                let url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/GetStockListPrice?code=ohJFAuVFYt8GIEivr3S6Nmj5lPPaCzboKQebcZcnxfc6jgwIgUHbrQ==";
+                let url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/GetStockListPrice2?code=HzS6Upr4/OIibFB2a/e5sCVodvT1tRRyWlRtoHTsNEZsZZyVaAJ3/g==";
                 let itemlist = new Array();
 
                 flow.GetProperty().MyData.forEach(i => {

@@ -169,8 +169,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         //     }
         // );
 
-        
-
         this.dsFlowList = await this.service.CallServiceAwait(url);
 
         console.log(this.dsFlowList);
