@@ -384,7 +384,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         // alert('mouse up');
         let obj : BaseObject = this.finCanvas.GetCurrentBox();
         this.datatables = new Array();
-        
+        this.dsflowResult = [];
+                
         if (obj instanceof FlowBox)
         {
             let flowBox = <FlowBox>obj;
