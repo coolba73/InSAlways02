@@ -42,6 +42,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     @ViewChild('grdFlowList') grdFlowList : DxDataGridComponent;
     @ViewChild('grdDataSource') grdDataSource : DxDataGridComponent;
     @ViewChild('cboDataTable') cboDatatable : DxSelectBoxComponent;
+    @ViewChild('grdCalculation') grdCalculation : DxDataGridComponent;
 
     dsMyDataSource = new Array();
 
@@ -69,8 +70,19 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     datatables = new Array();;
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
 
+    dsCalculation : any[];
+
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     constructor(  private service : FlowTest2Service , private http : Http ){
+
+        this.dsCalculation = 
+        [
+             {'CalType':'Log 수익률'}
+            ,{'CalType':'일반 수익률'}
+        ];
+
+        console.log(this.dsCalculation);
+        
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -257,16 +269,27 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    Open_Click(){
+    async Open_Click(){
+
+        // let sel = this.grdFlowList.instance.getSelectedRowKeys();
+
+        // this.title = sel[0]["title"];
+        // let sel2 = this.dsFlowList.find(i=> i["title"] == this.title );
+        // let objString = sel2["drawobject"];
+        // this.id = sel2["id"];
+
+        // this.SetCanvasObject(objString);
+
+        // this.popupVisible_FlowList = false;
 
         let sel = this.grdFlowList.instance.getSelectedRowKeys();
-
+        
         this.title = sel[0]["title"];
         let sel2 = this.dsFlowList.find(i=> i["title"] == this.title );
-        let objString = sel2["drawobject"];
+
         this.id = sel2["id"];
 
-
+        let objString = await this.service.OpenFlowObject(this.id);
         this.SetCanvasObject(objString);
 
         this.popupVisible_FlowList = false;
@@ -395,14 +418,25 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         let flowProperty : any = {};
 
         flowProperty.Type = this.BoxPropertyType;
-        flowProperty.MyData = this.dsMyDataSource;
-        flowProperty.UseExistData = this.UseExistData;
-        flowProperty.DataSetType = this.DataSetType;
 
+        if (flowProperty.Type == "Calculation")
+        {
+            let sel = this.grdCalculation.instance.getSelectedRowKeys();
+            // console.log(sel[0]);
+            flowProperty.CalculationType = sel[0]['CalType'];
+        }
+        else
+        {
+            flowProperty.MyData = this.dsMyDataSource;
+            flowProperty.UseExistData = this.UseExistData;
+            flowProperty.DataSetType = this.DataSetType;
+        }
 
         (<FlowBox>this.finCanvas.GetCurrentBox()).MyProperty = JSON.stringify(flowProperty);
 
         this.popupVisible_BoxProperty = false;
+
+        console.log(flowProperty);
 
     }
 
@@ -460,9 +494,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.dsDataSource = [];
 
         this.dsDataSource = await this.service.CallServiceAwait(url);
-
-
-
 
         // this.service.CallService(url).subscribe(
         //     data=>{

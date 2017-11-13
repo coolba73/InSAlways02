@@ -142,6 +142,22 @@ export class FlowTest2Service{
         }
 
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async OpenFlowObject (id : string)
+    {
+
+        let url = "https://insalwaysfuncapp01.azurewebsites.net/api/GetFlowObjects?code=AnQbG0imlisWYBVpp8RU0QuijtGO8139GH7sagfUtarl8yit2aaGRA==";
+
+        let para = JSON.stringify({
+            id : id
+        });
+
+        var re = await this.CallServiceAwait(url,para);
+
+        return re;
+
+    }
         
 
 }//class

@@ -100,6 +100,8 @@ export class BoxBase extends BaseObject{
         let text_y = this.y + (this.Height /2) + ( this.FonstSize  / 2 );
         ctx.fillText(this.Title, text_x, text_y);
 
+        this.Width = Math.max(this.Width, (txt_width + 20) );
+
         if(this.YesMouseOver)
         {
             this.DrawMouseOver(ctx);
