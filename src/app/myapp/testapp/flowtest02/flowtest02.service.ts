@@ -92,30 +92,27 @@ export class FlowTest2Service{
 
             this.SetPreviousResult(Objects, f.Id);
 
-            switch(prop.Type)
-            {
-                case "DataSet":{
-                    
-                    console.log('run dataset');
-
-                    if(prop.UseExistData == false || f.ResultDataJsonString == '' )
-                    {
+            if(prop.UseExistData == false || f.ResultDataJsonString == '' ){
+                switch(prop.Type)
+                {
+                    case "DataSet":{
+                        
+                        console.log('run dataset');
                         await this.Run_DataSet(f);
+                        break; 
                     }
-                    else
-                    {
-                        console.log('no run');
-                        //console.log(f.ResultDataJsonString);
+    
+                    case "Calculation":{
+                        await this.Run_Calculation(f);
+                        break;
                     }
-                    
-                    break; 
-                }
-
-                case "Calculation":{
-                    await this.Run_Calculation(f);
-                    break;
                 }
             }
+            else
+            {
+                console.log("Use Exist data, No Run");
+            }
+            
         }
 
         console.log('RunProc End');
@@ -162,26 +159,24 @@ export class FlowTest2Service{
         
         console.log('run calculation');
 
+        let url = '';
+
         switch(flow.GetProperty().CalculationType){
 
             case "Log 수익률":{
                 console.log('Log 수익률 Start');
-                // console.log(this.previousResult);
-
-                let url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalLogYield?code=6mkdavqlohaKeNXWwjthvIJDVjWI1WgjghPTgBRBEFKXSdfimY0opg==";
-
-                let re = await this.CallServiceAwait(url, this.previousResult);
-
-                // console.log(re);
-
-                flow.ResultDataJsonString = JSON.stringify(re);
-
-                // console.log(flow.ResultDataJsonString);
-
+                url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalLogYield?code=6mkdavqlohaKeNXWwjthvIJDVjWI1WgjghPTgBRBEFKXSdfimY0opg==";
                 break;
+            }
+
+            case "베타계산":{
+                console.log("베타계산")
+                url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalBeta?code=AS1qZx7/vaV8jMGDG9KXRgTGBtz0kzqGiHfWy0OQrEu8S9WgIjQ2OQ==";
             }
         }
 
+        let re = await this.CallServiceAwait(url, this.previousResult);
+        flow.ResultDataJsonString = JSON.stringify(re);
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________

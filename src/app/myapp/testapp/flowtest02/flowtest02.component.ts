@@ -43,6 +43,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     @ViewChild('grdDataSource') grdDataSource : DxDataGridComponent;
     @ViewChild('cboDataTable') cboDatatable : DxSelectBoxComponent;
     @ViewChild('grdCalculation') grdCalculation : DxDataGridComponent;
+    @ViewChild('grdMyDataSource') grdMyData : DxDataGridComponent;
 
     dsMyDataSource = new Array();
 
@@ -78,7 +79,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.dsCalculation = 
         [
              {'CalType':'Log 수익률'}
-            ,{'CalType':'일반 수익률'}
+            ,{'CalType':'베타계산'}
         ];
 
         console.log(this.dsCalculation);
@@ -395,6 +396,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             if (flowBox.ResultDataJsonString != '')
             {
                 let retData = JSON.parse(flowBox.ResultDataJsonString);
+
+                console.log(flowBox.ResultDataJsonString);
                 
                 for (var key in retData)
                 {
@@ -424,6 +427,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         let flowProperty : any = {};
 
         flowProperty.Type = this.BoxPropertyType;
+        flowProperty.UseExistData = this.UseExistData;
 
         if (flowProperty.Type == "Calculation")
         {
@@ -434,7 +438,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         else
         {
             flowProperty.MyData = this.dsMyDataSource;
-            flowProperty.UseExistData = this.UseExistData;
             flowProperty.DataSetType = this.DataSetType;
         }
 
@@ -467,6 +470,13 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             this.dsMyDataSource = propObj.MyData;
             this.DataSetType = propObj.DataSetType;
             this.UseExistData = propObj.UseExistData;
+
+            if (this.BoxPropertyType == "Calculation"){
+                
+                this.grdCalculation.instance.searchByText(propObj.CalculationType);
+                this.grdCalculation.instance.selectRows([1],true);
+
+            }
         }
         else
         {
@@ -541,11 +551,28 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
             let jobj = JSON.parse(flowBox.ResultDataJsonString);
 
-            console.log(jobj[id]);
+            // console.log(jobj[id]);
 
             this.dsflowResult = jobj[id];
+
+            
         }
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    btnWriteResult_Click(){
+        
+        let obj = <FlowBox>this.finCanvas.GetCurrentBox();
+
+        let re : any = {};
+
+        re[obj.Id] = obj.ResultDataJsonString; 
+
+        console.log( JSON.stringify(re) );
+
+    }
+
+   
     
 }//class
 //############################################################################################################################################################################################################################################################
