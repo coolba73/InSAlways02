@@ -385,19 +385,24 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         let obj : BaseObject = this.finCanvas.GetCurrentBox();
         this.datatables = new Array();
         this.dsflowResult = [];
-                
+
         if (obj instanceof FlowBox)
         {
             let flowBox = <FlowBox>obj;
 
             $('#summernote').summernote('code',flowBox.document);
 
-            let retData = JSON.parse(flowBox.ResultDataJsonString);
-            
-            for (var key in retData)
+            if (flowBox.ResultDataJsonString != '')
             {
-                this.datatables.push(key);
+                let retData = JSON.parse(flowBox.ResultDataJsonString);
+                
+                for (var key in retData)
+                {
+                    this.datatables.push(key);
+                }
             }
+
+            this.cboDataTablesChanges();
 
             // console.log(flowBox.ResultDataJsonString);
         }

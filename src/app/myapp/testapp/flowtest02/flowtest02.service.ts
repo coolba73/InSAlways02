@@ -13,6 +13,8 @@ export class FlowTest2Service{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     constructor(private http : Http ){}
 
+    previousResult : any = {};
+
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     GetFlowList() {
         let re;
@@ -78,17 +80,24 @@ export class FlowTest2Service{
         console.log('RunProc Start');
 
         let obj2 = obj.sort(i=>i.Seq);
+        obj2 = obj2.reverse();
 
         let prop;
         for (let f of obj2)
         {
             prop = f.GetProperty();
 
+            console.log("seq : " + f.Seq);
             console.log(prop);
+
+            this.SetPreviousResult(Objects, f.Id);
 
             switch(prop.Type)
             {
                 case "DataSet":{
+                    
+                    console.log('run dataset');
+
                     if(prop.UseExistData == false || f.ResultDataJsonString == '' )
                     {
                         await this.Run_DataSet(f);
@@ -96,10 +105,15 @@ export class FlowTest2Service{
                     else
                     {
                         console.log('no run');
-                        console.log(f.ResultDataJsonString);
+                        //console.log(f.ResultDataJsonString);
                     }
                     
                     break; 
+                }
+
+                case "Calculation":{
+                    await this.Run_Calculation(f);
+                    break;
                 }
             }
         }
@@ -129,9 +143,9 @@ export class FlowTest2Service{
 
                 re = await this.CallServiceAwait(url,JSON.stringify(itemlist) );
 
-                flow.ResultDataJsonString = JSON.stringify(re);
+                // console.log(re);
 
-                console.log(re);
+                flow.ResultDataJsonString = JSON.stringify(re);
 
                 // console.log(flow.ResultDataJsonString);
 
@@ -140,6 +154,55 @@ export class FlowTest2Service{
                 break;
             }
         }
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async Run_Calculation(flow:FlowBox){
+        
+        console.log('run calculation');
+
+        switch(flow.GetProperty().CalculationType){
+
+            case "Log 수익률":{
+                console.log('Log 수익률 Start');
+                // console.log(this.previousResult);
+
+                let url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalLogYield?code=6mkdavqlohaKeNXWwjthvIJDVjWI1WgjghPTgBRBEFKXSdfimY0opg==";
+
+                let re = await this.CallServiceAwait(url, this.previousResult);
+
+                // console.log(re);
+
+                flow.ResultDataJsonString = JSON.stringify(re);
+
+                // console.log(flow.ResultDataJsonString);
+
+                break;
+            }
+        }
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async SetPreviousResult(Objects : BaseObject[], id : string){
+
+        console.log('GetPreviousResult start');
+
+        this.previousResult = {};
+
+        let lines = (<LineBase[]>Objects.filter(i=> i instanceof LineBase)).filter(i=>i.Box_2_ID == id);
+
+        for(let line of lines){
+            
+            let box = <FlowBox>Objects.find(i=> i.Id == line.Box_1_ID);
+            this.previousResult[box.Id] = box.ResultDataJsonString;
+
+        }
+
+        console.log('previous result end')
+        // console.log(this.previousResult);
+        // console.log(JSON.stringify(this.previousResult));
 
     }
 
