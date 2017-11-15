@@ -89,6 +89,7 @@ export class FlowTest2Service{
 
             console.log("seq : " + f.Seq);
             console.log(prop);
+            console.log(this.previousResult);
 
             this.SetPreviousResult(Objects, f.Id);
 
@@ -172,11 +173,49 @@ export class FlowTest2Service{
             case "베타계산":{
                 console.log("베타계산")
                 url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalBeta?code=AS1qZx7/vaV8jMGDG9KXRgTGBtz0kzqGiHfWy0OQrEu8S9WgIjQ2OQ==";
+                break;
+            }
+
+            case"평균계산":{
+
+                console.log("평균계산");
+
+                let targetTable = flow.GetProperty().TargetTable;
+                let targetColumn = flow.GetProperty().TargetColumn;
+
+                console.log(targetColumn);
+
+                let sum = 0;
+                let avg = 0;
+
+                for(var k1 in this.previousResult)
+                {
+                    let obj2 = JSON.parse( this.previousResult[k1]);
+                    let obj3 = obj2[targetTable];
+
+                    for (var i=0 ; i < obj3.length ; i++)
+                    {
+                        // console.log(obj3[i][targetColumn]); 
+                        sum += obj3[i][targetColumn];
+                    }
+
+                    avg = sum / obj3.length;
+
+                }
+                
+                console.log(sum);
+                console.log(avg);
+
+                break;
             }
         }
 
-        let re = await this.CallServiceAwait(url, this.previousResult);
-        flow.ResultDataJsonString = JSON.stringify(re);
+        if (url != '')
+        {
+            let re = await this.CallServiceAwait(url, this.previousResult);
+            flow.ResultDataJsonString = JSON.stringify(re);
+        }
+
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________

@@ -438,7 +438,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             flowProperty.CalculationType = this.CalculationType;
             
             flowProperty.TargetTable = this.targetTable;
-            flowProperty.targetColumn = this.targetColumn;
+            flowProperty.TargetColumn = this.targetColumn;
 
         }
         else
@@ -476,6 +476,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             this.dsMyDataSource = propObj.MyData;
             this.DataSetType = propObj.DataSetType;
             this.UseExistData = propObj.UseExistData;
+            
+            this.targetTable = propObj.TargetTable;
+            this.targetColumn = propObj.TargetColumn;
 
             if (this.BoxPropertyType == "Calculation"){
                 
