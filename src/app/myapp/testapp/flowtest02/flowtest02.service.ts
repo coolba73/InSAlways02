@@ -197,7 +197,8 @@ export class FlowTest2Service{
 
         console.log('previous result end')
         // console.log(this.previousResult);
-        // console.log(JSON.stringify(this.previousResult));
+        
+        return this.previousResult;
 
     }
 

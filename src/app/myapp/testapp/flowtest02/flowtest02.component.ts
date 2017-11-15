@@ -12,6 +12,7 @@ import { Http, RequestOptions, Headers, Response } from "@angular/http";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Observable } from "rxjs/Observable";
+import { FormArrayName } from "@angular/forms/src/directives/reactive_directives/form_group_name";
 
 declare var $: any;
 
@@ -34,44 +35,45 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     flowUid : string = '';
     title : string = '';
     id : string = '';
-    popupVisible = false;
-    @ViewChild('txtTitle') txtTitle : any;
+    inputBoxTitle:string='Input Box';
+    inputBoxType : InputType = InputType.None;
+    BoxPropertyType : string;
+    UseExistData = false;
+    DataSetType : string = '';
+    CalculationType : string = '';
+    targetTable = '';
+    targetColumn = '';
+    
+    
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     loadingVisible = false;
     popupVisible_FlowList = false;
+    popupVisible_BoxProperty = false;
+    popupVisible_popupStepper = false;
+    popupVisible = false;
+    popupVisible_popupSetDataInfo = false;
 
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    @ViewChild('txtTitle') txtTitle : any;
     @ViewChild('grdFlowList') grdFlowList : DxDataGridComponent;
     @ViewChild('grdDataSource') grdDataSource : DxDataGridComponent;
     @ViewChild('cboDataTable') cboDatatable : DxSelectBoxComponent;
     @ViewChild('grdCalculation') grdCalculation : DxDataGridComponent;
     @ViewChild('grdMyDataSource') grdMyData : DxDataGridComponent;
-
-    dsMyDataSource = new Array();
-
-    dsFlowList : any[];
-
-    dsFlowList2:string;
-
-    dsflowResult :any[];
-
-    inputBoxTitle:string='Input Box';
-    inputBoxType : InputType = InputType.None;
-
-    popupVisible_BoxProperty = false;
-
-    popupVisible_popupStepper = false;
-
-    dsDataSource : any[];
-
-    BoxPropertyType : string;
-
-    UseExistData = false;
-
-    DataSetType : string = '';
-    
-    datatables = new Array();;
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
+    @ViewChild("cboTargetTable") cboTargetTable : DxSelectBoxComponent;
+    @ViewChild("cboTargetColumn") cboTargetColumn : DxSelectBoxComponent;
 
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    dsMyDataSource = new Array();
+    dsFlowList : any[];
+    dsFlowList2:string;
+    dsflowResult :any[];
+    dsDataSource : any[];
+    datatables = new Array();
     dsCalculation : any[];
+    dsTargetTable = new Array();
+    dsTargetColumn = new Array();
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     constructor(  private service : FlowTest2Service , private http : Http ){
@@ -80,6 +82,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         [
              {'CalType':'Log 수익률'}
             ,{'CalType':'베타계산'}
+            ,{'CalType':'평균계산'}
+            ,{'CalType':'데이터곱'}
+
         ];
 
         console.log(this.dsCalculation);
@@ -382,7 +387,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     Canvas_MouseUp(){
         
-        // alert('mouse up');
         let obj : BaseObject = this.finCanvas.GetCurrentBox();
         this.datatables = new Array();
         this.dsflowResult = [];
@@ -396,8 +400,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             if (flowBox.ResultDataJsonString != '')
             {
                 let retData = JSON.parse(flowBox.ResultDataJsonString);
-
-                console.log(flowBox.ResultDataJsonString);
                 
                 for (var key in retData)
                 {
@@ -406,8 +408,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             }
 
             this.cboDataTablesChanges();
-
-            // console.log(flowBox.ResultDataJsonString);
         }
         else
         {
@@ -431,9 +431,15 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         if (flowProperty.Type == "Calculation")
         {
-            let sel = this.grdCalculation.instance.getSelectedRowKeys();
+            // let sel = this.grdCalculation.instance.getSelectedRowKeys();
             // console.log(sel[0]);
-            flowProperty.CalculationType = sel[0]['CalType'];
+            // flowProperty.CalculationType = sel[0]['CalType'];
+
+            flowProperty.CalculationType = this.CalculationType;
+            
+            flowProperty.TargetTable = this.targetTable;
+            flowProperty.targetColumn = this.targetColumn;
+
         }
         else
         {
@@ -473,8 +479,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
             if (this.BoxPropertyType == "Calculation"){
                 
-                this.grdCalculation.instance.searchByText(propObj.CalculationType);
-                this.grdCalculation.instance.selectRows([1],true);
+                // this.grdCalculation.instance.searchByText(propObj.CalculationType);
+                // this.grdCalculation.instance.selectRows([1],true);
+                this.CalculationType = propObj.CalculationType;
 
             }
         }
@@ -572,7 +579,65 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     }
 
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async btnViewInputData_Click(){
+        
+        var re = await this.service.SetPreviousResult(this.finCanvas.objects, this.finCanvas.GetCurrentObject().Id);
+
+        console.log(re);
+        console.log(JSON.stringify(re));
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    btnSetCalculationType_Click(){
+        this.CalculationType = this.grdCalculation.instance.getSelectedRowKeys()[0]['CalType'];
+    }
+
    
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    popupSetDataInfo_Cancel_Click(){
+        this.popupVisible_popupSetDataInfo = false;
+    }
+    
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    popupSetDataInfo_OK_Click(){
+
+        this.targetTable = this.cboTargetTable.selectedItem;
+        this.targetColumn = this.cboTargetColumn.selectedItem;
+        this.popupVisible_popupSetDataInfo = false;
+        
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async btnSetDataInfo_Click()
+    {
+        this.dsTargetTable = new Array();
+        this.dsTargetColumn = new Array();
+
+        let flowbox  = <FlowBox> this.finCanvas.GetCurrentBox();
+        
+        let preData = await this.service.SetPreviousResult(this.finCanvas.objects, flowbox.Id);
+
+        for (var k1 in preData)
+        {
+            var obj2 = JSON.parse( preData[k1]);
+
+            for(var k2 in obj2 )
+            {
+                this.dsTargetTable.push(k2);
+            }
+
+            for (var k3 in obj2[k2][0])
+            {
+                this.dsTargetColumn.push(k3);
+            }
+        }
+
+        this.popupVisible_popupSetDataInfo = true;
+
+    }
+
     
 }//class
 //############################################################################################################################################################################################################################################################
