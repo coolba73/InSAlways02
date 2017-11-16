@@ -6,7 +6,7 @@
     box-shadow: 0 0 1em rgb(116, 112, 112);
   }
   #flowtest02_container {
-    height: 450px;
+    height: 400px;
     overflow: auto;
     margin: 10px;
     
@@ -17,7 +17,7 @@
   
 
   #canvas_container2 {
-    height: 80%;
+    height: 85%;
     overflow: auto;
     border: 1px solid #ebebeb;
     margin: 10px;

@@ -13,7 +13,7 @@ var menus: Menu[] =
 [
     {
         id: "1",
-        name: "File",
+        name: "",
         iconSrc:"menu",
         items: [
                     {
@@ -37,16 +37,16 @@ var menus: Menu[] =
                     }
                 ]
     }
-    ,{
-        id:"2"
-        ,name:"Add Box"
-        ,iconSrc:"add"
-    }
-    ,{
-        id:"3"
-        ,name:"Run"
-        ,iconSrc:"spinnext"
-    }
+    // ,{
+    //     id:"2"
+    //     ,name:"Add Box"
+    //     ,iconSrc:"add"
+    // }
+    // ,{
+    //     id:"3"
+    //     ,name:"Run"
+    //     ,iconSrc:"spinnext"
+    // }
 ];
 
 @Injectable()

@@ -97,10 +97,19 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.menus = menuService.getMenus();
 
         this.contextMenu = [
-                                  { text: 'Set Property' }
-                                , { text: 'View Property' }
-                                , { text: 'View Result Data' }
-                                , { text: 'View Input Data' }
+                                { 
+                                    text: 'Property' 
+                                }
+                                ,{
+                                    text:'Write Console Log',
+                                    items:[
+                                          { text: 'Property Info' }
+                                        , { text: 'Result Data' }
+                                        , { text: 'Input Data' }
+
+                                ]
+                                }
+                                
                             ];
     }
 
@@ -642,7 +651,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         re[obj.Id] = obj.ResultDataJsonString; 
 
+        console.log(JSON.parse(obj.ResultDataJsonString));
         console.log( JSON.stringify(re) );
+
 
     }
 
@@ -764,19 +775,19 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         switch(e.itemData.text)
         {
 
-            case "Set Property":{
+            case "Property":{
                 this.btnProperty_Click();
                 break;
             }
-            case "View Property":{
+            case "Property Info":{
                 this.btnViewProperty_Click();
                 break;
             }
-            case "View Result Data":{
+            case "Result Data":{
                 this.btnWriteResult_Click();
                 break;
             }
-            case "View Input Data":{
+            case "Input Data":{
                 this.btnViewInputData_Click();
                 break;
             }
