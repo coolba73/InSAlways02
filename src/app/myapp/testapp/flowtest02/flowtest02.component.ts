@@ -13,6 +13,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Observable } from "rxjs/Observable";
 import { FormArrayName } from "@angular/forms/src/directives/reactive_directives/form_group_name";
+import { Menu, MenuService } from "./menu.service";
 
 declare var $: any;
 
@@ -26,14 +27,14 @@ enum InputType{
     selector : 'flowtest02',
     templateUrl : './flowtest02.component.html',
     styleUrls : ['./flowtest02.component.css'],
-    providers:[FlowTest2Service]
+    providers:[FlowTest2Service, MenuService]
 })
 export class FlowTest02Component implements OnInit, AfterViewInit{
     
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     flowUid : string = '';
-    title : string = '';
+    title : string = ' ';
     id : string = '';
     inputBoxTitle:string='Input Box';
     inputBoxType : InputType = InputType.None;
@@ -41,8 +42,13 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     UseExistData = false;
     DataSetType : string = '';
     CalculationType : string = '';
+    targetDataSource = '';
     targetTable = '';
     targetColumn = '';
+    menus : Menu[];
+    contextMenu : any;
+    
+
     
     
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -74,9 +80,10 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     dsCalculation : any[];
     dsTargetTable = new Array();
     dsTargetColumn = new Array();
+    dsTargetSource = new Array();
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    constructor(  private service : FlowTest2Service , private http : Http ){
+    constructor(  private service : FlowTest2Service , private http : Http , menuService : MenuService){
 
         this.dsCalculation = 
         [
@@ -87,8 +94,14 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         ];
 
-        console.log(this.dsCalculation);
-        
+        this.menus = menuService.getMenus();
+
+        this.contextMenu = [
+                                  { text: 'Set Property' }
+                                , { text: 'View Property' }
+                                , { text: 'View Result Data' }
+                                , { text: 'View Input Data' }
+                            ];
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -166,6 +179,21 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 this.loadingVisible = false;
                 alert("Error");
             });
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    CopyFlow_Click(){
+        this.loadingVisible = true;
+        
+        this.CopyFlow().subscribe(
+            data => {
+                this.loadingVisible = false;
+            }, 
+            error => {
+                this.loadingVisible = false;
+                alert("Error");
+            });
+        
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -352,6 +380,34 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    CopyFlow()
+    {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        var hh = today.getHours();
+        var mm = today.getMinutes();
+        var ss = today.getSeconds();
+
+        var today2 =''+ yyyy + mm  + dd + hh + mm + ss;
+        
+        var newTitle = this.title + " " + today2;
+
+        let newid = UUID.UUID();
+
+        let body = JSON.stringify({
+            title : newTitle,
+            id : newid,
+            flowobject : JSON.stringify(this.finCanvas.objects)
+        });
+
+        let url = "https://insalwaysfuncapp01.azurewebsites.net/api/SaveFlow?code=ZcN2ZGHPkpqy6EVxPUaMfx6goOAhbNGahobgkGsYDQBaL0Kd801lBA==";
+        return this.service.CallService(url, body)
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     async Run_Click(){
 
         this.loadingVisible = true;
@@ -464,6 +520,11 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             return;
         }
 
+        this.CalculationType = '';
+        this.targetDataSource = '';
+        this.targetTable = '';
+        this.targetColumn = '';
+
         this.popupVisible_BoxProperty = true;
 
         let prop = (<FlowBox>this.finCanvas.GetCurrentBox()).MyProperty;
@@ -477,6 +538,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             this.DataSetType = propObj.DataSetType;
             this.UseExistData = propObj.UseExistData;
             
+            this.targetDataSource = propObj.TargetDataSource;
             this.targetTable = propObj.TargetTable;
             this.targetColumn = propObj.TargetColumn;
 
@@ -553,19 +615,21 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         let obj = this.finCanvas.GetCurrentBox();
 
-        if (obj instanceof FlowBox){
+        if (obj instanceof FlowBox)
+        {
 
-            let flowBox = <FlowBox>obj;
-
-            let id = this.cboDatatable.selectedItem;
-
-            let jobj = JSON.parse(flowBox.ResultDataJsonString);
-
-            // console.log(jobj[id]);
-
-            this.dsflowResult = jobj[id];
-
-            
+            if ( (<FlowBox>obj).ResultDataJsonString != '')
+            {
+                let flowBox = <FlowBox>obj;
+                
+                let id = this.cboDatatable.selectedItem;
+    
+                let jobj = JSON.parse(flowBox.ResultDataJsonString);
+    
+                // console.log(jobj[id]);
+    
+                this.dsflowResult = jobj[id];
+            }
         }
     }
 
@@ -589,6 +653,10 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         console.log(re);
         console.log(JSON.stringify(re));
+
+        var prebox = this.finCanvas.GetPreviousBox();
+
+        console.log(prebox);
 
     }
 
@@ -617,28 +685,103 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     {
         this.dsTargetTable = new Array();
         this.dsTargetColumn = new Array();
+        this.dsTargetSource = new Array();
 
         let flowbox  = <FlowBox> this.finCanvas.GetCurrentBox();
         
         let preData = await this.service.SetPreviousResult(this.finCanvas.objects, flowbox.Id);
 
-        for (var k1 in preData)
+        for ( var i of this.finCanvas.GetPreviousBox())
         {
-            var obj2 = JSON.parse( preData[k1]);
-
-            for(var k2 in obj2 )
-            {
-                this.dsTargetTable.push(k2);
-            }
-
-            for (var k3 in obj2[k2][0])
-            {
-                this.dsTargetColumn.push(k3);
-            }
+            this.dsTargetSource.push(i.BoxName);
         }
+
+        // for (var k1 in preData)
+        // {
+        //     var obj2 = JSON.parse( preData[k1]);
+
+        //     for(var k2 in obj2 )
+        //     {
+        //         this.dsTargetTable.push(k2);
+        //     }
+
+        //     for (var k3 in obj2[k2][0])
+        //     {
+        //         this.dsTargetColumn.push(k3);
+        //     }
+        // }
 
         this.popupVisible_popupSetDataInfo = true;
 
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    btnViewProperty_Click()
+    {
+        var box = <FlowBox>this.finCanvas.GetCurrentBox();
+        console.log(box.GetProperty());
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    MenuItem_Click(data) {
+
+       console.log(data.itemData.name);
+
+       switch(data.itemData.name)
+       {
+           case "New":{
+                this.NewFlow();
+                break;
+           }
+           case "Save":{
+                this.SaveFlow_Click();
+                break;
+           }
+           case "Open":{
+                this.OpenFlow();
+                break;
+           }
+           case "Copy":{
+                this.CopyFlow_Click();
+                break;
+           }
+           case "Add Box":{
+                this.AddFlow();
+               break;
+           }
+           case "Run":{
+               this.Run_Click();
+               break;
+           }
+       }
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    ContextMenuItem_Click(e) {
+        console.log(e.itemData.text);
+
+        switch(e.itemData.text)
+        {
+
+            case "Set Property":{
+                this.btnProperty_Click();
+                break;
+            }
+            case "View Property":{
+                this.btnViewProperty_Click();
+                break;
+            }
+            case "View Result Data":{
+                this.btnWriteResult_Click();
+                break;
+            }
+            case "View Input Data":{
+                this.btnViewInputData_Click();
+                break;
+            }
+           
+        }
     }
 
     

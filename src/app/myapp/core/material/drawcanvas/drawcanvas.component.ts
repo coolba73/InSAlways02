@@ -625,6 +625,25 @@ export class DrawCanvasComponent implements OnInit {
             return null;
         }
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    GetPreviousBox(){
+        var reArry = new Array();
+        var prebox;
+        var curbox = this.GetCurrentBox();
+
+        for ( var line of this.objects.filter(i=> i instanceof LineBase && (<LineBase>i).Box_2_ID == curbox.Id ))
+        {
+            prebox = {};
+            prebox["BoxName"] = (<BoxBase>this.objects.find(i=>i.Id == (<LineBase>line).Box_1_ID)).Title;
+            prebox["BoxID"] = (<LineBase>line).Box_1_ID;
+
+            reArry.push(prebox);
+        }
+
+        return reArry;
+
+    }
     
 
 

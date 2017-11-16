@@ -203,9 +203,68 @@ export class FlowTest2Service{
 
                 }
                 
-                console.log(sum);
-                console.log(avg);
+                // console.log(sum);
+                // console.log(avg);
 
+                let re = {};
+                let ary = [{"average":avg}];
+                re["result"] = ary;
+
+                console.log(re);
+                console.log(JSON.stringify(re));
+
+                flow.ResultDataJsonString = JSON.stringify(re);
+
+                break;
+            }
+
+            case "데이터곱":{
+
+                console.log("run 데이터곱");
+                console.log(this.previousResult);
+
+                var dataArray = new Array();
+
+                for (var k1 in this.previousResult)
+                {
+                    let obj = JSON.parse(this.previousResult[k1]);
+                    dataArray.push(obj);
+                }
+
+                // console.log(dataArray[1]['result'][0]);
+
+                var power;
+                var target;
+                var powerval;
+
+                if (dataArray[0]['result'].length == 1)
+                {
+                    power = dataArray[0]['result'];
+                    target = dataArray[1]['result'];
+                }
+                else
+                {
+                    power = dataArray[1]['result'];
+                    target = dataArray[0]['result'];
+                }
+
+                for ( let k1 in power[0])
+                {
+                    powerval = power[0][k1];
+                }
+
+                console.log('power');
+                console.log(power);
+                console.log('target');
+                console.log(target);
+                console.log('powerval');
+                console.log(powerval);
+
+                let re = {};
+                let dataArry = new Array();
+
+                
+            
                 break;
             }
         }
