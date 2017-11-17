@@ -55,6 +55,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     resultColumnName = '';
     numeratorColumn = '';//분자
     denominatorColumn = '';//분모
+    calKeyColumn = '';
 
     
     
@@ -543,7 +544,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             flowProperty.TargetColumn = this.targetColumn;
             flowProperty.ResultColumnName = this.resultColumnName;
             flowProperty.NumeratorColumn = this.numeratorColumn;
-            flowProperty.denominatorColumn = this.denominatorColumn;
+            flowProperty.DenominatorColumn = this.denominatorColumn;
+            flowProperty.CalKeyColumn = this.calKeyColumn;
 
         }
         else
@@ -578,6 +580,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.resultColumnName = '';
         this.numeratorColumn = '';
         this.denominatorColumn = '';
+        this.calKeyColumn = '';
 
         this.popupVisible_BoxProperty = true;
 
@@ -595,12 +598,17 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             this.resultColumnName = propObj.ResultColumnName;
 
             this.targetDataSource = propObj.TargetDataSource;
-            this.targetDataSourceName =  this.previousBox.find(i=>i.ID == this.targetDataSource).Title ;
+
+            if (this.targetDataSource != undefined)
+                this.targetDataSourceName =  this.previousBox.find(i=>i.ID == this.targetDataSource).Title ;
+
             this.targetTable = propObj.TargetTable;
             this.targetColumn = propObj.TargetColumn;
 
             this.numeratorColumn = propObj.NumeratorColumn;
             this.denominatorColumn = propObj.DenominatorColumn;
+
+            this.calKeyColumn = propObj.CalKeyColumn;
 
             if (this.BoxPropertyType == "Calculation"){
                 
@@ -918,6 +926,11 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     Denominator_Click(){
         //분모클릭
         this.denominatorColumn = this.cboTargetColumn.selectedItem;
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    SetKeyColumn_Click(){
+        this.calKeyColumn = this.cboTargetColumn.selectedItem;
     }
 
 

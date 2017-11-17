@@ -180,6 +180,8 @@ export class FlowTest2Service{
 
         let body:any;
 
+        console.log("run " + prop.CalculationType);
+
         switch( prop.CalculationType){
 
             case "Log 수익률":{
@@ -241,8 +243,6 @@ export class FlowTest2Service{
             case "데이터빼기":
             case "데이터곱" :{
 
-                console.log("run " + prop.CalculationType);
-
                 url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalProc?code=w5OoF/jtgHPWOqe042Alb3D4kKFe4tLsCtTJc/qnw3Su8EbzZDDoVw==";
 
                 // console.log(this.previousResult);
@@ -266,7 +266,28 @@ export class FlowTest2Service{
 
                 break;
             }
-        }
+            case "데이터나누기":{
+
+                let para = {};
+                url = '';
+
+                if (prop.CalculationType == "데이터나누기") para["CalType"] = "division";
+
+                para["CalKeyColumn"] = prop.CalKeyColumn;
+                para["DenominatorColumn"] = prop.DenominatorColumn;
+                para["NumeratorColumn"] = prop.NumeratorColumn;
+                para["ResultColumnName"] = prop.ResultColumnName;
+
+                para["InputData"] = this.previousResult;
+
+                body = para;
+
+                break;
+            }
+
+        }//end switch
+
+        console.log(body);
 
         if (url != '')
         {

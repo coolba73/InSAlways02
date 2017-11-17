@@ -388,10 +388,16 @@
             </div>
         </div>
 
+        <div class="dx-field" *ngIf="this.CalculationType == '데이터나누기'">
+            <i style="color: blue">( {{numeratorColumn}} / {{denominatorColumn}} ) , Key Column : {{calKeyColumn}}</i>
+        </div>
+        
         <div class="dx-field" *ngIf="this.CalculationType == '데이터나누기'" >
-            <i style="color: blue"> {{numeratorColumn}} / {{denominatorColumn}} </i> 
+           
+            <button mat-raised-button color='accent'  style='float: right;margin-left: 10px'  (click)='SetKeyColumn_Click()'  >Key</button>
             <button mat-raised-button color='accent' style='float: right;  margin-left: 10px' (click)='Denominator_Click()' >분모</button>
             <button mat-raised-button color='accent'  style='float: right;' (click)='Numerator_Click()' >분자</button>
+            
         </div>
 
         
