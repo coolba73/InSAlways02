@@ -7,7 +7,7 @@ import { LineBase }            from "../../core/drawobject/LineBase";
 import { SelectBox }           from "../../core/drawobject/SelectBox";
 import { UUID }                from "angular2-uuid";
 import { FlowTest2Service } from "./flowtest02.service";
-import { DxDataGridComponent, DxSelectBoxComponent } from "devextreme-angular";
+import { DxDataGridComponent, DxSelectBoxComponent, DxTextBoxComponent } from "devextreme-angular";
 import { Http, RequestOptions, Headers, Response } from "@angular/http";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -44,6 +44,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     DataSetType : string = '';
     CalculationType : string = '';
     targetDataSource = '';
+    targetDataSourceName = '';
     targetTable = '';
     targetColumn = '';
     menus : Menu[];
@@ -51,6 +52,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     inputData : any;
     previousBox : any;
     copyFlowTitle = '';
+    resultColumnName = '';
+    numeratorColumn = '';//분자
+    denominatorColumn = '';//분모
 
     
     
@@ -73,6 +77,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     @ViewChild("cboTargetTable") cboTargetTable : DxSelectBoxComponent;
     @ViewChild("cboTargetColumn") cboTargetColumn : DxSelectBoxComponent;
     @ViewChild("cboTargetSource") cboTargetSource :DxSelectBoxComponent;
+    @ViewChild("txtResultColumnName") txtResultColumnName : DxTextBoxComponent;
 
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -96,6 +101,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             ,{'CalType':'베타계산'}
             ,{'CalType':'평균계산'}
             ,{'CalType':'데이터곱'}
+            ,{'CalType':'데이터빼기'}
+            ,{'CalType':'데이터나누기'}
+            ,{'CalType':'데이터더하기'}
 
         ];
 
@@ -533,6 +541,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             flowProperty.TargetDataSource = this.targetDataSource;
             flowProperty.TargetTable = this.targetTable;
             flowProperty.TargetColumn = this.targetColumn;
+            flowProperty.ResultColumnName = this.resultColumnName;
+            flowProperty.NumeratorColumn = this.numeratorColumn;
+            flowProperty.denominatorColumn = this.denominatorColumn;
 
         }
         else
@@ -550,7 +561,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    btnProperty_Click(){
+    async btnProperty_Click(){
 
         if (this.finCanvas.GetCurrentBox() == null) 
         {
@@ -558,10 +569,15 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             return;
         }
 
+        this.previousBox = await this.finCanvas.GetPreviousBox();
+
         this.CalculationType = '';
         this.targetDataSource = '';
         this.targetTable = '';
         this.targetColumn = '';
+        this.resultColumnName = '';
+        this.numeratorColumn = '';
+        this.denominatorColumn = '';
 
         this.popupVisible_BoxProperty = true;
 
@@ -575,10 +591,16 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             this.dsMyDataSource = propObj.MyData;
             this.DataSetType = propObj.DataSetType;
             this.UseExistData = propObj.UseExistData;
-            
+
+            this.resultColumnName = propObj.ResultColumnName;
+
             this.targetDataSource = propObj.TargetDataSource;
+            this.targetDataSourceName =  this.previousBox.find(i=>i.ID == this.targetDataSource).Title ;
             this.targetTable = propObj.TargetTable;
             this.targetColumn = propObj.TargetColumn;
+
+            this.numeratorColumn = propObj.NumeratorColumn;
+            this.denominatorColumn = propObj.DenominatorColumn;
 
             if (this.BoxPropertyType == "Calculation"){
                 
@@ -690,8 +712,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     async btnViewInputData_Click(){
         
         var re = await this.service.SetPreviousResult(this.finCanvas.objects, this.finCanvas.GetCurrentObject().Id);
+        var re2 = await this.service.SetPreviousResultJson(this.finCanvas.objects, this.finCanvas.GetCurrentObject().Id);
 
-        console.log(re);
+        console.log(re2);
         console.log(JSON.stringify(re));
 
         var prebox = this.finCanvas.GetPreviousBox();
@@ -715,8 +738,10 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     popupSetDataInfo_OK_Click(){
 
         this.targetDataSource =  this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem).ID ;
+        this.targetDataSourceName = this.cboTargetSource.selectedItem;
         this.targetTable = this.cboTargetTable.selectedItem;
         this.targetColumn = this.cboTargetColumn.selectedItem;
+        
         this.popupVisible_popupSetDataInfo = false;
         
     }
@@ -731,7 +756,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         let flowbox  = <FlowBox> this.finCanvas.GetCurrentBox();
         
         this.inputData = await this.service.SetPreviousResult(this.finCanvas.objects, flowbox.Id);
-        this.previousBox = await this.finCanvas.GetPreviousBox();
+        
 
         for ( var i of this.previousBox)
         {
@@ -831,6 +856,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     cboTargetSource_Change(){
 
         this.dsTargetTable = new Array();
+        this.dsTargetColumn = new Array();
+
 
         console.log(this.cboTargetSource.selectedItem);
 
@@ -846,10 +873,13 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             this.dsTargetTable.push(k);
         }
 
+        this.cboTargetTable_Change();
+
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     cboTargetTable_Change(){
+
         this.dsTargetColumn = new Array();
 
         let id = this.previousBox.find(i=> i.Title == this.cboTargetSource.selectedItem ).ID;
@@ -876,6 +906,20 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             this.txtTitle.nativeElement.value = "";
         }
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Numerator_Click(){
+
+        //분자클릭
+        this.numeratorColumn = this.cboTargetColumn.selectedItem;
+    }
+    
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Denominator_Click(){
+        //분모클릭
+        this.denominatorColumn = this.cboTargetColumn.selectedItem;
+    }
+
 
     
 }//class

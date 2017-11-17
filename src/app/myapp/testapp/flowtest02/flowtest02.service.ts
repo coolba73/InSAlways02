@@ -75,50 +75,62 @@ export class FlowTest2Service{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     async RunProc( Objects : BaseObject[] )  {
 
-        let obj  = <FlowBox[]>Objects.filter(i=> i instanceof FlowBox);
-    
-        console.log('RunProc Start');
 
-        let obj2 = obj.sort(i=>i.Seq);
-        obj2 = obj2.reverse();
-
-        let prop;
-        for (let f of obj2)
+        try
         {
-            prop = f.GetProperty();
-
-            if (prop == '') return;
-
-            console.log("seq : " + f.Seq);
-            console.log(prop);
-            console.log(this.previousResult);
-
-            this.SetPreviousResult(Objects, f.Id);
-
-            if(prop.UseExistData == false || f.ResultDataJsonString == '' ){
-                switch(prop.Type)
-                {
-                    case "DataSet":{
-                        
-                        console.log('run dataset');
-                        await this.Run_DataSet(f);
-                        break; 
-                    }
+            let obj  = <FlowBox[]>Objects.filter(i=> i instanceof FlowBox);
+            
+            console.log('RunProc Start');
     
-                    case "Calculation":{
-                        await this.Run_Calculation(f);
-                        break;
+            let obj2 = obj.sort(i=>i.Seq);
+            obj2 = obj2.reverse();
+    
+            let prop;
+            for (let f of obj2)
+            {
+                prop = f.GetProperty();
+    
+                if (prop == '') return;
+    
+                console.log("seq : " + f.Seq);
+                console.log(prop);
+                console.log(this.previousResult);
+    
+                this.SetPreviousResult(Objects, f.Id);
+    
+                if(prop.UseExistData == false || f.ResultDataJsonString == '' ){
+                    switch(prop.Type)
+                    {
+                        case "DataSet":{
+                            
+                            console.log('run dataset');
+                            await this.Run_DataSet(f);
+                            break; 
+                        }
+        
+                        case "Calculation":{
+                            await this.Run_Calculation(f);
+                            break;
+                        }
                     }
                 }
+                else
+                {
+                    console.log("Use Exist data, No Run");
+                }
+                
             }
-            else
-            {
-                console.log("Use Exist data, No Run");
-            }
-            
+
+            console.log('RunProc End');
+        }
+        catch(e)
+        {
+            alert('error');
+            console.log('RunProc Error');
+            console.log((<Error>e).message);
         }
 
-        console.log('RunProc End');
+        
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -226,23 +238,29 @@ export class FlowTest2Service{
                 break;
             }
 
-            case "데이터곱":{
+            case "데이터빼기":
+            case "데이터곱" :{
 
-                console.log("run 데이터곱");
+                console.log("run " + prop.CalculationType);
 
-                url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalMultiply?code=SDAjmVU5Tm2f02kGH5yz/GMZhxNAX0hU1pkdgZHIDzjn5g7rTwOFIQ==";
+                url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalProc?code=w5OoF/jtgHPWOqe042Alb3D4kKFe4tLsCtTJc/qnw3Su8EbzZDDoVw==";
 
                 // console.log(this.previousResult);
 
                 let para = {};
 
+                if (prop.CalculationType == "데이터빼기") para["CalType"] = "Minus";
+                else if (prop.CalculationType == "데이터곱") para["CalType"] = "Multiply";
+
                 para["TargetDataSource"] = prop.TargetDataSource;
                 para["TargetTable"] = prop.TargetTable;
                 para["TargetColumn"] = prop.TargetColumn;
+                para["ResultColumnName"] = prop.ResultColumnName;
                 para["InputData"] = this.previousResult;
 
-                // console.log(para);
-                // console.log(JSON.stringify(para));
+                console.log(para);
+
+                console.log(JSON.stringify(para));
 
                 body = para;
 
@@ -253,7 +271,7 @@ export class FlowTest2Service{
         if (url != '')
         {
             let re = await this.CallServiceAwait(url, body);
-            console.log(re);
+            console.log("Cal run Complete");
             flow.ResultDataJsonString = JSON.stringify(re);
         }
 
@@ -262,7 +280,7 @@ export class FlowTest2Service{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     async SetPreviousResult(Objects : BaseObject[], id : string){
 
-        console.log('GetPreviousResult start');
+        // console.log('GetPreviousResult start');
 
         this.previousResult = {};
 
@@ -275,7 +293,30 @@ export class FlowTest2Service{
 
         }
 
-        console.log('previous result end')
+        // console.log('previous result end')
+        // console.log(this.previousResult);
+        
+        return this.previousResult;
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async SetPreviousResultJson(Objects : BaseObject[],id : string){
+        
+        // console.log('GetPreviousResult start');
+
+        this.previousResult = {};
+        
+
+        let lines = (<LineBase[]>Objects.filter(i=> i instanceof LineBase)).filter(i=>i.Box_2_ID == id);
+
+        for(let line of lines){
+            
+            let box = <FlowBox>Objects.find(i=> i.Id == line.Box_1_ID);
+            this.previousResult[box.Id] =  JSON.parse(box.ResultDataJsonString);
+        }
+
+        // console.log('previous result end')
         // console.log(this.previousResult);
         
         return this.previousResult;

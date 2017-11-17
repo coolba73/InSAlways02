@@ -14,6 +14,7 @@ import {
     , DxCheckBoxModule 
     , DxContextMenuModule
     ,DxBoxModule
+    ,DxTextBoxModule
 } from "devextreme-angular";
 
 import { FormsModule }             from "@angular/forms";
@@ -76,6 +77,7 @@ export class EscapeHtmlPipe implements PipeTransform {
         , DxCheckBoxModule 
         ,DxContextMenuModule
         ,DxBoxModule
+        ,DxTextBoxModule
     ],
     declarations:[
         FlowTestComponent,
