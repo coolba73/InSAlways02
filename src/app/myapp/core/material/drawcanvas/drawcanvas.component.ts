@@ -134,35 +134,34 @@ export class DrawCanvasComponent implements OnInit {
 
                     console.log('delete');
 
-                    this.objects.forEach(i => {
-
+                    for (let i of this.objects){
                         if (i.YesSelected)
                         {
-                            if (i.Type === BoxBase.name)
+                            if (i instanceof BoxBase )
                             {
                                 deleteBoxIdList.push(i.Id);
                             }
 
                             deleteObjList.push(i);
                         }
-                    });
+                    }
 
-                    deleteObjList.forEach(i => {
-                        this.DeleteObject(i);
-                    });
-
-                    deleteBoxIdList.forEach(i => {
+                    for (let i of deleteBoxIdList){
                         this.objects.forEach(obj => {
                             if (obj instanceof LineBase && (obj.Box_1_ID === i || obj.Box_2_ID === i))
                             {
                                 deleteLines.push(obj);
                             }
                         });
-                    });
+                    }
 
-                    deleteLines.forEach( line => {
-                        this.DeleteObject(line);
-                    });
+                    for (let i of deleteObjList){
+                        this.DeleteObject(i);
+                    }
+
+                    for (let i of deleteLines ){
+                        this.DeleteObject(i);
+                    }
 
                     this.Draw();
 
@@ -177,6 +176,8 @@ export class DrawCanvasComponent implements OnInit {
                         this.yesAddLine = false;
                         let index = this.objects.indexOf(line);
                         if (index > -1) this.objects.splice(index,1);
+                        this.yesDrawSelectBox = false;
+                        this.YesMouseDown  = false;
 
                     }
                     break;
@@ -635,8 +636,8 @@ export class DrawCanvasComponent implements OnInit {
         for ( var line of this.objects.filter(i=> i instanceof LineBase && (<LineBase>i).Box_2_ID == curbox.Id ))
         {
             prebox = {};
-            prebox["BoxName"] = (<BoxBase>this.objects.find(i=>i.Id == (<LineBase>line).Box_1_ID)).Title;
-            prebox["BoxID"] = (<LineBase>line).Box_1_ID;
+            prebox["Title"] = (<BoxBase>this.objects.find(i=>i.Id == (<LineBase>line).Box_1_ID)).Title;
+            prebox["ID"] = (<LineBase>line).Box_1_ID;
 
             reArry.push(prebox);
         }

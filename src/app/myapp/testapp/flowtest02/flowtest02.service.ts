@@ -87,6 +87,8 @@ export class FlowTest2Service{
         {
             prop = f.GetProperty();
 
+            if (prop == '') return;
+
             console.log("seq : " + f.Seq);
             console.log(prop);
             console.log(this.previousResult);
@@ -162,17 +164,23 @@ export class FlowTest2Service{
 
         let url = '';
 
-        switch(flow.GetProperty().CalculationType){
+        let prop = flow.GetProperty();
+
+        let body:any;
+
+        switch( prop.CalculationType){
 
             case "Log 수익률":{
                 console.log('Log 수익률 Start');
                 url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalLogYield?code=6mkdavqlohaKeNXWwjthvIJDVjWI1WgjghPTgBRBEFKXSdfimY0opg==";
+                body = this.previousResult;
                 break;
             }
 
             case "베타계산":{
                 console.log("베타계산")
                 url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalBeta?code=AS1qZx7/vaV8jMGDG9KXRgTGBtz0kzqGiHfWy0OQrEu8S9WgIjQ2OQ==";
+                body = this.previousResult;
                 break;
             }
 
@@ -221,57 +229,31 @@ export class FlowTest2Service{
             case "데이터곱":{
 
                 console.log("run 데이터곱");
-                console.log(this.previousResult);
 
-                var dataArray = new Array();
+                url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalMultiply?code=SDAjmVU5Tm2f02kGH5yz/GMZhxNAX0hU1pkdgZHIDzjn5g7rTwOFIQ==";
 
-                for (var k1 in this.previousResult)
-                {
-                    let obj = JSON.parse(this.previousResult[k1]);
-                    dataArray.push(obj);
-                }
+                // console.log(this.previousResult);
 
-                // console.log(dataArray[1]['result'][0]);
+                let para = {};
 
-                var power;
-                var target;
-                var powerval;
+                para["TargetDataSource"] = prop.TargetDataSource;
+                para["TargetTable"] = prop.TargetTable;
+                para["TargetColumn"] = prop.TargetColumn;
+                para["InputData"] = this.previousResult;
 
-                if (dataArray[0]['result'].length == 1)
-                {
-                    power = dataArray[0]['result'];
-                    target = dataArray[1]['result'];
-                }
-                else
-                {
-                    power = dataArray[1]['result'];
-                    target = dataArray[0]['result'];
-                }
+                // console.log(para);
+                // console.log(JSON.stringify(para));
 
-                for ( let k1 in power[0])
-                {
-                    powerval = power[0][k1];
-                }
+                body = para;
 
-                console.log('power');
-                console.log(power);
-                console.log('target');
-                console.log(target);
-                console.log('powerval');
-                console.log(powerval);
-
-                let re = {};
-                let dataArry = new Array();
-
-                
-            
                 break;
             }
         }
 
         if (url != '')
         {
-            let re = await this.CallServiceAwait(url, this.previousResult);
+            let re = await this.CallServiceAwait(url, body);
+            console.log(re);
             flow.ResultDataJsonString = JSON.stringify(re);
         }
 

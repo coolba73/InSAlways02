@@ -113,6 +113,7 @@
             [dragEnabled]="true" 
             [closeOnOutsideClick]="true"
             [(visible)]="popupVisible"
+            (onShown)="InputPopup_OnShown()"
             >
     <div *dxTemplate="let data of 'content'">
 
@@ -360,14 +361,14 @@
         <div class="dx-field" style="width: 450px; margin-left: 10px">
             <div class="dx-field-label">Data Source</div>
             <div class="dx-field-value">
-                <dx-select-box #cboTargetSource [dataSource]='dsTargetSource'></dx-select-box>
+                <dx-select-box #cboTargetSource [dataSource]='dsTargetSource' (selectedItemChange)='cboTargetSource_Change()'></dx-select-box>
             </div>
         </div>
 
         <div class="dx-field" style="width: 450px; margin-left: 10px">
             <div class="dx-field-label">Data Table</div>
             <div class="dx-field-value">
-                <dx-select-box #cboTargetTable [dataSource]='dsTargetTable'></dx-select-box>
+                <dx-select-box #cboTargetTable [dataSource]='dsTargetTable' (selectedItemChange)='cboTargetTable_Change()'></dx-select-box>
             </div>
         </div>
 

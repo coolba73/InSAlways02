@@ -21,6 +21,7 @@ enum InputType{
      None
     ,NewFlow
     ,AddBox    
+    ,CopyFlow
 }
 
 @Component({
@@ -47,7 +48,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     targetColumn = '';
     menus : Menu[];
     contextMenu : any;
-    
+    inputData : any;
+    previousBox : any;
+    copyFlowTitle = '';
 
     
     
@@ -69,6 +72,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     @ViewChild("fcvs") finCanvas : DrawCanvasComponent;
     @ViewChild("cboTargetTable") cboTargetTable : DxSelectBoxComponent;
     @ViewChild("cboTargetColumn") cboTargetColumn : DxSelectBoxComponent;
+    @ViewChild("cboTargetSource") cboTargetSource :DxSelectBoxComponent;
+
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     dsMyDataSource = new Array();
@@ -192,16 +197,22 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     CopyFlow_Click(){
-        this.loadingVisible = true;
+
+
+        this.inputBoxType = InputType.CopyFlow;
+        this.inputBoxTitle = "Copy Flow";
+        this.popupVisible = true;
+
+        // this.loadingVisible = true;
         
-        this.CopyFlow().subscribe(
-            data => {
-                this.loadingVisible = false;
-            }, 
-            error => {
-                this.loadingVisible = false;
-                alert("Error");
-            });
+        // this.CopyFlow().subscribe(
+        //     data => {
+        //         this.loadingVisible = false;
+        //     }, 
+        //     error => {
+        //         this.loadingVisible = false;
+        //         alert("Error");
+        //     });
         
     }
 
@@ -281,6 +292,19 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             flowBox.Title = aTitle;
     
             this.finCanvas.AddObject(flowBox);            
+        }
+        else if (this.inputBoxType == InputType.CopyFlow)
+        {
+            this.loadingVisible = true;
+        
+            this.CopyFlow().subscribe(
+                data => {
+                    this.loadingVisible = false;
+                }, 
+                error => {
+                    this.loadingVisible = false;
+                    alert("Error");
+                });
         }
 
 
@@ -391,17 +415,21 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     CopyFlow()
     {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        var hh = today.getHours();
-        var mm = today.getMinutes();
-        var ss = today.getSeconds();
+        // var today = new Date();
+        // var dd = today.getDate();
+        // var mm = today.getMonth()+1; //January is 0!
+        // var yyyy = today.getFullYear();
+        // var hh = today.getHours();
+        // var mm = today.getMinutes();
+        // var ss = today.getSeconds();
 
-        var today2 =''+ yyyy + mm  + dd + hh + mm + ss;
+        // var today2 =''+ yyyy + mm  + dd + hh + mm + ss;
+
         
-        var newTitle = this.title + " " + today2;
+        
+        // var newTitle = this.title + " " + today2;
+
+        var newTitle = this.copyFlowTitle;
 
         let newid = UUID.UUID();
 
@@ -501,7 +529,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             // flowProperty.CalculationType = sel[0]['CalType'];
 
             flowProperty.CalculationType = this.CalculationType;
-            
+    
+            flowProperty.TargetDataSource = this.targetDataSource;
             flowProperty.TargetTable = this.targetTable;
             flowProperty.TargetColumn = this.targetColumn;
 
@@ -685,6 +714,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     popupSetDataInfo_OK_Click(){
 
+        this.targetDataSource =  this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem).ID ;
         this.targetTable = this.cboTargetTable.selectedItem;
         this.targetColumn = this.cboTargetColumn.selectedItem;
         this.popupVisible_popupSetDataInfo = false;
@@ -700,11 +730,13 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         let flowbox  = <FlowBox> this.finCanvas.GetCurrentBox();
         
-        let preData = await this.service.SetPreviousResult(this.finCanvas.objects, flowbox.Id);
+        this.inputData = await this.service.SetPreviousResult(this.finCanvas.objects, flowbox.Id);
+        this.previousBox = await this.finCanvas.GetPreviousBox();
 
-        for ( var i of this.finCanvas.GetPreviousBox())
+        for ( var i of this.previousBox)
         {
-            this.dsTargetSource.push(i.BoxName);
+            console.log(i);
+            this.dsTargetSource.push(i.Title);
         }
 
         // for (var k1 in preData)
@@ -752,7 +784,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 this.OpenFlow();
                 break;
            }
-           case "Copy":{
+           case "Copy Flow":{
                 this.CopyFlow_Click();
                 break;
            }
@@ -792,6 +824,56 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 break;
             }
            
+        }
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    cboTargetSource_Change(){
+
+        this.dsTargetTable = new Array();
+
+        console.log(this.cboTargetSource.selectedItem);
+
+        let id = this.previousBox.find(i=> i.Title == this.cboTargetSource.selectedItem ).ID;
+
+        console.log(id);
+
+        console.log(this.inputData);
+
+        for ( var k in JSON.parse( this.inputData[id]))
+        {
+            console.log(k);
+            this.dsTargetTable.push(k);
+        }
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    cboTargetTable_Change(){
+        this.dsTargetColumn = new Array();
+
+        let id = this.previousBox.find(i=> i.Title == this.cboTargetSource.selectedItem ).ID;
+
+        let obj = JSON.parse( this.inputData[id])[this.cboTargetTable.selectedItem];
+
+        console.log(obj);
+
+        for ( var k in obj[0])
+        {
+            this.dsTargetColumn.push(k);
+        }
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    InputPopup_OnShown(){
+        if (this.inputBoxType == InputType.CopyFlow )
+        {
+            this.txtTitle.nativeElement.value = this.title;
+        }
+        else
+        {
+            this.txtTitle.nativeElement.value = "";
         }
     }
 
