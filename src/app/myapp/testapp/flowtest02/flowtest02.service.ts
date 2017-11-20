@@ -14,6 +14,7 @@ export class FlowTest2Service{
     constructor(private http : Http ){}
 
     previousResult : any = {};
+    previousResult2 : any = {};
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     GetFlowList() {
@@ -97,6 +98,7 @@ export class FlowTest2Service{
                 console.log(this.previousResult);
     
                 this.SetPreviousResult(Objects, f.Id);
+                this.SetPreviousResultJson(Objects, f.Id);
     
                 if(prop.UseExistData == false || f.ResultDataJsonString == '' ){
                     switch(prop.Type)
@@ -269,7 +271,7 @@ export class FlowTest2Service{
             case "데이터나누기":{
 
                 let para = {};
-                url = '';
+                url = 'https://insallwayspythonfunctionapp.azurewebsites.net/api/CalRowByRow?code=tGxoY55sNxIF4RhW0atbyYjMFgNmCRZioeniCqnxnyFPnVFG1haMAA==';
 
                 if (prop.CalculationType == "데이터나누기") para["CalType"] = "division";
 
@@ -278,7 +280,7 @@ export class FlowTest2Service{
                 para["NumeratorColumn"] = prop.NumeratorColumn;
                 para["ResultColumnName"] = prop.ResultColumnName;
 
-                para["InputData"] = this.previousResult;
+                para["InputData"] = this.previousResult2;
 
                 body = para;
 
@@ -288,6 +290,7 @@ export class FlowTest2Service{
         }//end switch
 
         console.log(body);
+        console.log(JSON.stringify(body));
 
         if (url != '')
         {
@@ -326,7 +329,7 @@ export class FlowTest2Service{
         
         // console.log('GetPreviousResult start');
 
-        this.previousResult = {};
+        this.previousResult2 = {};
         
 
         let lines = (<LineBase[]>Objects.filter(i=> i instanceof LineBase)).filter(i=>i.Box_2_ID == id);
@@ -334,13 +337,13 @@ export class FlowTest2Service{
         for(let line of lines){
             
             let box = <FlowBox>Objects.find(i=> i.Id == line.Box_1_ID);
-            this.previousResult[box.Id] =  JSON.parse(box.ResultDataJsonString);
+            this.previousResult2[box.Id] =  JSON.parse(box.ResultDataJsonString);
         }
 
         // console.log('previous result end')
         // console.log(this.previousResult);
         
-        return this.previousResult;
+        return this.previousResult2;
 
     }
 

@@ -22,6 +22,7 @@ enum InputType{
     ,NewFlow
     ,AddBox    
     ,CopyFlow
+    ,SetTitle
 }
 
 @Component({
@@ -122,6 +123,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                                         , { text: 'Input Data' }
 
                                 ]
+                                }
+                                ,{
+                                    text:'Set Title'
                                 }
                                 
                             ];
@@ -315,12 +319,11 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                     alert("Error");
                 });
         }
-
-
+        else if ( this.inputBoxType == InputType.SetTitle){
+            this.finCanvas.GetCurrentBox().Title = this.txtTitle.nativeElement.value;
+        }
         
-
         this.popupVisible = false;
-
 
     }
 
@@ -410,6 +413,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     SaveFlow()
     {
+
+        if (this.finCanvas.objects.length == 0) return;
+
         let body = JSON.stringify({
             title : this.title,
             id : this.id,
@@ -433,8 +439,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         // var ss = today.getSeconds();
 
         // var today2 =''+ yyyy + mm  + dd + hh + mm + ss;
-
-        
         
         // var newTitle = this.title + " " + today2;
 
@@ -856,8 +860,19 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 this.btnViewInputData_Click();
                 break;
             }
+            case "Set Title":{
+                 
+            }
            
         }
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    SetBoxTitle(){
+        this.inputBoxType = InputType.SetTitle;
+        this.inputBoxTitle = "Set Title";
+        this.popupVisible = true;
+        this.txtTitle.nativeElement.value = this.finCanvas.GetCurrentBox().Title;
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
