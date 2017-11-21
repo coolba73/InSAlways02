@@ -196,6 +196,7 @@ export class DrawCanvasComponent implements OnInit {
 
 	//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     calPoint (canvasEl:HTMLCanvasElement ,res:MouseEvent)  {
+        
         let rect = canvasEl.getBoundingClientRect();
 
 
