@@ -308,6 +308,19 @@ export class FlowTest2Service{
                 
                 break;
             }
+            case "표준편차":{
+                let para = {}
+                url = '';
+                para = prop;
+                let targetSource = prop["TargetDataSource"];
+                let targetTable = prop["TargetTable"]
+
+                para["InputData"] = this.previousResult2[targetSource][targetTable];
+
+                body = para;
+
+                break;
+            }
 
         }//end switch
 

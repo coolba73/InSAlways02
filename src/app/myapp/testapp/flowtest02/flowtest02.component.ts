@@ -119,6 +119,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             ,{'CalType':'데이터나누기'}
             ,{'CalType':'데이터더하기'}
             ,{'CalType':'Set Ranking'}
+            ,{'CalType':'표준편차'}
 
         ];
 
