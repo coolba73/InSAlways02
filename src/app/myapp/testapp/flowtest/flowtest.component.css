@@ -4,11 +4,20 @@
   background:#ffffff;  
   box-shadow: 0 0 1em rgb(116, 112, 112);
 }
-#flowtest_container {
+/* #flowtest_container {
   height: 600px;
   overflow: auto;
   border: 1px solid #d6d1d1;
   margin: 10px;
+} */
+
+#flowtest_container{
+  height: 94vh;
+  width: 99vw;
+  position: absolute;
+  top: 45px;
+  left: 0;
+  background: white;
 }
 
 #canvas_container {

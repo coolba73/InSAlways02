@@ -5,8 +5,13 @@
    <button mat-raised-button color="primary" (click)="this.AddFlow()"  >Add</button>
   </div>
 
-  <div id='canvas_container'>
-    <drawcanvas #fcvs  ></drawcanvas>
+  
+  <div id="flowtest_container">
+    <div id='canvas_container'>
+      <drawcanvas id='MyCanvas' #fcvs [MyId]="'canvas_container'" ></drawcanvas>
+    </div>
   </div>
+    
+  
 
 </div>

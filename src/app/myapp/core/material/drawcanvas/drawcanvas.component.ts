@@ -198,30 +198,39 @@ export class DrawCanvasComponent implements OnInit {
     calPoint (canvasEl:HTMLCanvasElement ,res:MouseEvent)  {
         let rect = canvasEl.getBoundingClientRect();
 
-        var rex;
-        var rey;
 
-        if (res.pageX || res.pageY) { 
-            // rex = res.pageX + document.getElementById("canvas_container").scrollLeft ;
-            // rey = res.pageY + document.getElementById("canvas_container").scrollTop;
-            rex = res.pageX + document.getElementById(this.MyId).scrollLeft ;
-            rey = res.pageY + document.getElementById(this.MyId).scrollTop;
-        }
-        else { 
-            // rex = res.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + document.getElementById("canvas_container").scrollLeft; 
-            // rey = res.clientY + document.body.scrollTop + document.documentElement.scrollTop + document.getElementById("canvas_container").scrollTop; 
-            rex = res.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + document.getElementById(this.MyId).scrollLeft; 
-            rey = res.clientY + document.body.scrollTop + document.documentElement.scrollTop + document.getElementById(this.MyId).scrollTop; 
-        } 
-
-        rex -= canvasEl.offsetLeft;
-        rey -= canvasEl.offsetTop;
-
-
-        rex = rex / this.CanvasScale;
-        rey = rey / this.CanvasScale;
+        var rex = res.clientX - rect.left;
+        var rey = res.clientY - rect.top;
 
         return {rex,rey};
+
+
+        // var rex;
+        // var rey;
+
+        
+        // if (res.pageX || res.pageY) { 
+        //     // rex = res.pageX + document.getElementById("canvas_container").scrollLeft ;
+        //     // rey = res.pageY + document.getElementById("canvas_container").scrollTop;
+        //     rex = res.pageX + document.getElementById(this.MyId).scrollLeft ;
+        //     rey = res.pageY + document.getElementById(this.MyId).scrollTop;
+        // }
+        // else { 
+        //     // rex = res.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + document.getElementById("canvas_container").scrollLeft; 
+        //     // rey = res.clientY + document.body.scrollTop + document.documentElement.scrollTop + document.getElementById("canvas_container").scrollTop; 
+        //     rex = res.clientX + document.body.scrollLeft + document.documentElement.scrollLeft + document.getElementById(this.MyId).scrollLeft; 
+        //     rey = res.clientY + document.body.scrollTop + document.documentElement.scrollTop + document.getElementById(this.MyId).scrollTop; 
+        // } 
+
+
+        // rex -= canvasEl.offsetLeft;
+        // rey -= canvasEl.offsetTop;
+
+
+        // rex = rex / this.CanvasScale;
+        // rey = rey / this.CanvasScale;
+
+        // return {rex,rey};
     }
 
 
@@ -518,11 +527,6 @@ export class DrawCanvasComponent implements OnInit {
         for (let obj of this.objects){
           await obj.Draw(this.ctx);
         }
-
-        
-
-        
-        
 
     }
 
