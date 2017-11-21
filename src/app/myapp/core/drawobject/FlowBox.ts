@@ -6,8 +6,8 @@ export class FlowBox extends BoxBase{
     MyProperty : string = '';
     ResultDataJsonString : string = "";
     InputDataJsonString : string = "";
+    
 
-    imageLoad = false;
     
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -40,7 +40,6 @@ export class FlowBox extends BoxBase{
             let img = new Image();
             img.src = '/assets/img/useexistdata.png';
             ctx.drawImage(img, this.x+10, this.y-20);
-            this.imageLoad = true;
         }
         
 

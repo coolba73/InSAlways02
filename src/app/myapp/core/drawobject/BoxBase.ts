@@ -26,6 +26,9 @@ export class BoxBase extends BaseObject{
     RunStatus : boolean = false;
     RunOK : boolean = false;
     RunSeq : number = 0;
+    RunEnd : boolean = false;
+    
+    ErrorMessage = '';
 
     /*
     ############################################################################################################################
@@ -37,7 +40,7 @@ export class BoxBase extends BaseObject{
     constructor(){
 
         super();
-        this.FillColor = 'Lavender       ';
+        this.FillColor = 'Lavender';
         this.LineColor = 'black';
         this.Type = BoxBase.name;
         this.Width = 100;
@@ -116,20 +119,34 @@ export class BoxBase extends BaseObject{
 
         //this.DrawImage(ctx);
 
+        let img = new Image();
         //-------------------------------------
         // Run OK
         //-------------------------------------
         if (this.RunStatus)
         {
-            if(this.RunOK)
+            if(!this.RunEnd)
             {
-                ctx.fillStyle = 'green';
-                ctx.fillText( this.RunSeq.toString() + " OK", this.x + 50, this.y-10);
+                img.src = '/assets/img/run.png';
+                ctx.drawImage(img, this.x + (this.Width / 2) -8 , this.y-20);
+            }
+            else if(this.RunOK)
+            {
+                // ctx.fillStyle = 'green';
+                // ctx.fillText( this.RunSeq.toString() + " OK", this.x + 50, this.y-10);
+
+                
+                img.src = '/assets/img/success.png';
+                ctx.drawImage(img, this.x + this.Width -10 , this.y-20);
+                
             }
             else
             {
-                ctx.fillStyle = 'red';
-                ctx.fillText( this.RunSeq.toString() +  " Error", this.x + 50, this.y-10);
+                // ctx.fillStyle = 'red';
+                // ctx.fillText( this.RunSeq.toString() +  " Error", this.x + 50, this.y-10);
+
+                img.src = '/assets/img/error.png';
+                ctx.drawImage(img, this.x + this.Width -10 , this.y-20);
             }
 
         }

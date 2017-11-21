@@ -35,6 +35,28 @@ var menus: Menu[] =
                         id: "1_4"
                         ,name: "Copy Flow"
                     }
+                    ,{
+                        id:"1_5"
+                        ,name:'Set Property'
+                        ,items:[
+                            {
+                                id:'1_5_1'
+                                ,name :"Set All Object Do not use UseExistData"
+                            },
+                            {
+                                id:'1_5_2'
+                                ,name :"Set All Object use UseExistData"
+                            }
+                            ,{
+                                id:'1_5_3'
+                                ,name:'Clear Run Status'
+                            }
+                        ]
+                    }
+                    ,{
+                        id:'1_6'
+                        ,name:"Full Screen"
+                    }
                 ]
     }
     // ,{

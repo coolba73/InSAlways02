@@ -474,12 +474,12 @@ export class DrawCanvasComponent implements OnInit {
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    GetCurrentBox() : BaseObject {
+    GetCurrentBox() : BoxBase {
 
         let objs = this.objects.filter(i=> i instanceof BoxBase && i.YesSelected);
 
         if (objs.length == 1)
-            return objs[0];
+            return <BoxBase>objs[0];
         else
             return null;
     }
@@ -511,12 +511,12 @@ export class DrawCanvasComponent implements OnInit {
 	}
 
 	//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    Draw(){
+    async Draw(){
 
         this.ctx.clearRect(0,0,this.myCanvas.width, this.myCanvas.height);
 
         for (let obj of this.objects){
-            obj.Draw(this.ctx);
+          await obj.Draw(this.ctx);
         }
 
         

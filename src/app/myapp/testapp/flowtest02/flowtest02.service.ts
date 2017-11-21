@@ -77,6 +77,8 @@ export class FlowTest2Service{
     async RunProc( Objects : BaseObject[] )  {
 
 
+        let runFlow : FlowBox;
+
         try
         {
             let obj  = <FlowBox[]>Objects.filter(i=> i instanceof FlowBox);
@@ -89,6 +91,9 @@ export class FlowTest2Service{
             let prop;
             for (let f of obj2)
             {
+                runFlow = f;
+                f.RunStatus = true;
+
                 prop = f.GetProperty();
     
                 if (prop == '') return;
@@ -121,15 +126,21 @@ export class FlowTest2Service{
                     console.log("Use Exist data, No Run");
                 }
                 
-            }
+                f.RunOK = true;
+                f.ErrorMessage = '';
+
+            }//end for
 
             console.log('RunProc End');
         }
         catch(e)
         {
-            alert('error');
-            console.log('RunProc Error');
-            console.log((<Error>e).message);
+            runFlow.RunOK = false;
+            runFlow.ErrorMessage = (<Error>e).message;
+
+            // alert('error');
+            // console.log('RunProc Error');
+            // console.log((<Error>e).message);
         }
 
         
@@ -284,6 +295,17 @@ export class FlowTest2Service{
 
                 body = para;
 
+                break;
+            }
+            case "Set Ranking":{
+
+                let para = {};
+                url = 'https://insallwayspythonfunctionapp.azurewebsites.net/api/CalRanking?code=QFSSteFMU8MkYuDQ9VpGxqRxpzaQ/bI5/RinC7FZVCmdK2I0hsforA==';
+                para = prop;
+                para["InputData"] = this.previousResult2;
+
+                body = para;
+                
                 break;
             }
 

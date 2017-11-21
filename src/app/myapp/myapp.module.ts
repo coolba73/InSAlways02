@@ -4,6 +4,7 @@ import { MyAppRouting } from "./myapp.routing";
 import { FlowTestComponent } from "./testapp/flowtest/flowtest.component";
 import { FlowTest02Component } from "./testapp/flowtest02/flowtest02.component";
 import { DrawCanvasComponent } from "./core/material/drawcanvas/drawcanvas.component";
+import { NgInit } from "./testapp/flowtest02/flowtest02.component";
 
 import { 
       DevExtremeModule 
@@ -32,7 +33,7 @@ import {
     , MatOptionModule
     , MatFormFieldModule
     , MatSelectModule
-    
+   
 } from "@angular/material";
 
 
@@ -83,7 +84,9 @@ export class EscapeHtmlPipe implements PipeTransform {
         FlowTestComponent,
         FlowTest02Component,
         DrawCanvasComponent,
-        EscapeHtmlPipe
+        EscapeHtmlPipe,
+        NgInit
+        
     ]
 })
 export class MyAppModule{}

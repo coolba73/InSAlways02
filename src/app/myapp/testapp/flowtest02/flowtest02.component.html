@@ -1,8 +1,7 @@
  <div id='flowtest02_main'>
-
     <br>
 
-    <div id="flowtest02_container">
+    <div id="flowtest02_container" >
 
         <dx-box direction="row" width="100%" [height]="35">
         
@@ -64,35 +63,39 @@
 
     </div>
 
-      <mat-tab-group>
-          
-        <mat-tab label="Description">
-            <textarea id="summernote" class="form-control" ></textarea>
-        </mat-tab>
+    <div *ngIf ="!yesFullScreen" id="bottomdiv" [ngInit]="ngAfterViewInit()" >
 
-        <mat-tab label="Data">
+        <mat-tab-group >
+            
+          <mat-tab label="Description">
+              <textarea id="summernote" class="form-control" ></textarea>
+          </mat-tab>
+  
+          <mat-tab label="Data">
+  
+              <div class="dx-field" style="width: 450px; margin-left: 10px">
+                  <div class="dx-field-label">Data Table</div>
+                  <div class="dx-field-value">
+                      <dx-select-box #cboDataTable [items]="datatables" (selectedItemChange) = 'cboDataTablesChanges()'></dx-select-box>
+                  </div>
+              </div>
+  
+              <dx-data-grid id="gridContainer" 
+              [dataSource]="dsflowResult"  
+              style="height: 350px"
+              >
+              <!-- <dxo-load-panel [enabled]="true"></dxo-load-panel> -->
+              <dxo-scrolling mode="virtual"></dxo-scrolling>
+              <dxo-sorting mode="multiple"></dxo-sorting>
+              <dxo-selection mode="single"></dxo-selection>
+  
+            </dx-data-grid>
+          </mat-tab>
+  
+        </mat-tab-group>
 
-            <div class="dx-field" style="width: 450px; margin-left: 10px">
-                <div class="dx-field-label">Data Table</div>
-                <div class="dx-field-value">
-                    <dx-select-box #cboDataTable [items]="datatables" (selectedItemChange) = 'cboDataTablesChanges()'></dx-select-box>
-                </div>
-            </div>
-
-            <dx-data-grid id="gridContainer" 
-            [dataSource]="dsflowResult"  
-            style="height: 350px"
-            >
-            <!-- <dxo-load-panel [enabled]="true"></dxo-load-panel> -->
-            <dxo-scrolling mode="virtual"></dxo-scrolling>
-            <dxo-sorting mode="none"></dxo-sorting>
-
-            <dxo-selection mode="single"></dxo-selection>
-
-          </dx-data-grid>
-        </mat-tab>
-
-      </mat-tab-group>
+    </div>
+      
   
   </div>
 

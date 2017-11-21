@@ -1,4 +1,14 @@
-import { Component,ViewChild, OnInit, ViewEncapsulation, AfterViewInit, Inject } from "@angular/core";
+import { 
+    Component
+    , ViewChild
+    , OnInit
+    , ViewEncapsulation
+    , AfterViewInit
+    , Inject 
+    , Directive
+    , Input
+} from "@angular/core";
+
 import { DrawCanvasComponent } from "../../core/material/drawcanvas/drawcanvas.component";
 import { BaseObject }          from "../../core/drawobject/BaseObject";
 import { BoxBase }             from "../../core/drawobject/BoxBase";
@@ -14,6 +24,7 @@ import 'rxjs/add/operator/catch';
 import { Observable } from "rxjs/Observable";
 import { FormArrayName } from "@angular/forms/src/directives/reactive_directives/form_group_name";
 import { Menu, MenuService } from "./menu.service";
+
 
 declare var $: any;
 
@@ -57,7 +68,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     numeratorColumn = '';//분자
     denominatorColumn = '';//분모
     calKeyColumn = '';
-
+    yesFullScreen = false;
+    yesResetSummernote = true;
     
     
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -106,6 +118,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             ,{'CalType':'데이터빼기'}
             ,{'CalType':'데이터나누기'}
             ,{'CalType':'데이터더하기'}
+            ,{'CalType':'Set Ranking'}
 
         ];
 
@@ -121,6 +134,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                                           { text: 'Property Info' }
                                         , { text: 'Result Data' }
                                         , { text: 'Input Data' }
+                                        , { text: 'Error'}
 
                                 ]
                                 }
@@ -156,15 +170,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     AddFlow(){
-        
-        // let flowBox = new FlowBox();
 
-        // flowBox.x = 10;
-        // flowBox.y = 10;
-
-        // this.finCanvas.AddObject(flowBox);
-
-        
         this.inputBoxTitle = "Add Flow Box";
         this.inputBoxType = InputType.AddBox;
         this.popupVisible = true;
@@ -267,11 +273,18 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     FullScreen(){
+
         $('#flowtest02_container').toggleClass('fullscreen'); 
+        $('#canvas_container2').toggleClass('fullscreen'); 
+
+        this.yesFullScreen = !this.yesFullScreen;
+
     }
 
-
-  
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    BottomDivInit(){
+        this.ngAfterViewInit();
+    }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     OK_Click(aTitle : string){
@@ -308,6 +321,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         }
         else if (this.inputBoxType == InputType.CopyFlow)
         {
+            this.copyFlowTitle = aTitle;
             this.loadingVisible = true;
         
             this.CopyFlow().subscribe(
@@ -322,7 +336,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         else if ( this.inputBoxType == InputType.SetTitle){
             this.finCanvas.GetCurrentBox().Title = this.txtTitle.nativeElement.value;
         }
-        
+
         this.popupVisible = false;
 
     }
@@ -460,18 +474,116 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     async Run_Click(){
 
+
         this.loadingVisible = true;
+
+        for (var f of this.finCanvas.objects.filter( i=> i instanceof FlowBox))
+        {
+            (<FlowBox>f).RunStatus = false;
+            (<FlowBox>f).ErrorMessage = '';
+            (<FlowBox>f).RunEnd = false;
+        }
+
+        this.finCanvas.Draw();
 
         console.log('run start');
 
         this.finCanvas.RunStatusClear();
         this.finCanvas.Draw();
         
-        await this.service.RunProc(this.finCanvas.objects);
+        // await this.service.RunProc(this.finCanvas.objects);
+        await this.RunProc(this.finCanvas.objects);
 
         this.loadingVisible = false;
         console.log('run end');
 
+        this.finCanvas.Draw();
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async RunProc( Objects : BaseObject[] )  {
+        
+        
+        let runFlow : FlowBox;
+
+        try
+        {
+            let obj  = <FlowBox[]>Objects.filter(i=> i instanceof FlowBox);
+            
+            console.log('RunProc Start');
+    
+            let obj2 = obj.sort(i=>i.Seq);
+            obj2 = obj2.reverse();
+    
+            let prop;
+            for (let f of obj2)
+            {
+                runFlow = f;
+
+                prop = f.GetProperty();
+    
+                if (prop == '') return;
+    
+                console.log("seq : " + f.Seq);
+                // console.log(prop);
+                // console.log(this.previousResult);
+    
+                this.service.SetPreviousResult(Objects, f.Id);
+                this.service.SetPreviousResultJson(Objects, f.Id);
+    
+                if(prop.UseExistData == false || f.ResultDataJsonString == '' )
+                {
+                    f.RunStatus = true;
+                    f.RunEnd = false;
+                    await this.finCanvas.Draw();
+
+                    switch(prop.Type)
+                    {
+                        case "DataSet":{
+                            
+                            console.log('run dataset');
+                            await this.service.Run_DataSet(f);
+                            break; 
+                        }
+        
+                        case "Calculation":{
+                            await this.service.Run_Calculation(f);
+                            break;
+                        }
+                    }
+
+                    f.RunOK = true;
+                    f.RunEnd = true;
+                    f.ErrorMessage = '';
+                    await this.finCanvas.Draw();
+
+                }
+                else
+                {
+                    console.log("Use Exist data, No Run");
+                }
+                
+               
+
+            }//end for
+
+            console.log('RunProc End');
+        }
+        catch(e)
+        {
+            runFlow.RunEnd = true;
+            runFlow.RunOK = false;
+            runFlow.ErrorMessage = (<Error>e).message;
+
+            // alert('error');
+            // console.log('RunProc Error');
+            // console.log((<Error>e).message);
+        }
+
+        await this.finCanvas.Draw();
+
+        
     }
 
     
@@ -562,7 +674,10 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         this.popupVisible_BoxProperty = false;
 
-        console.log(flowProperty);
+        // console.log(flowProperty);
+
+        this.finCanvas.Draw();
+
 
     }
 
@@ -833,8 +948,45 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                this.Run_Click();
                break;
            }
+           case "Set All Object Do not use UseExistData":{
+                this.SetAllObjectUseexistData(false)
+                break;
+           }
+           case "Set All Object use UseExistData":{
+                this.SetAllObjectUseexistData(true)
+                break;
+           }
+           case 'Clear Run Status':{
+               for ( var obj of this.finCanvas.objects.filter(i => i instanceof FlowBox))
+               {
+                    (<FlowBox>obj).RunStatus = false;
+               }
+               this.finCanvas.Draw();
+
+               break;
+
+           }
+           case 'Full Screen':{
+
+               this.FullScreen();
+               break;
+           }
        }
 
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    SetAllObjectUseexistData( arg:boolean)
+    {
+        for ( var i of  this.finCanvas.objects.filter(i=>i instanceof FlowBox))
+        {
+            var prop = (<FlowBox>i).GetProperty();
+            prop["UseExistData"] = arg;
+            (<FlowBox>i).MyProperty = JSON.stringify(prop);
+            // console.log(prop);
+        }
+
+        this.finCanvas.Draw();
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -861,7 +1013,12 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 break;
             }
             case "Set Title":{
-                 
+                this.SetBoxTitle();             
+                break;
+            }
+            case "Error":{
+                console.log(this.finCanvas.GetCurrentBox().ErrorMessage);
+                break;
             }
            
         }
@@ -872,7 +1029,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.inputBoxType = InputType.SetTitle;
         this.inputBoxTitle = "Set Title";
         this.popupVisible = true;
-        this.txtTitle.nativeElement.value = this.finCanvas.GetCurrentBox().Title;
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -920,13 +1076,32 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     InputPopup_OnShown(){
-        if (this.inputBoxType == InputType.CopyFlow )
+        // if (this.inputBoxType == InputType.CopyFlow )
+        // {
+        //     this.txtTitle.nativeElement.value = this.title;
+        // }
+        // else if(this.inputBoxType == InputType.SetTitle)
+        // {
+        //     this.txtTitle.nativeElement.value = this.finCanvas.GetCurrentBox().Title;
+        // }
+        // else
+        // {
+        //     
+        // }
+
+        this.txtTitle.nativeElement.value = "";
+
+        switch(this.inputBoxType)
         {
-            this.txtTitle.nativeElement.value = this.title;
-        }
-        else
-        {
-            this.txtTitle.nativeElement.value = "";
+            case InputType.CopyFlow:{
+                this.txtTitle.nativeElement.value = this.title;
+                break;
+            }
+            case InputType.SetTitle:{
+                this.txtTitle.nativeElement.value = this.finCanvas.GetCurrentBox().Title;
+                break;
+            }
+            
         }
     }
 
@@ -948,11 +1123,20 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.calKeyColumn = this.cboTargetColumn.selectedItem;
     }
 
+   
 
     
 }//class
 //############################################################################################################################################################################################################################################################
 
 
+@Directive({
+    selector:'[ngInit]'
+})
+export class NgInit implements OnInit {
+    @Input() ngInit;
 
-
+    ngOnInit(){
+        if ( this.ngInit) this.ngInit();
+    }
+}
