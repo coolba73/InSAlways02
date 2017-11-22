@@ -330,6 +330,16 @@ export class FlowTest2Service{
 
                 break;
             }
+            case "자산교차위험계산":{
+                url ="https://insallwayspythonfunctionapp.azurewebsites.net/api/CalCrossRisk?code=Ihr3/OZhvCFAKhc1OaqTvm3Qm/F9fvfzfLGH4lClHPB2OdFaRJrIBA==";
+                body = {};
+                body = prop;
+                delete body["CalculationType"];
+                body["InputData"] = this.previousResult2;
+
+                break;
+            }
+
 
 
         }//end switch

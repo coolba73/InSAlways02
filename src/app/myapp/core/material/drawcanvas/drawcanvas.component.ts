@@ -129,8 +129,12 @@ export class DrawCanvasComponent implements OnInit {
 
         if (this.YesCanvasMouseOver)
         {
-
-            // alert(e.keyCode);
+            if (e.ctrlKey && e.keyCode == 65 )
+            {
+                this.objects.forEach(i=>i.YesSelected = true);
+                this.Draw();
+                return;
+            }
 
             switch(e.keyCode)
             {
@@ -251,7 +255,6 @@ export class DrawCanvasComponent implements OnInit {
 
         if ( this.YesMouseDown )
         {
-
             if(this.yesDrawSelectBox && this.selectBox != undefined){
                 
                 this.selectBox.x2 = x;
@@ -271,7 +274,7 @@ export class DrawCanvasComponent implements OnInit {
                 });
 
             }
-            else if(this.currentObj instanceof LineBase)
+            else if(this.currentObj instanceof LineBase && !this.yesAddLine)
             {
                 let line : LineBase = <LineBase>this.currentObj;
 
@@ -322,7 +325,6 @@ export class DrawCanvasComponent implements OnInit {
                     let cirpt;
 
                     let box = this.objects.filter(i=> i instanceof BoxBase && line.Box_1_ID != i.Id ).find(i=>( 
-                            //cirpt = (<BoxBase>i).GetConnectPoint(this.ctx,x,y)).PointIndex > 0 
                             cirpt = (<BoxBase>i).GetConnectPoint2(this.ctx,line.x1, line.y1,x,y)).PointIndex > 0 
                     );
 
@@ -573,28 +575,36 @@ export class DrawCanvasComponent implements OnInit {
 	//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     SetSeq(){
 
-        let lineList = <LineBase[]>this.objects.filter(i=> i instanceof LineBase);
-        let rootBoxList : BoxBase[] = [];
-
-        this.objects.filter(i=> i instanceof BoxBase).forEach(i => {
-
-            (<BoxBase>i).Seq = 1;
-
-            if ( lineList.find(i=> i.Box_2_ID === i.Id ) === undefined)
-            {
-                rootBoxList.push(<BoxBase>i);
-            }
-
-        });
-
-
-        rootBoxList.forEach(box => {
-            lineList.filter(i=> i.Box_1_ID === box.Id ).forEach(i=>{
-                this.Trip(i.Box_2_ID,2);
+        try
+        {
+            let lineList = <LineBase[]>this.objects.filter(i=> i instanceof LineBase);
+            let rootBoxList : BoxBase[] = [];
+    
+            this.objects.filter(i=> i instanceof BoxBase).forEach(i => {
+    
+                (<BoxBase>i).Seq = 1;
+    
+                if ( lineList.find(i=> i.Box_2_ID === i.Id ) === undefined)
+                {
+                    rootBoxList.push(<BoxBase>i);
+                }
+    
             });
-        });
+    
+    
+            rootBoxList.forEach(box => {
+                lineList.filter(i=> i.Box_1_ID === box.Id ).forEach(i=>{
+                    this.Trip(i.Box_2_ID,2);
+                });
+            });
+    
+            this.Draw();
+        }
+        catch(e)
+        {
 
-        this.Draw();
+        }
+        
 
 
     }

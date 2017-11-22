@@ -86,12 +86,17 @@
   
               <dx-data-grid id="gridContainer" 
               [dataSource]="dsflowResult"  
+              [allowColumnReordering]="true"
+              [allowColumnResizing]="true"
               style="height: 350px"
               >
               <dxo-load-panel [enabled]="false"></dxo-load-panel>
               <dxo-scrolling mode="virtual"></dxo-scrolling>
               <dxo-sorting mode="multiple"></dxo-sorting>
               <dxo-selection mode="single"></dxo-selection>
+              <dxo-header-filter [visible]="true"></dxo-header-filter>
+              <dxo-filter-row [visible]="true" ></dxo-filter-row>
+              
   
             </dx-data-grid>
           </mat-tab>

@@ -70,6 +70,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     calKeyColumn = '';
     yesFullScreen = false;
     yesResetSummernote = true;
+    NewTitle = '';
+    NewID = '';
     
     
     
@@ -327,6 +329,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         
             this.CopyFlow().subscribe(
                 data => {
+                    this.title = this.NewTitle;
+                    this.id = this.NewID;
                     this.loadingVisible = false;
                 }, 
                 error => {
@@ -455,13 +459,12 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         
         // var newTitle = this.title + " " + today2;
 
-        var newTitle = this.copyFlowTitle;
-
-        let newid = UUID.UUID();
+        this.NewTitle = this.copyFlowTitle;
+        this.NewID = UUID.UUID();
 
         let body = JSON.stringify({
-            title : newTitle,
-            id : newid,
+            title : this.NewTitle,
+            id : this.NewID,
             flowobject : JSON.stringify(this.finCanvas.objects)
         });
 
