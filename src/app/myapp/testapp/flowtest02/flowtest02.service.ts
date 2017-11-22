@@ -303,24 +303,34 @@ export class FlowTest2Service{
                 url = 'https://insallwayspythonfunctionapp.azurewebsites.net/api/CalRanking?code=QFSSteFMU8MkYuDQ9VpGxqRxpzaQ/bI5/RinC7FZVCmdK2I0hsforA==';
                 para = prop;
                 para["InputData"] = this.previousResult2;
-
                 body = para;
-                
                 break;
             }
             case "표준편차":{
                 let para = {}
-                url = '';
-                para = prop;
+                url = 'https://insallwayspythonfunctionapp.azurewebsites.net/api/CalStd?code=5fmUUyL4kMJFzOn7rL2tTRZaZXhZ6D3f2zZd9FTOu2fGfmzn8135ZA==';
+                
                 let targetSource = prop["TargetDataSource"];
                 let targetTable = prop["TargetTable"]
 
                 para["InputData"] = this.previousResult2[targetSource][targetTable];
+                para["TargetColumn"] = prop["TargetColumn"]
 
                 body = para;
 
                 break;
             }
+            case "자산위험계산":{
+
+                url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/CalAssetRisk?code=t7KSP4HBsPjQheFyiIWaWqYNdU2ZmX0/L6SkWAQHPcDrVt6xuFdnjA==";
+                body = {};
+                body = prop;
+                delete body["CalculationType"];
+                body["InputData"] = this.previousResult2;
+
+                break;
+            }
+
 
         }//end switch
 

@@ -70,7 +70,12 @@ export class DrawCanvasComponent implements OnInit {
 		this.ctx = this.myCanvasRef.nativeElement.getContext("2d");
 		this.myCanvas = <HTMLCanvasElement>this.myCanvasRef.nativeElement;
 		this.captureEvents(this.myCanvas);
-	}
+    }
+    
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    GetCtx() : CanvasRenderingContext2D{
+        return this.ctx;
+    }
 
     
 	//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -265,6 +270,20 @@ export class DrawCanvasComponent implements OnInit {
                     );
                 });
 
+            }
+            else if(this.currentObj instanceof LineBase)
+            {
+                let line : LineBase = <LineBase>this.currentObj;
+
+                if (line.MouseOverLineIndex == 1)
+                {
+                    // console.log('line select');
+
+                    let dy = this.pre_y - y;
+
+                    line.SetLieDepth(dy);
+                }
+                
             }
             else if( this.objects.filter(i=>i.YesSelected).length > 1 ){
 
@@ -520,12 +539,12 @@ export class DrawCanvasComponent implements OnInit {
 	}
 
 	//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    async Draw(){
+    Draw(){
 
         this.ctx.clearRect(0,0,this.myCanvas.width, this.myCanvas.height);
 
         for (let obj of this.objects){
-          await obj.Draw(this.ctx);
+          obj.Draw(this.ctx);
         }
 
     }

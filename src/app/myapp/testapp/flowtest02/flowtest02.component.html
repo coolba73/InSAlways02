@@ -26,6 +26,10 @@
                 <button mat-raised-button color="accent" (click)="Run_Click()" >Run</button>
             </dxi-item>
 
+            <dxi-item [ratio]="1" style="margin-left: 10px">
+                <button mat-raised-button  (click)='Test_Click()' >Test</button>
+            </dxi-item>
+
             <dxi-item class="rect demo-light" [ratio]="10" style="margin-left: 10px" >
                 <i style="color: blue">{{this.title}}</i> 
             </dxi-item>
@@ -84,7 +88,7 @@
               [dataSource]="dsflowResult"  
               style="height: 350px"
               >
-              <!-- <dxo-load-panel [enabled]="true"></dxo-load-panel> -->
+              <dxo-load-panel [enabled]="false"></dxo-load-panel>
               <dxo-scrolling mode="virtual"></dxo-scrolling>
               <dxo-sorting mode="multiple"></dxo-sorting>
               <dxo-selection mode="single"></dxo-selection>
@@ -110,7 +114,7 @@
 -->
 <dx-popup   class="popup" 
             [width]="600" 
-            [height]="250" 
+            [height]="300" 
             [showTitle]="true" 
             [title]="inputBoxTitle"
             [dragEnabled]="true" 
@@ -415,6 +419,7 @@
     </div>
 
 </dx-popup>
+
 
 
 

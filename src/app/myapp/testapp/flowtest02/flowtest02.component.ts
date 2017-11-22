@@ -72,6 +72,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     yesResetSummernote = true;
     
     
+    
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     loadingVisible = false;
     popupVisible_FlowList = false;
@@ -120,12 +121,14 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             ,{'CalType':'데이터더하기'}
             ,{'CalType':'Set Ranking'}
             ,{'CalType':'표준편차'}
+            ,{'CalType':'자산위험계산'}
+            ,{'CalType':'자산교차위험계산'}
 
         ];
 
         this.menus = menuService.getMenus();
 
-        this.contextMenu = [
+        this.contextMenu = [    
                                 { 
                                     text: 'Property' 
                                 }
@@ -256,10 +259,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         // );
 
         this.dsFlowList = await this.service.CallServiceAwait(url);
-
         console.log(this.dsFlowList);
-
-
         this.popupVisible_FlowList = true;
     }
 
@@ -357,8 +357,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     btnNewCancel_Click(){
-
-        
         this.popupVisible = false;
     }
 
@@ -429,7 +427,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     SaveFlow()
     {
 
-        if (this.finCanvas.objects.length == 0) return;
+        // if (this.finCanvas.objects.length == 0) return;
 
         let body = JSON.stringify({
             title : this.title,
@@ -514,11 +512,11 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             
             console.log('RunProc Start');
     
-            let obj2 = obj.sort(i=>i.Seq);
-            obj2 = obj2.reverse();
+            let obj2 = obj.sort((n1,n2) => n1.Seq - n2.Seq);
     
             let prop;
-            for (let f of obj2)
+
+            for (let f of obj2  )
             {
                 runFlow = f;
 
@@ -526,7 +524,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     
                 if (prop == '') return;
     
-                console.log("seq : " + f.Seq);
+                console.log("seq : " + f.Seq + ` (${f.Title})`);
                 // console.log(prop);
                 // console.log(this.previousResult);
     
@@ -719,7 +717,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
             this.targetDataSource = propObj.TargetDataSource;
 
-            if (this.targetDataSource != undefined)
+            if (this.targetDataSource != undefined && this.targetDataSource != '')
                 this.targetDataSourceName =  this.previousBox.find(i=>i.ID == this.targetDataSource).Title ;
 
             this.targetTable = propObj.TargetTable;
@@ -843,7 +841,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         var re2 = await this.service.SetPreviousResultJson(this.finCanvas.objects, this.finCanvas.GetCurrentObject().Id);
 
         console.log(re2);
-        console.log(JSON.stringify(re));
+        // console.log(JSON.stringify(re));
 
         var prebox = this.finCanvas.GetPreviousBox();
 
@@ -1124,6 +1122,12 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.calKeyColumn = this.cboTargetColumn.selectedItem;
     }
 
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Test_Click(){
+        this.finCanvas.Draw();
+    }
+    
    
 
     
