@@ -751,6 +751,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             this.UseExistData = propObj.UseExistData;
 
             this.propCutRateAColumnInfo = propObj["propCutRateAColumnInfo"];
+            
+            if (this.propCutRateAColumnInfo == undefined) this.propCutRateAColumnInfo = {};
 
             this.resultColumnName = propObj.ResultColumnName;
 
