@@ -19,7 +19,7 @@
             </dxi-item>
 
             <dxi-item [ratio]="1" style="margin-left: 10px">
-                <button mat-raised-button color="primary" (click)="this.AddFlow()"  >Add Box</button>
+                <button mat-raised-button color="primary" (click)="this.AddFlow_Click()"  >Add Box</button>
             </dxi-item>
 
             <dxi-item [ratio]="1" style="margin-left: 10px">
@@ -412,7 +412,25 @@
             
         </div>
 
-        
+        <div class="dx-field" style="width: 450px; margin-left: 10px" *ngIf="this.CalculationType == '절사율 A 계산'" >
+            <div class="dx-field-label">절사율계산 A 컬럼설정</div>
+            <div class="dx-field-value">
+                <dx-select-box #cboCutRateAColumn [dataSource]='dsCutRateColumn_A' ></dx-select-box>
+            </div>
+
+            <div style='float: right; margin-top: 5px' >
+                <button mat-raised-button  (click)="btnCutRateAColumnSet_Click()" >Set</button>
+            </div>
+
+            
+            
+        </div>
+
+        <div class="dx-field" *ngIf="this.CalculationType == '절사율 A 계산'" >
+            <dx-text-area [height]="100"  [(value)] = 'strColumnInfo' [spellcheck]="false">
+
+            </dx-text-area>
+        </div>
 
         <div style='margin-top: 10px'>
             <button mat-raised-button color='warn' style='float: right;  margin-left: 10px' (click)='popupSetDataInfo_Cancel_Click()'>Cancel</button>
@@ -426,7 +444,36 @@
 </dx-popup>
 
 
+<!--
+    #########################################################################################
 
+    TextBox PopUp
+
+    #########################################################################################
+-->
+<dx-popup
+        class='popup'
+        [width]='600'
+        [height]='250'
+        [showTitle]='true'
+        title='TextBox'
+        [dragEnabled]='true'
+        [closeOnOutsideClick]='true'
+        [(visible)]='popupVisible_TextBox'
+>
+    <div *dxTemplate=" let data of 'content' " >
+        
+        <dx-text-area [height]="100" [(value)]="TextBoxValue">
+        </dx-text-area>
+
+        <div style='margin-top: 10px'>
+            <button mat-raised-button color='warn' style='float: right;  margin-left: 10px' (click)='TextBox_Cancel_Click()'>Cancel</button>
+            <button mat-raised-button color='primary'  style='float: right;' (click)='TextBox_OK_Click()'>OK</button>
+        </div>
+
+    </div>
+
+</dx-popup>
 
 
 

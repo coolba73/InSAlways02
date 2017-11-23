@@ -72,7 +72,10 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     yesResetSummernote = true;
     NewTitle = '';
     NewID = '';
-    
+    TextBoxValue = '';
+    propCutRateAColumnInfo = {};
+    propCutRateBColumnInfo = {};
+    strColumnInfo = "";
     
     
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -82,6 +85,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     popupVisible_popupStepper = false;
     popupVisible = false;
     popupVisible_popupSetDataInfo = false;
+    popupVisible_TextBox = false;
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     @ViewChild('txtTitle') txtTitle : any;
@@ -95,6 +99,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     @ViewChild("cboTargetColumn") cboTargetColumn : DxSelectBoxComponent;
     @ViewChild("cboTargetSource") cboTargetSource :DxSelectBoxComponent;
     @ViewChild("txtResultColumnName") txtResultColumnName : DxTextBoxComponent;
+    @ViewChild("cboCutRateAColumn") cboCutRateAColumn : DxSelectBoxComponent;
 
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -108,10 +113,15 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     dsTargetTable = new Array();
     dsTargetColumn = new Array();
     dsTargetSource = new Array();
+    dsCutRateColumn_A = new Array();
+
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     constructor(  private service : FlowTest2Service , private http : Http , menuService : MenuService){
 
+        //----------------------------
+        // 계산 타입 설정
+        //----------------------------
         this.dsCalculation = 
         [
              {'CalType':'Log 수익률'}
@@ -125,11 +135,16 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             ,{'CalType':'표준편차'}
             ,{'CalType':'자산위험계산'}
             ,{'CalType':'자산교차위험계산'}
+            ,{'CalType':'절사율 A 계산'}
+            ,{'CalType':'절사율 B 계산'}
 
         ];
 
         this.menus = menuService.getMenus();
 
+        //----------------------------
+        // context menu list set
+        //----------------------------
         this.contextMenu = [    
                                 { 
                                     text: 'Property' 
@@ -149,6 +164,17 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                                 }
                                 
                             ];
+
+        //----------------------------
+        // 절사율 계산 A column set
+        //----------------------------
+        this.dsCutRateColumn_A.push("R : 각 종목의 기대수익률");
+        this.dsCutRateColumn_A.push("Rf : 코스피 200 기대수익률");
+        this.dsCutRateColumn_A.push("베타j : 각종목의 베타");
+        this.dsCutRateColumn_A.push("시그마j : 각종목의 위험");
+        this.dsCutRateColumn_A.push("i : 종목 랭킹");
+
+
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -175,12 +201,16 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    AddFlow(){
+    AddFlow_Click(){
 
         this.inputBoxTitle = "Add Flow Box";
         this.inputBoxType = InputType.AddBox;
-        this.popupVisible = true;
-        this.txtTitle.nativeElement.value = '';
+
+        this.TextBoxValue = '';
+        this.popupVisible_TextBox = true;
+
+        // this.popupVisible = true;
+        // this.txtTitle.nativeElement.value = '';
         
     }
 
@@ -672,6 +702,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             flowProperty.DataSetType = this.DataSetType;
         }
 
+        flowProperty["propCutRateAColumnInfo"] = this.propCutRateAColumnInfo;
+
         (<FlowBox>this.finCanvas.GetCurrentBox()).MyProperty = JSON.stringify(flowProperty);
 
         this.popupVisible_BoxProperty = false;
@@ -691,6 +723,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             alert('no selected box');
             return;
         }
+
+        
 
         this.previousBox = await this.finCanvas.GetPreviousBox();
 
@@ -715,6 +749,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             this.dsMyDataSource = propObj.MyData;
             this.DataSetType = propObj.DataSetType;
             this.UseExistData = propObj.UseExistData;
+
+            this.propCutRateAColumnInfo = propObj["propCutRateAColumnInfo"];
 
             this.resultColumnName = propObj.ResultColumnName;
 
@@ -943,7 +979,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 break;
            }
            case "Add Box":{
-                this.AddFlow();
+                // this.AddFlow();
                break;
            }
            case "Run":{
@@ -1030,7 +1066,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     SetBoxTitle(){
         this.inputBoxType = InputType.SetTitle;
         this.inputBoxTitle = "Set Title";
-        this.popupVisible = true;
+        // this.popupVisible = true;
+        this.TextBoxValue = this.finCanvas.GetCurrentBox().Title;
+        this.popupVisible_TextBox = true;
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -1128,8 +1166,110 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     Test_Click(){
-        this.finCanvas.Draw();
+        this.popupVisible_TextBox = true;
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    TextBox_Cancel_Click(){
+
+        this.popupVisible_TextBox = false;
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    TextBox_OK_Click(){
+
+        this.popupVisible_TextBox = false;
+
+        if (this.inputBoxType == InputType.AddBox)
+        {
+            let flowBox = new FlowBox();
+            
+            flowBox.x = 10;
+            flowBox.y = 10;
+            flowBox.Title = this.TextBoxValue;
+    
+            this.finCanvas.AddObject(flowBox);
+
+            this.finCanvas.Draw();
+        }
+        else if ( this.inputBoxType == InputType.SetTitle){
+
+            this.finCanvas.GetCurrentBox().Title = this.TextBoxValue;
+            console.log(this.TextBoxValue);
+
+            this.finCanvas.Draw();
+        }
+    }
+    
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    btnCutRateAColumnSet_Click(){
+
+        switch(this.cboCutRateAColumn.selectedItem){
+            case "R : 각 종목의 기대수익률":{
+                this.propCutRateAColumnInfo["RI_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id ;
+                this.propCutRateAColumnInfo["RI_TargetTable"] = this.cboTargetTable.selectedItem;
+                this.propCutRateAColumnInfo["RI_TargetColumn"] = this.cboTargetColumn.selectedItem;
+                break;
+            }
+            case "Rf : 코스피 200 기대수익률":{
+                this.propCutRateAColumnInfo["RF_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id;
+                this.propCutRateAColumnInfo["RF_TargetTable"] = this.cboTargetTable.selectedItem;
+                this.propCutRateAColumnInfo["RF_TargetColumn"] = this.cboTargetColumn.selectedItem;
+                break;
+            }
+            case "베타j : 각종목의 베타":{
+                this.propCutRateAColumnInfo["Beta_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id;
+                this.propCutRateAColumnInfo["Beta_TargetTable"] = this.cboTargetTable.selectedItem;
+                this.propCutRateAColumnInfo["Beta_TargetColumn"] = this.cboTargetColumn.selectedItem;
+                break;
+            }
+            case "시그마j : 각종목의 위험":{
+                this.propCutRateAColumnInfo["Sigma_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id;
+                this.propCutRateAColumnInfo["Sigma_TargetTable"] = this.cboTargetTable.selectedItem;
+                this.propCutRateAColumnInfo["Sigma_TargetColumn"] = this.cboTargetColumn.selectedItem;
+                break;
+            }
+            case "i : 종목 랭킹":{
+                this.propCutRateAColumnInfo["Rank_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id;
+                this.propCutRateAColumnInfo["Rank_TargetTable"] = this.cboTargetTable.selectedItem;
+                this.propCutRateAColumnInfo["Rank_TargetColumn"] = this.cboTargetColumn.selectedItem;
+                break;
+            }
+        }
+
+        this.SetCurRateAColumnInfoString();
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    SetCurRateAColumnInfoString(){
+
+        let SetCurRateColumnInfoString = "" ;
+        
+        let r_source= this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["RI_TargetSource"]).Title;
+        let r_column = this.propCutRateAColumnInfo["RI_TargetColumn"];
+
+        let rf_source=this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["RF_TargetSource"]).Title;
+        let rf_column = this.propCutRateAColumnInfo["RF_TargetColumn"];
+
+        let beta_source=this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["Beta_TargetSource"]).Title;
+        let beta_column = this.propCutRateAColumnInfo["Beta_TargetColumn"];
+
+        let sigma_source=this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["Sigma_TargetSource"]).Title;
+        let sigma_column = this.propCutRateAColumnInfo["Sigma_TargetColumn"];
+
+        let rank_source=this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["Rank_TargetSource"]).Title;
+        let rank_column = this.propCutRateAColumnInfo["Rank_TargetColumn"];
+
+        SetCurRateColumnInfoString += `R : 각 종목의 기대수익률 - ${r_source} - ${r_column} \n` ;
+        SetCurRateColumnInfoString += `Rf : 코스피 200 기대수익률 - ${rf_source} - ${rf_column} \n` ;
+        SetCurRateColumnInfoString += `베타j : 각종목의 베타 - ${beta_source} - ${beta_column} \n` ;
+        SetCurRateColumnInfoString += `시그마j : 각종목의 위험 - ${sigma_source} - ${sigma_column} \n` ;
+        SetCurRateColumnInfoString += `i : 종목 랭킹 - ${rank_source} - ${rank_column} \n` ;
+
+        this.strColumnInfo = SetCurRateColumnInfoString;
+
+    }
+    
     
    
 

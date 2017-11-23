@@ -96,15 +96,31 @@ export class BoxBase extends BaseObject{
         //-------------------------------------
         // Draw Title
         //-------------------------------------
-        ctx.fillStyle = this.TextColor;
-        ctx.font =  this.FonstSize.toString() +  "px Arial";
-        let txt_width = ctx.measureText(this.Title).width;
-        let text_x = this.x + (this.Width / 2) - ( txt_width/2  );
-        let text_y = this.y + (this.Height /2) + ( this.FonstSize  / 2 );
-        ctx.fillText(this.Title, text_x, text_y);
+        this.DrawText(ctx);
+        // ctx.fillStyle = this.TextColor;
+        // ctx.font =  this.FonstSize.toString() +  "px Arial";
+        
+        
+        // let txt_width = ctx.measureText(this.Title).width;
+        // let text_x = this.x + (this.Width / 2) - ( txt_width/2  );
+        // let text_y = this.y + (this.Height /2) + ( this.FonstSize  / 2 );
 
-        this.Width = Math.max(this.Width, (txt_width + 20) );
+        // // ctx.fillText(this.Title, text_x, text_y);
 
+        // var lines = this.Title.split('\n');
+        // var lineheight = 15;
+        // var calWidth=0;
+
+        // for (var i = 0; i<lines.length; i++){
+        //     ctx.fillText(lines[i], text_x, text_y + (i*lineheight) );
+        // }
+
+        // this.Width =  Math.max( calWidth + 20 , 100);
+        // this.Height = Math.max( (parseInt(ctx.font) * this.Title.split(/\r\n|\r|\n/).length) + 40, 50);
+
+        //-------------------------------------
+        // Draw MouseOver
+        //-------------------------------------
         if(this.YesMouseOver)
         {
             this.DrawMouseOver(ctx);
@@ -150,6 +166,35 @@ export class BoxBase extends BaseObject{
             }
 
         }
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    DrawText(ctx:CanvasRenderingContext2D){
+
+        ctx.fillStyle = this.TextColor;
+        ctx.font =  this.FonstSize.toString() +  "px Arial";
+        
+        let txt_width = 0;
+        
+        var lines = this.Title.split('\n');
+        var calWidth=0;
+
+        for (var i = 0; i<lines.length; i++){
+            txt_width = Math.max(txt_width ,ctx.measureText(lines[i]).width )
+        }
+
+        this.Width =  Math.max( txt_width + 20 , 100);
+        this.Height = Math.max( this.FonstSize * i + 40, 50);
+
+        let text_x = this.x + (this.Width / 2) - ( txt_width/2  );
+        let text_y = this.y + (this.Height /2) - (i*this.FonstSize/2) + this.FonstSize  ;
+
+        for (var i = 0; i<lines.length; i++){
+            ctx.fillText(lines[i], text_x, text_y + (i*this.FonstSize) );
+        }
+
+       
 
     }
 
