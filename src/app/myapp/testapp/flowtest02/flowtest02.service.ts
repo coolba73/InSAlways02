@@ -339,8 +339,8 @@ export class FlowTest2Service{
 
                 break;
             }
-            case "절사율 A 계산":{
-                url ="https://insallwayspythonfunctionapp.azurewebsites.net/api/CalCurRateA?code=Xe8Xc4ckkJZ7YFJwgDxoIGmymbYJPoxSkoO6iTmMaWNQD/ZEofwODg==";
+            case "절사율계산":{
+                url ="https://insallwayspythonfunctionapp.azurewebsites.net/api/CalCutRateTotal?code=mw8M5DtXKgncmSz84xKzWINUPtcdclQd3VfvajdMQn871Aay/2wA7Q==";
                 body = {};
                 body = prop;
                 delete body["CalculationType"];

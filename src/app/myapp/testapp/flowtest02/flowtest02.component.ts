@@ -135,8 +135,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             ,{'CalType':'표준편차'}
             ,{'CalType':'자산위험계산'}
             ,{'CalType':'자산교차위험계산'}
-            ,{'CalType':'절사율 A 계산'}
-            ,{'CalType':'절사율 B 계산'}
+            ,{'CalType':'절사율계산'}
 
         ];
 
@@ -172,6 +171,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.dsCutRateColumn_A.push("베타j : 각종목의 베타");
         this.dsCutRateColumn_A.push("시그마j : 각종목의 위험");
         this.dsCutRateColumn_A.push("i : 종목 랭킹");
+        this.dsCutRateColumn_A.push("시장의 위험");
 
 
     }
@@ -1234,6 +1234,12 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 this.propCutRateAColumnInfo["Rank_TargetColumn"] = this.cboTargetColumn.selectedItem;
                 break;
             }
+            case "시장의 위험":{
+                this.propCutRateAColumnInfo["MarketRisk_TargetSource"] = this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem ).ID;
+                this.propCutRateAColumnInfo["MarketRisk_TargetTable"] = this.cboTargetTable.selectedItem;
+                this.propCutRateAColumnInfo["MarketRisk_TargetColumn"] = this.cboTargetColumn.selectedItem;
+                break;
+            }
         }
 
         this.SetCurRateAColumnInfoString();
@@ -1253,6 +1259,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             let sigma_column = "";
             let rank_source = "";
             let rank_column = "";
+            let marketrisk_source = "";
+            let marketrisk_column = "";
 
             if (this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Over_TargetSource"]) != null)
             {
@@ -1277,11 +1285,18 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 rank_source=this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Rank_TargetSource"])["Title"];
                 rank_column = this.propCutRateAColumnInfo["Rank_TargetColumn"];
             }
+
+            if ( this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["MarketRisk_TargetSource"]) != null)
+            {
+                marketrisk_source=this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["MarketRisk_TargetSource"])["Title"];
+                marketrisk_column = this.propCutRateAColumnInfo["MarketRisk_TargetColumn"];
+            }
     
             SetCurRateColumnInfoString += `초과수익률 - ${over_source} - ${over_column} \n` ;
             SetCurRateColumnInfoString += `베타j : 각종목의 베타 - ${beta_source} - ${beta_column} \n` ;
             SetCurRateColumnInfoString += `시그마j : 각종목의 위험 - ${sigma_source} - ${sigma_column} \n` ;
             SetCurRateColumnInfoString += `i : 종목 랭킹 - ${rank_source} - ${rank_column} \n` ;
+            SetCurRateColumnInfoString += `시장리스크 - ${marketrisk_source} - ${marketrisk_column} \n` ;
     
             this.strColumnInfo = SetCurRateColumnInfoString;
             console.log(this.propCutRateAColumnInfo);
