@@ -96,7 +96,7 @@ export class FlowTest2Service{
 
                 prop = f.GetProperty();
     
-                if (prop == '') return;
+                if (prop === '') return;
     
                 console.log("seq : " + f.Seq);
                 console.log(prop);
@@ -105,7 +105,7 @@ export class FlowTest2Service{
                 this.SetPreviousResult(Objects, f.Id);
                 this.SetPreviousResultJson(Objects, f.Id);
     
-                if(prop.UseExistData == false || f.ResultDataJsonString == '' ){
+                if(prop.UseExistData === false || f.ResultDataJsonString === '' ){
                     switch(prop.Type)
                     {
                         case "DataSet":{
@@ -262,8 +262,8 @@ export class FlowTest2Service{
 
                 let para = {};
 
-                if (prop.CalculationType == "데이터빼기") para["CalType"] = "Minus";
-                else if (prop.CalculationType == "데이터곱") para["CalType"] = "Multiply";
+                if (prop.CalculationType === "데이터빼기") para["CalType"] = "Minus";
+                else if (prop.CalculationType === "데이터곱") para["CalType"] = "Multiply";
 
                 para["TargetDataSource"] = prop.TargetDataSource;
                 para["TargetTable"] = prop.TargetTable;
@@ -284,7 +284,7 @@ export class FlowTest2Service{
                 let para = {};
                 url = 'https://insallwayspythonfunctionapp.azurewebsites.net/api/CalRowByRow?code=tGxoY55sNxIF4RhW0atbyYjMFgNmCRZioeniCqnxnyFPnVFG1haMAA==';
 
-                if (prop.CalculationType == "데이터나누기") para["CalType"] = "division";
+                if (prop.CalculationType === "데이터나누기") para["CalType"] = "division";
 
                 para["CalKeyColumn"] = prop.CalKeyColumn;
                 para["DenominatorColumn"] = prop.DenominatorColumn;
@@ -339,6 +339,14 @@ export class FlowTest2Service{
 
                 break;
             }
+            case "절사율 A 계산":{
+                url ="https://insallwayspythonfunctionapp.azurewebsites.net/api/CalCurRateA?code=Xe8Xc4ckkJZ7YFJwgDxoIGmymbYJPoxSkoO6iTmMaWNQD/ZEofwODg==";
+                body = {};
+                body = prop;
+                delete body["CalculationType"];
+                body["InputData"] = this.previousResult2;
+                break;
+            }
 
 
 
@@ -363,11 +371,11 @@ export class FlowTest2Service{
 
         this.previousResult = {};
 
-        let lines = (<LineBase[]>Objects.filter(i=> i instanceof LineBase)).filter(i=>i.Box_2_ID == id);
+        let lines = (<LineBase[]>Objects.filter(i=> i instanceof LineBase)).filter(i=>i.Box_2_ID === id);
 
         for(let line of lines){
             
-            let box = <FlowBox>Objects.find(i=> i.Id == line.Box_1_ID);
+            let box = <FlowBox>Objects.find(i=> i.Id === line.Box_1_ID);
             this.previousResult[box.Id] = box.ResultDataJsonString;
 
         }
@@ -387,11 +395,11 @@ export class FlowTest2Service{
         this.previousResult2 = {};
         
 
-        let lines = (<LineBase[]>Objects.filter(i=> i instanceof LineBase)).filter(i=>i.Box_2_ID == id);
+        let lines = (<LineBase[]>Objects.filter(i=> i instanceof LineBase)).filter(i=>i.Box_2_ID === id);
 
         for(let line of lines){
             
-            let box = <FlowBox>Objects.find(i=> i.Id == line.Box_1_ID);
+            let box = <FlowBox>Objects.find(i=> i.Id === line.Box_1_ID);
             this.previousResult2[box.Id] =  JSON.parse(box.ResultDataJsonString);
         }
 

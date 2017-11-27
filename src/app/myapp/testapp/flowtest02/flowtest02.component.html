@@ -314,13 +314,13 @@
                         <button mat-raised-button color='primary' (click)='btnSetDataInfo_Click()'  >Set DataInfo</button>
                     </div>
 
-                    <div style="height: 400px">
+                    <div style="height: 350px">
                         <dx-data-grid
                             #grdCalculation
                             [hoverStateEnabled]="true"
                             [selectedRowKeys]="[]"
                             [dataSource]="dsCalculation" 
-                            style="height: 300px"
+                            style="height: 250px"
                             (onRowClick)='btnSetCalculationType_Click()'
                         >
                             <dxo-load-panel [enabled]="true"></dxo-load-panel>

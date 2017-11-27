@@ -168,8 +168,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         //----------------------------
         // 절사율 계산 A column set
         //----------------------------
-        this.dsCutRateColumn_A.push("R : 각 종목의 기대수익률");
-        this.dsCutRateColumn_A.push("Rf : 코스피 200 기대수익률");
+        this.dsCutRateColumn_A.push("초과수익률");
         this.dsCutRateColumn_A.push("베타j : 각종목의 베타");
         this.dsCutRateColumn_A.push("시그마j : 각종목의 위험");
         this.dsCutRateColumn_A.push("i : 종목 랭킹");
@@ -322,7 +321,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     OK_Click(aTitle : string){
     
-        if (this.inputBoxType == InputType.NewFlow)
+        if (this.inputBoxType === InputType.NewFlow)
         {
             this.title = aTitle;
             this.id = UUID.UUID();
@@ -342,7 +341,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 }
             )
         }
-        else if (this.inputBoxType == InputType.AddBox)
+        else if (this.inputBoxType === InputType.AddBox)
         {
             let flowBox = new FlowBox();
             
@@ -352,7 +351,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     
             this.finCanvas.AddObject(flowBox);            
         }
-        else if (this.inputBoxType == InputType.CopyFlow)
+        else if (this.inputBoxType === InputType.CopyFlow)
         {
             this.copyFlowTitle = aTitle;
             this.loadingVisible = true;
@@ -368,7 +367,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                     alert("Error");
                 });
         }
-        else if ( this.inputBoxType == InputType.SetTitle){
+        else if ( this.inputBoxType === InputType.SetTitle){
             this.finCanvas.GetCurrentBox().Title = this.txtTitle.nativeElement.value;
         }
 
@@ -411,7 +410,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         let sel = this.grdFlowList.instance.getSelectedRowKeys();
         
         this.title = sel[0]["title"];
-        let sel2 = this.dsFlowList.find(i=> i["title"] == this.title );
+        let sel2 = this.dsFlowList.find(i=> i["title"] === this.title );
 
         this.id = sel2["id"];
 
@@ -555,7 +554,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
                 prop = f.GetProperty();
     
-                if (prop == '') return;
+                if (prop === '') return;
     
                 console.log("seq : " + f.Seq + ` (${f.Title})`);
                 // console.log(prop);
@@ -564,7 +563,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 this.service.SetPreviousResult(Objects, f.Id);
                 this.service.SetPreviousResultJson(Objects, f.Id);
     
-                if(prop.UseExistData == false || f.ResultDataJsonString == '' )
+                if(prop.UseExistData === false || f.ResultDataJsonString === '' )
                 {
                     f.RunStatus = true;
                     f.RunEnd = false;
@@ -679,7 +678,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         flowProperty.Type = this.BoxPropertyType;
         flowProperty.UseExistData = this.UseExistData;
 
-        if (flowProperty.Type == "Calculation")
+        if (flowProperty.Type === "Calculation")
         {
             // let sel = this.grdCalculation.instance.getSelectedRowKeys();
             // console.log(sel[0]);
@@ -718,7 +717,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     async btnProperty_Click(){
 
-        if (this.finCanvas.GetCurrentBox() == null) 
+        if (this.finCanvas.GetCurrentBox() === null) 
         {
             alert('no selected box');
             return;
@@ -752,14 +751,14 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
             this.propCutRateAColumnInfo = propObj["propCutRateAColumnInfo"];
             
-            if (this.propCutRateAColumnInfo == undefined) this.propCutRateAColumnInfo = {};
+            if (this.propCutRateAColumnInfo === undefined) this.propCutRateAColumnInfo = {};
 
             this.resultColumnName = propObj.ResultColumnName;
 
             this.targetDataSource = propObj.TargetDataSource;
 
             if (this.targetDataSource != undefined && this.targetDataSource != '')
-                this.targetDataSourceName =  this.previousBox.find(i=>i.ID == this.targetDataSource).Title ;
+                this.targetDataSourceName =  this.previousBox.find(i=>i.ID === this.targetDataSource).Title ;
 
             this.targetTable = propObj.TargetTable;
             this.targetColumn = propObj.TargetColumn;
@@ -769,7 +768,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
             this.calKeyColumn = propObj.CalKeyColumn;
 
-            if (this.BoxPropertyType == "Calculation"){
+            if (this.BoxPropertyType === "Calculation"){
                 
                 // this.grdCalculation.instance.searchByText(propObj.CalculationType);
                 // this.grdCalculation.instance.selectRows([1],true);
@@ -904,7 +903,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     popupSetDataInfo_OK_Click(){
 
-        this.targetDataSource =  this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem).ID ;
+        
+        this.targetDataSource =  this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem).ID ;
         this.targetDataSourceName = this.cboTargetSource.selectedItem;
         this.targetTable = this.cboTargetTable.selectedItem;
         this.targetColumn = this.cboTargetColumn.selectedItem;
@@ -930,6 +930,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             console.log(i);
             this.dsTargetSource.push(i.Title);
         }
+
+        this.propCutRateAColumnInfo = flowbox.GetProperty()["propCutRateAColumnInfo"];
+        this.SetCurRateAColumnInfoString();
 
         // for (var k1 in preData)
         // {
@@ -1082,7 +1085,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         console.log(this.cboTargetSource.selectedItem);
 
-        let id = this.previousBox.find(i=> i.Title == this.cboTargetSource.selectedItem ).ID;
+        let id = this.previousBox.find(i=> i.Title === this.cboTargetSource.selectedItem ).ID;
 
         console.log(id);
 
@@ -1103,7 +1106,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         this.dsTargetColumn = new Array();
 
-        let id = this.previousBox.find(i=> i.Title == this.cboTargetSource.selectedItem ).ID;
+        let id = this.previousBox.find(i=> i.Title === this.cboTargetSource.selectedItem ).ID;
 
         let obj = JSON.parse( this.inputData[id])[this.cboTargetTable.selectedItem];
 
@@ -1182,7 +1185,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         this.popupVisible_TextBox = false;
 
-        if (this.inputBoxType == InputType.AddBox)
+        if (this.inputBoxType === InputType.AddBox)
         {
             let flowBox = new FlowBox();
             
@@ -1194,7 +1197,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
             this.finCanvas.Draw();
         }
-        else if ( this.inputBoxType == InputType.SetTitle){
+        else if ( this.inputBoxType === InputType.SetTitle){
 
             this.finCanvas.GetCurrentBox().Title = this.TextBoxValue;
             console.log(this.TextBoxValue);
@@ -1207,32 +1210,26 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     btnCutRateAColumnSet_Click(){
 
         switch(this.cboCutRateAColumn.selectedItem){
-            case "R : 각 종목의 기대수익률":{
-                this.propCutRateAColumnInfo["RI_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id ;
-                this.propCutRateAColumnInfo["RI_TargetTable"] = this.cboTargetTable.selectedItem;
-                this.propCutRateAColumnInfo["RI_TargetColumn"] = this.cboTargetColumn.selectedItem;
-                break;
-            }
-            case "Rf : 코스피 200 기대수익률":{
-                this.propCutRateAColumnInfo["RF_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id;
-                this.propCutRateAColumnInfo["RF_TargetTable"] = this.cboTargetTable.selectedItem;
-                this.propCutRateAColumnInfo["RF_TargetColumn"] = this.cboTargetColumn.selectedItem;
+            case "초과수익률":{
+                this.propCutRateAColumnInfo["Over_TargetSource"] = this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem ).ID ;
+                this.propCutRateAColumnInfo["Over_TargetTable"] = this.cboTargetTable.selectedItem;
+                this.propCutRateAColumnInfo["Over_TargetColumn"] = this.cboTargetColumn.selectedItem;
                 break;
             }
             case "베타j : 각종목의 베타":{
-                this.propCutRateAColumnInfo["Beta_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id;
+                this.propCutRateAColumnInfo["Beta_TargetSource"] = this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem ).ID;
                 this.propCutRateAColumnInfo["Beta_TargetTable"] = this.cboTargetTable.selectedItem;
                 this.propCutRateAColumnInfo["Beta_TargetColumn"] = this.cboTargetColumn.selectedItem;
                 break;
             }
             case "시그마j : 각종목의 위험":{
-                this.propCutRateAColumnInfo["Sigma_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id;
+                this.propCutRateAColumnInfo["Sigma_TargetSource"] = this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem ).ID;
                 this.propCutRateAColumnInfo["Sigma_TargetTable"] = this.cboTargetTable.selectedItem;
                 this.propCutRateAColumnInfo["Sigma_TargetColumn"] = this.cboTargetColumn.selectedItem;
                 break;
             }
             case "i : 종목 랭킹":{
-                this.propCutRateAColumnInfo["Rank_TargetSource"] = this.previousBox.find(i=>i.Title == this.cboTargetSource.selectedItem ).Id;
+                this.propCutRateAColumnInfo["Rank_TargetSource"] = this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem ).ID;
                 this.propCutRateAColumnInfo["Rank_TargetTable"] = this.cboTargetTable.selectedItem;
                 this.propCutRateAColumnInfo["Rank_TargetColumn"] = this.cboTargetColumn.selectedItem;
                 break;
@@ -1245,30 +1242,55 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     SetCurRateAColumnInfoString(){
 
-        let SetCurRateColumnInfoString = "" ;
+        try{
+
+            let SetCurRateColumnInfoString = "" ;
+            let over_source = "";
+            let over_column = "";
+            let beta_source = "";
+            let beta_column = ""
+            let sigma_source = "";
+            let sigma_column = "";
+            let rank_source = "";
+            let rank_column = "";
+
+            if (this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Over_TargetSource"]) != null)
+            {
+                over_source = this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Over_TargetSource"])["Title"];
+                over_column = this.propCutRateAColumnInfo["Over_TargetColumn"];
+            }
+    
+            if ( this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Beta_TargetSource"]) != null)
+            {
+                beta_source=this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Beta_TargetSource"])["Title"];
+                beta_column = this.propCutRateAColumnInfo["Beta_TargetColumn"];
+            }
+            
+            if (this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Sigma_TargetSource"]) != null)
+            {
+                sigma_source=this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Sigma_TargetSource"])["Title"];
+                sigma_column = this.propCutRateAColumnInfo["Sigma_TargetColumn"];
+            }
+
+            if ( this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Rank_TargetSource"]) != null)
+            {
+                rank_source=this.previousBox.find(i=>i.ID === this.propCutRateAColumnInfo["Rank_TargetSource"])["Title"];
+                rank_column = this.propCutRateAColumnInfo["Rank_TargetColumn"];
+            }
+    
+            SetCurRateColumnInfoString += `초과수익률 - ${over_source} - ${over_column} \n` ;
+            SetCurRateColumnInfoString += `베타j : 각종목의 베타 - ${beta_source} - ${beta_column} \n` ;
+            SetCurRateColumnInfoString += `시그마j : 각종목의 위험 - ${sigma_source} - ${sigma_column} \n` ;
+            SetCurRateColumnInfoString += `i : 종목 랭킹 - ${rank_source} - ${rank_column} \n` ;
+    
+            this.strColumnInfo = SetCurRateColumnInfoString;
+            console.log(this.propCutRateAColumnInfo);
+
+        }
+        catch(Error){
+            console.log(Error);
+        }
         
-        let r_source= this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["RI_TargetSource"]).Title;
-        let r_column = this.propCutRateAColumnInfo["RI_TargetColumn"];
-
-        let rf_source=this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["RF_TargetSource"]).Title;
-        let rf_column = this.propCutRateAColumnInfo["RF_TargetColumn"];
-
-        let beta_source=this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["Beta_TargetSource"]).Title;
-        let beta_column = this.propCutRateAColumnInfo["Beta_TargetColumn"];
-
-        let sigma_source=this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["Sigma_TargetSource"]).Title;
-        let sigma_column = this.propCutRateAColumnInfo["Sigma_TargetColumn"];
-
-        let rank_source=this.previousBox.find(i=>i.Id == this.propCutRateAColumnInfo["Rank_TargetSource"]).Title;
-        let rank_column = this.propCutRateAColumnInfo["Rank_TargetColumn"];
-
-        SetCurRateColumnInfoString += `R : 각 종목의 기대수익률 - ${r_source} - ${r_column} \n` ;
-        SetCurRateColumnInfoString += `Rf : 코스피 200 기대수익률 - ${rf_source} - ${rf_column} \n` ;
-        SetCurRateColumnInfoString += `베타j : 각종목의 베타 - ${beta_source} - ${beta_column} \n` ;
-        SetCurRateColumnInfoString += `시그마j : 각종목의 위험 - ${sigma_source} - ${sigma_column} \n` ;
-        SetCurRateColumnInfoString += `i : 종목 랭킹 - ${rank_source} - ${rank_column} \n` ;
-
-        this.strColumnInfo = SetCurRateColumnInfoString;
 
     }
     
