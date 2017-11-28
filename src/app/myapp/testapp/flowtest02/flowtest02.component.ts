@@ -76,6 +76,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     propCutRateAColumnInfo = {};
     propCutRateBColumnInfo = {};
     strColumnInfo = "";
+    propCalculation = {};
     
     
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -130,9 +131,11 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             ,{'CalType':'데이터곱'}
             ,{'CalType':'데이터빼기'}
             ,{'CalType':'데이터나누기'}
+            ,{'CalType':'데이터나누기(List To List)'}
             ,{'CalType':'데이터더하기'}
             ,{'CalType':'Set Ranking'}
             ,{'CalType':'표준편차'}
+            ,{'CalType':'표준편차(전체)'}
             ,{'CalType':'자산위험계산'}
             ,{'CalType':'자산교차위험계산'}
             ,{'CalType':'절사율계산'}
@@ -696,6 +699,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             flowProperty.NumeratorColumn = this.numeratorColumn;
             flowProperty.DenominatorColumn = this.denominatorColumn;
             flowProperty.CalKeyColumn = this.calKeyColumn;
+            flowProperty.CalculationInfo = this.propCalculation;
 
         }
         else
@@ -726,8 +730,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             return;
         }
 
-        
-
         this.previousBox = await this.finCanvas.GetPreviousBox();
 
         this.CalculationType = '';
@@ -742,6 +744,15 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.popupVisible_BoxProperty = true;
 
         let prop = (<FlowBox>this.finCanvas.GetCurrentBox()).MyProperty;
+
+        if (prop["CalculationInfo"] === undefined)
+        {
+            this.propCalculation = {};
+        }
+        else
+        {
+            this.propCalculation = prop["CalculationInfo"]
+        }
 
         if (prop != "")
         {
@@ -936,6 +947,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         this.propCutRateAColumnInfo = flowbox.GetProperty()["propCutRateAColumnInfo"];
         this.SetCurRateAColumnInfoString();
+
+        
 
         // for (var k1 in preData)
         // {
@@ -1157,13 +1170,40 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     Numerator_Click(){
 
         //분자클릭
-        this.numeratorColumn = this.cboTargetColumn.selectedItem;
+        this.propCalculation["NumeratorColumn"] = this.cboTargetColumn.selectedItem;
+        this.propCalculation["NumeratorTable"] = this.cboTargetTable.selectedItem;
+        this.propCalculation["NumeratorSource"] = this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem).ID
+        
+        this.SetDividendInfo();
     }
     
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     Denominator_Click(){
+
         //분모클릭
         this.denominatorColumn = this.cboTargetColumn.selectedItem;
+
+        this.propCalculation["DenominatorColumn"] = this.cboTargetColumn.selectedItem ;
+        this.propCalculation["DenominatorTable"] = this.cboTargetTable.selectedItem ;
+        this.propCalculation["DenominatorSource"] = this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem).ID ;
+
+        this.SetDividendInfo();
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    SetDividendInfo(){
+        
+        let dName = '';
+        let nName = '';
+
+        if ( this.propCalculation["DenominatorSource"] != undefined)
+            dName = this.previousBox.find(i=>i.ID === this.propCalculation["DenominatorSource"]).Title
+
+        if ( this.propCalculation["NumeratorSource"] != undefined)            
+            nName = this.previousBox.find(i=>i.ID === this.propCalculation["NumeratorSource"]).Title
+
+        this.strColumnInfo = ` ${nName}.${this.propCalculation["NumeratorColumn"]}  / ${dName}.${this.propCalculation["DenominatorColumn"]} `;
+
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________

@@ -363,6 +363,14 @@ export class FlowTest2Service{
                 body["InputData"] = this.previousResult2;
                 break;
             }
+            case "표준편차(전체)":{
+                url ="https://insallwayspythonfunctionapp.azurewebsites.net/api/CalStdAll?code=Cb8pFDNtocwsg9KYMVl3SsoVSfKf3SMZrTNY4od0erWClapV6hmolg==";
+                body = {};
+                body = prop;
+                delete body["CalculationType"];
+                body["InputData"] = this.previousResult2;
+                break;
+            }
 
 
 

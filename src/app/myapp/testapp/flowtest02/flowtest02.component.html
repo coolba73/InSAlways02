@@ -408,7 +408,9 @@ shadingColor="rgba(0,0,0,0.4)"
             <i style="color: blue">( {{numeratorColumn}} / {{denominatorColumn}} ) , Key Column : {{calKeyColumn}}</i>
         </div>
         
-        <div class="dx-field" *ngIf="this.CalculationType == '데이터나누기'" >
+        <div class="dx-field" *ngIf="this.CalculationType == '데이터나누기'
+        || this.CalculationType == '데이터나누기(List To List)' 
+        " >
            
             <button mat-raised-button color='accent'  style='float: right;margin-left: 10px'  (click)='SetKeyColumn_Click()'  >Key</button>
             <button mat-raised-button color='accent' style='float: right;  margin-left: 10px' (click)='Denominator_Click()' >분모</button>
@@ -430,7 +432,9 @@ shadingColor="rgba(0,0,0,0.4)"
             
         </div>
 
-        <div class="dx-field" *ngIf="this.CalculationType == '절사율계산'" >
+        <div class="dx-field" *ngIf="this.CalculationType == '절사율계산' 
+                                    || this.CalculationType == '데이터나누기(List To List)' 
+                                                    " >
             <dx-text-area [height]="100"  [(value)] = 'strColumnInfo' [spellcheck]="false">
 
             </dx-text-area>
