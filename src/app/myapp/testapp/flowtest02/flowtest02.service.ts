@@ -371,6 +371,15 @@ export class FlowTest2Service{
                 body["InputData"] = this.previousResult2;
                 break;
             }
+            case "데이터나누기(List To List)":{
+                url ="";
+                body = {};
+                prop["CalType"] = "Division"
+                body = prop;
+                delete body["CalculationType"];
+                body["InputData"] = this.previousResult2;
+                break;
+            }
 
 
 
