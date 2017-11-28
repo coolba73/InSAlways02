@@ -347,6 +347,22 @@ export class FlowTest2Service{
                 body["InputData"] = this.previousResult2;
                 break;
             }
+            case "투자비중계산":{
+                url ="https://insallwayspythonfunctionapp.azurewebsites.net/api/CalInvestRate?code=otp8hIIF821tyA6bH1NRotCDdsCa89XdQOqfcBsGl4qERk0ai6SqDA==";
+                body = {};
+                body = prop;
+                delete body["CalculationType"];
+                body["InputData"] = this.previousResult2;
+                break;
+            }
+            case "종목명조회":{
+                url ="https://insalwaysfuncapp01.azurewebsites.net/api/GetItemName?code=qScvpNKVU4LavMT5jGaMidTMebKn25dBXtsuJkUxeuLenl4zarkE3g==";
+                body = {};
+                body = prop;
+                delete body["CalculationType"];
+                body["InputData"] = this.previousResult2;
+                break;
+            }
 
 
 

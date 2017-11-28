@@ -136,6 +136,9 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             ,{'CalType':'자산위험계산'}
             ,{'CalType':'자산교차위험계산'}
             ,{'CalType':'절사율계산'}
+            ,{'CalType':'투자비중계산'}
+            ,{'CalType':'종목명조회'}
+            
 
         ];
 
