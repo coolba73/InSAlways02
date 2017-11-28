@@ -1,3 +1,23 @@
+ <!--
+    #########################################################################################
+
+    load panel
+
+    #########################################################################################
+-->
+<dx-load-panel
+#loadPanel
+shadingColor="rgba(0,0,0,0.4)"
+[position]="{ of: '#flowtest02_container' }"
+[(visible)]="loadingVisible"
+[showIndicator]="true"
+[showPane]="true"
+[shading]="true"
+[closeOnOutsideClick]="false"
+(onShown)="onShown()"
+>
+</dx-load-panel>
+
  <div id='flowtest02_main'>
     <br>
 
@@ -145,25 +165,6 @@
 
 </dx-popup>
 
-<!--
-    #########################################################################################
-
-    load panel
-
-    #########################################################################################
--->
-<dx-load-panel
-    #loadPanel
-    shadingColor="rgba(0,0,0,0.4)"
-    [position]="{ of: '#flowtest02_main' }"
-    [(visible)]="loadingVisible"
-    [showIndicator]="true"
-    [showPane]="true"
-    [shading]="true"
-    [closeOnOutsideClick]="false"
-    (onShown)="onShown()"
->
-</dx-load-panel>
 
 
 <!--
