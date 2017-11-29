@@ -916,15 +916,13 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     popupSetDataInfo_OK_Click(){
-
         
-        this.targetDataSource =  this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem).ID ;
+        this.targetDataSource =  this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem).ID;
         this.targetDataSourceName = this.cboTargetSource.selectedItem;
         this.targetTable = this.cboTargetTable.selectedItem;
         this.targetColumn = this.cboTargetColumn.selectedItem;
         
         this.popupVisible_popupSetDataInfo = false;
-        
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -1170,6 +1168,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     Numerator_Click(){
 
         //분자클릭
+        this.numeratorColumn = this.cboTargetColumn.selectedItem;
+
         this.propCalculation["NumeratorColumn"] = this.cboTargetColumn.selectedItem;
         this.propCalculation["NumeratorTable"] = this.cboTargetTable.selectedItem;
         this.propCalculation["NumeratorSource"] = this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem).ID
