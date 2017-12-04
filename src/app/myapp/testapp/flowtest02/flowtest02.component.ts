@@ -141,8 +141,8 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             ,{'CalType':'절사율계산'}
             ,{'CalType':'투자비중계산'}
             ,{'CalType':'종목명조회'}
-            
-
+            ,{'CalType':'절사율계산(고정상관계수)'}
+            ,{'CalType':'투자비중계산(고정상관계수)'}
         ];
 
         this.menus = menuService.getMenus();
@@ -700,7 +700,6 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
             flowProperty.DenominatorColumn = this.denominatorColumn;
             flowProperty.CalKeyColumn = this.calKeyColumn;
             flowProperty.CalculationInfo = this.propCalculation;
-
         }
         else
         {
@@ -745,13 +744,16 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
 
         let prop = (<FlowBox>this.finCanvas.GetCurrentBox()).MyProperty;
 
-        if (prop["CalculationInfo"] === undefined)
+
+        let pp = (<FlowBox>this.finCanvas.GetCurrentBox()).GetProperty();
+
+        if (pp["CalculationInfo"] === undefined)
         {
             this.propCalculation = {};
         }
         else
         {
-            this.propCalculation = prop["CalculationInfo"]
+            this.propCalculation = pp["CalculationInfo"]
         }
 
         if (prop != "")
@@ -917,12 +919,20 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     popupSetDataInfo_OK_Click(){
         
-        this.targetDataSource =  this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem).ID;
-        this.targetDataSourceName = this.cboTargetSource.selectedItem;
-        this.targetTable = this.cboTargetTable.selectedItem;
-        this.targetColumn = this.cboTargetColumn.selectedItem;
+        if (this.cboTargetSource.selectedItem  != null)
+            this.targetDataSource =  this.previousBox.find(i=>i.Title === this.cboTargetSource.selectedItem).ID;
+
+        if (this.cboTargetSource.selectedItem != null)
+            this.targetDataSourceName = this.cboTargetSource.selectedItem;
+
+        if(this.cboTargetTable.selectedItem != null)            
+            this.targetTable = this.cboTargetTable.selectedItem;
+
+        if(this.cboTargetColumn.selectedItem != null)    
+            this.targetColumn = this.cboTargetColumn.selectedItem;
         
         this.popupVisible_popupSetDataInfo = false;
+
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -947,6 +957,10 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         this.SetCurRateAColumnInfoString();
 
         
+        if (this.CalculationType === "데이터나누기(List To List)")
+        {
+            this.SetDividendInfo();
+        }
 
         // for (var k1 in preData)
         // {

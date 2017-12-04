@@ -155,7 +155,10 @@ export class FlowTest2Service{
         {
             case "Stock":{
 
-                let url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/GetStockListPrice2?code=HzS6Upr4/OIibFB2a/e5sCVodvT1tRRyWlRtoHTsNEZsZZyVaAJ3/g==";
+                // let url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/GetStockListPrice2?code=HzS6Upr4/OIibFB2a/e5sCVodvT1tRRyWlRtoHTsNEZsZZyVaAJ3/g==";
+                // let url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/GetStockPriceByWeb?code=5wKpay4LENbmD6CA7OQUlzhG7zPnc8o/5T9HR05HpNv0aqbUf8trGQ==";
+                let url = "https://insallwayspythonfunctionapp.azurewebsites.net/api/GetStockPriceByGoogle?code=Ho0UXo/fbiPOucIx/OdLfanKapGNfalKmmi3ARr07pDvytcfkGdK1w==";
+
                 let itemlist = new Array();
 
                 flow.GetProperty().MyData.forEach(i => {
@@ -372,7 +375,7 @@ export class FlowTest2Service{
                 break;
             }
             case "데이터나누기(List To List)":{
-                url ="";
+                url ="https://insallwayspythonfunctionapp.azurewebsites.net/api/CalListToList?code=u5rOFL7vfv5/jaTUA/KEEscncLLuk9wQeClSCj5qdagNtTEvKwOVag==";
                 body = {};
                 prop["CalType"] = "Division"
                 body = prop;
@@ -380,8 +383,22 @@ export class FlowTest2Service{
                 body["InputData"] = this.previousResult2;
                 break;
             }
-
-
+            case "절사율계산(고정상관계수)":{
+                url ="https://insallwayspythonfunctionapp.azurewebsites.net/api/CalCurRate2?code=qRk9mrAOGFQyFMJnvVZCjhlSidFXn3BsM5qzr6whzFUjkUHGqaTsag==";
+                body = {};
+                body = prop;
+                delete body["CalculationType"];
+                body["InputData"] = this.previousResult2;
+                break;
+            }
+            case "투자비중계산(고정상관계수)":{
+                url ="https://insallwayspythonfunctionapp.azurewebsites.net/api/CalInvestRate02?code=SxD7fcYyafNroa8pWH4g/m8fbgAmINav6hGlnlxUM0ibNf/nw2bexA==";
+                body = {};
+                body = prop;
+                delete body["CalculationType"];
+                body["InputData"] = this.previousResult2;
+                break;
+            }
 
         }//end switch
 
