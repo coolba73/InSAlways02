@@ -10,17 +10,22 @@
     <div *dxTemplate="let data of 'content'">
 
         <dx-data-grid
-            #grdFlowList
+            #grdItemList
             id="gridContainer"
             [hoverStateEnabled]="true"
             [selectedRowKeys]="[]"
+            [dataSource]="dsDataSource"
             style="height: 350px"
-            [columns]="['title']"
         >
             <dxo-load-panel [enabled]="true"></dxo-load-panel>
             <dxo-scrolling mode="virtual"></dxo-scrolling>
             <dxo-sorting mode="none"></dxo-sorting>
             <dxo-selection mode="single"></dxo-selection>
+            <dxo-search-panel 
+                            [visible]="true" 
+                            [width]="250" 
+                            placeholder="Search...">
+            </dxo-search-panel>
 
         </dx-data-grid>
 

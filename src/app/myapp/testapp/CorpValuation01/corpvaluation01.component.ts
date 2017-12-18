@@ -11,6 +11,10 @@ export class CorpValuation01Component{
 
     @ViewChild('popupItemlist') popupItemlist : PuItemListComponent;
 
+    ItemName = "";
+    ItemCode = "";
+    Display = "";
+
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     btnOpenItemList_Click()
     {
@@ -22,11 +26,14 @@ export class CorpValuation01Component{
     {
         if (YesOK===true)
         {
-
+            this.ItemName = this.popupItemlist.ItemName;
+            this.ItemCode = this.popupItemlist.ItemCode;
+            this.Display = this.ItemName + " (" + this.ItemCode + ")";
+            
         }
         else
         {
-
+            this.Display = "";
         }
 
     }

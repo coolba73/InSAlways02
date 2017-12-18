@@ -5,7 +5,7 @@
     <div>
         <button mat-raised-button color="primary" (click)='btnOpenItemList_Click()'>종목선택</button>
         <mat-form-field class="example-full-width">
-            <input matInput placeholder="종목" readonly=true>
+            <input matInput placeholder="종목" readonly=true   [ngModel]='Display'>
         </mat-form-field>
         
     </div>
