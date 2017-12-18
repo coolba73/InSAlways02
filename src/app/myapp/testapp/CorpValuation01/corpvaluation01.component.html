@@ -1,0 +1,33 @@
+<div id='corpvaluation01_main'>
+  <div id='corpvaluation01_container'>
+    <h3>기업가치평가</h3>
+
+    <div>
+        <button mat-raised-button color="primary" (click)='btnOpenItemList_Click()'>종목선택</button>
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="종목" readonly=true>
+        </mat-form-field>
+        
+    </div>
+
+    <mat-tab-group >
+
+        <mat-tab label="DCF Model">
+
+        </mat-tab>
+
+        <mat-tab label="APV Model">
+          
+        </mat-tab>
+
+        <mat-tab label="RIM Model">
+        
+        </mat-tab>
+
+    </mat-tab-group>
+
+  </div>
+</div>
+
+
+<puitemlist #popupItemlist (Closed) = 'popupItemList_Closed($event)' ></puitemlist>

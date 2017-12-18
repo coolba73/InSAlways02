@@ -1,0 +1,34 @@
+<dx-popup   class='popup' 
+        [width]='600' 
+        [height]='500' 
+        [showTitle]='true' 
+        title='종목리스트' 
+        [dragEnabled]='true' 
+        [closeOnOutsideClick]='true'
+        [(visible)]='YesOpen'
+>
+    <div *dxTemplate="let data of 'content'">
+
+        <dx-data-grid
+            #grdFlowList
+            id="gridContainer"
+            [hoverStateEnabled]="true"
+            [selectedRowKeys]="[]"
+            style="height: 350px"
+            [columns]="['title']"
+        >
+            <dxo-load-panel [enabled]="true"></dxo-load-panel>
+            <dxo-scrolling mode="virtual"></dxo-scrolling>
+            <dxo-sorting mode="none"></dxo-sorting>
+            <dxo-selection mode="single"></dxo-selection>
+
+        </dx-data-grid>
+
+        <div style="margin-top: 10px">
+            <button mat-raised-button color='warn' style='float: right;  margin-left: 10px' (click)='btnCancel_Click()'   >Cancel</button>
+            <button mat-raised-button color='primary'  style='float: right;' (click)='btnOK_Click()' >OK</button>
+        </div>
+
+    </div>
+
+</dx-popup>

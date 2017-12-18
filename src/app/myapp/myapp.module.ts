@@ -5,6 +5,8 @@ import { FlowTestComponent } from "./testapp/flowtest/flowtest.component";
 import { FlowTest02Component } from "./testapp/flowtest02/flowtest02.component";
 import { DrawCanvasComponent } from "./core/material/drawcanvas/drawcanvas.component";
 import { NgInit } from "./testapp/flowtest02/flowtest02.component";
+import { CorpValuation01Component } from "./testapp/CorpValuation01/corpvaluation01.component";
+import { PuItemListComponent } from "./popup/puitemlist/puitemlist.component";
 
 import { 
       DevExtremeModule 
@@ -85,7 +87,9 @@ export class EscapeHtmlPipe implements PipeTransform {
         FlowTest02Component,
         DrawCanvasComponent,
         EscapeHtmlPipe,
-        NgInit
+        NgInit,
+        CorpValuation01Component,
+        PuItemListComponent
         
     ]
 })

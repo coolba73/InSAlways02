@@ -77,6 +77,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     propCutRateBColumnInfo = {};
     strColumnInfo = "";
     propCalculation = {};
+    yesInit = false;
     
     
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -186,18 +187,19 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     ngAfterViewInit(){
 
          // $ init summernote
+
          $('#summernote').summernote({
             height:270,
             maxHeight:null,
             minHeight:null
             });
 
-        var self = this;
-        $('#summernote').on('summernote.change', 
-            function(){
-                self.Summernote_Change();
-            }
-        );
+        // var self = this;
+        // $('#summernote').on('summernote.change', 
+        //     function(){
+        //         self.Summernote_Change();
+        //     }
+        // );
     }
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     ngOnInit(){
@@ -643,6 +645,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     Canvas_MouseUp(){
         
         let obj : BaseObject = this.finCanvas.GetCurrentBox();
+
         this.datatables = new Array();
         this.dsflowResult = [];
 
@@ -1364,6 +1367,20 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         }
         
 
+    }
+
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    btnDescriptionOK_Click()
+    {
+        let obj : BaseObject  = this.finCanvas.GetCurrentBox();
+
+        if (obj != null && obj instanceof FlowBox){
+
+            let text = $('#summernote').summernote('code');
+            let flowBox = <FlowBox>obj;
+            flowBox.document = text;
+        }        
     }
     
     
