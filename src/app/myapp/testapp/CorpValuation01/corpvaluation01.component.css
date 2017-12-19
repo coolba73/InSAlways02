@@ -6,8 +6,22 @@
   box-shadow: 0 0 1em rgb(116, 112, 112);
 }
 #corpvaluation01_container {
-  height: 600px;
+  height: 300px;
   overflow: auto;
   /* border: 1px solid #d6d1d1; */
   margin: 10px;
+}
+.corpvaluation01_main_class {
+  /* width: 1200px; */
+  width:80%;
+  margin: 0 auto;
+  background:#ffffff;  
+  box-shadow: 0 0 1em rgb(116, 112, 112);
+}
+
+#canvas_container2 {
+  height: 100%;
+  overflow: auto;
+  border: 1px solid #ebebeb;
+  margin: 3px;
 }

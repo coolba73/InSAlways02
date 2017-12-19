@@ -59,6 +59,8 @@ export class DrawCanvasComponent implements OnInit {
 
     CanvasScale : number = 1;
 
+    AllowMove = true;
+
 	//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 	constructor() { }
 
@@ -255,6 +257,8 @@ export class DrawCanvasComponent implements OnInit {
 
         if ( this.YesMouseDown )
         {
+            if (!this.AllowMove) return;
+
             if(this.yesDrawSelectBox && this.selectBox != undefined){
                 
                 this.selectBox.x2 = x;
