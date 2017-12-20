@@ -78,7 +78,8 @@ export class CorpValuation01Component{
         //----------------------------
         let para = {};
 
-        para["ItemCode"] = "004000";
+        // para["ItemCode"] = "004000" ;
+        para["ItemCode"] = this.ItemCode ;
         para["ValuationModel"] = "DCF";
         para["WACC"] = this.DCF_WACC;
         para["PGR"] = this.DCF_PGR;
