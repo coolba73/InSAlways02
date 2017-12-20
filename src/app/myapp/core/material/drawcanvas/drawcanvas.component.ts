@@ -522,7 +522,6 @@ export class DrawCanvasComponent implements OnInit {
 
         this.Draw();
 
-        console.log("mouse up");
         this.MouseUp.emit(null);
 
     }
