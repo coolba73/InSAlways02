@@ -191,37 +191,35 @@ export class CorpValuation01Component{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     Canvas_MouseUp(){
 
+
+        this.MakeChart2();
+
         let box = <FlowBox>this.cvs.GetCurrentBox();
 
-        if (box === null) return;
-
         this.dsflowResult = [];
+
+        if (box === null) return;
 
         switch(box.Title)
         {
             case "매출 계산" : {
                 this.dsflowResult = this.ToArray(this.ReturnValue["jsales"]);
-                this.ChartDs = this.MakeChartDs(this.ReturnValue["jsales"],"매출");
                 break;
             }
             case "매출원가 계산" : {
                 this.dsflowResult = this.ToArray(this.ReturnValue["jCogs"]);
-                this.ChartDs = this.MakeChartDs(this.ReturnValue["jCogs"],"매출원가");
                 break;
             }
             case "판관비 계산" : {
                 this.dsflowResult = this.ToArray(this.ReturnValue["jSellingExp"]);
-                this.ChartDs = this.MakeChartDs(this.ReturnValue["jSellingExp"],"판관비");
                 break;
             }
             case "감상비 계산" : {
                 this.dsflowResult = this.ToArray(this.ReturnValue["jDepCap"]);
-                this.ChartDs = this.MakeChartDs(this.ReturnValue["jDepCap"],"감상비");
                 break;
             }
             case "운전자본 계산" : {
                 this.dsflowResult = this.ToArray(this.ReturnValue["jWorkingCap"]);
-                this.ChartDs = this.MakeChartDs(this.ReturnValue["jWorkingCap"],"운전자본");
                 break;
             }
             case "영구가치 계산" : {
@@ -238,6 +236,8 @@ export class CorpValuation01Component{
                 break;
             }
         }
+
+        
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -251,6 +251,64 @@ export class CorpValuation01Component{
         }
         arry.push(irow);
         return arry;
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    MakeChart2(){
+        
+        let obj = this.cvs.GetSelectedBoxes();
+
+
+        let dsRe = [];
+        let item = {};
+        let valuecnt = 0;
+        let sourcename = "";
+        let src :any[];
+        this.ChartSeries = [];
+        let iseries = {};
+        this.ChartDs = [];
+
+        for ( let i=2014; i<= 2019 ; i++)
+        {
+            item = {};
+            item["year"] = i.toString();
+
+            valuecnt=0;
+
+            for(let ibox of obj)
+            {
+                
+                switch(ibox.Title)
+                {
+                    case"매출 계산":{ src = this.ReturnValue["jsales"] ;  break;}
+                    case"매출원가 계산":{ src = this.ReturnValue["jCogs"] ;  break;}
+                    case"판관비 계산":{ src = this.ReturnValue["jSellingExp"] ;  break;}
+                    case"감상비 계산":{ src = this.ReturnValue["jDepCap"] ;  break;}
+                    case"운전자본 계산":{ src = this.ReturnValue["jWorkingCap"] ;  break;}
+                    default:{src = []; break;}
+                }
+
+                valuecnt++;
+                item["value" + valuecnt] = src[i.toString()] ;
+                
+                if (i===2014){
+                    iseries = {};
+                    iseries["field"] = "value"+ valuecnt;
+                    iseries["name"] = ibox.Title;
+                    this.ChartSeries.push(iseries);
+                }
+                    
+
+            }
+
+            dsRe.push(item);
+        }
+
+
+        console.log(dsRe);
+
+        this.ChartDs = dsRe;
+        
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -270,7 +328,6 @@ export class CorpValuation01Component{
             item["value"] = src[i.toString()] ;
             dsRe.push(item);
         }
-
 
         //----------------------------
         // set series

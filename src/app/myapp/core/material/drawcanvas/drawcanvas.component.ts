@@ -61,6 +61,8 @@ export class DrawCanvasComponent implements OnInit {
 
     @Input() AllowMove = true;
 
+    YesCtrl = false;
+
 	//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 	constructor() { }
 
@@ -116,6 +118,10 @@ export class DrawCanvasComponent implements OnInit {
 
         Observable.fromEvent(document,'keydown').subscribe((e:KeyboardEvent)=>{
             this.Canvas_KeyDown(e);
+        });
+
+        Observable.fromEvent(document,'keyup').subscribe((e:KeyboardEvent)=>{
+            this.Canvas_KeyUp(e);
         });
 
 
@@ -193,9 +199,20 @@ export class DrawCanvasComponent implements OnInit {
                     }
                     break;
                 }
+
+                //control key
+                case 17:{
+                    this.YesCtrl = true;
+                    break;
+                }
             }
         }
             
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Canvas_KeyUp(e : KeyboardEvent){
+        this.YesCtrl = false;
     }
 
 	//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -404,9 +421,11 @@ export class DrawCanvasComponent implements OnInit {
         }
         else
         {
-            this.objects.forEach(element => {
-                element.YesSelected = false;
-            });
+            if (!this.YesCtrl){
+                this.objects.forEach(element => {
+                    element.YesSelected = false;
+                });
+            }
             
             this.objects.forEach(i => {
 
@@ -503,6 +522,7 @@ export class DrawCanvasComponent implements OnInit {
 
         this.Draw();
 
+        console.log("mouse up");
         this.MouseUp.emit(null);
 
     }
@@ -516,6 +536,11 @@ export class DrawCanvasComponent implements OnInit {
             return <BoxBase>objs[0];
         else
             return null;
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    GetSelectedBoxes() : BaseObject[] {
+        return this.objects.filter(i=> i instanceof BoxBase && i.YesSelected);
     }
     
 
