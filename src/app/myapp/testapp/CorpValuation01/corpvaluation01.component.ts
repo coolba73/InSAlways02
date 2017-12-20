@@ -14,7 +14,8 @@ import { FlowTest2Service } from "app/myapp/testapp/flowtest02/flowtest02.servic
 @Component({
     selector : 'corpvaluation01',
     templateUrl : './corpvaluation01.component.html',
-    styleUrls : ['./corpvaluation01.component.css']
+    styleUrls : ['./corpvaluation01.component.css'],
+    providers:[FlowTest2Service]
 })
 
 export class CorpValuation01Component{
@@ -29,6 +30,16 @@ export class CorpValuation01Component{
 
     DCF_WACC : number = 0.065;
     DCF_PGR : number = 0.0275; //영구성장률
+
+    ViewLoadPanel = false;
+
+    ResultOK = false;
+
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    constructor(private service : FlowTest2Service){
+
+    }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     btnOpenItemList_Click()
@@ -49,10 +60,34 @@ export class CorpValuation01Component{
     }
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
-    CalDCF()
+    async CalDCF()
     {
-        this.cvs.AllowMove = false;
+        this.ViewLoadPanel = true;
+        this.ResultOK = false;
+
+        //----------------------------
+        // Service Call
+        //----------------------------
+        let para = {};
+
+        para["ItemCode"] = "004000";
+        para["ValuationModel"] = "DCF";
+        para["WACC"] = 0.065;
+        para["PGR"] = 0.0275;
+
+        let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
         
+        let re = await this.service.CallServiceAwait(url,JSON.stringify(para));
+
+        console.log(re);
+
+        this.ResultOK = true;
+        this.ViewLoadPanel = false;
+
+
+        //----------------------------
+        // Add Flow
+        //----------------------------
         let list : [string,string][] = [];
 
         list.push(["매출 계산","1"]);
@@ -64,6 +99,7 @@ export class CorpValuation01Component{
         list.push(["기업가치 계산","1"]);
 
         this.DrawFlow(list);
+
         
     }
 

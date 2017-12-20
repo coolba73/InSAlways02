@@ -64,11 +64,39 @@
   
 </div>
 
-<div class='corpvaluation01_main_class' style="height: 200px">
+<div  class='corpvaluation01_main_class' style="height: 200px">
     <div id='canvas_container2' >
-        <drawcanvas id='MyCanvas' #fcvs  [MyId]="'canvas_container2'"></drawcanvas>
+        <drawcanvas id='MyCanvas' #fcvs  [MyId]="'canvas_container2'" [AllowMove]=false ></drawcanvas>
     </div>
 </div>
 
 
+
+<!--
+    #########################################################################################
+
+    Item List Popup
+
+    #########################################################################################
+-->
 <puitemlist #popupItemlist (Closed) = 'popupItemList_Closed($event)' ></puitemlist>
+
+
+<!--
+    #########################################################################################
+
+    Load Panel
+
+    #########################################################################################
+-->
+<dx-load-panel
+                #loadPanel
+                shadingColor="rgba(0,0,0,0.4)"
+                [position]="{ of: '#corpvaluation01_main' }"
+                [(visible)]="ViewLoadPanel"
+                [showIndicator]="true"
+                [showPane]="true"
+                [shading]="true"
+                [closeOnOutsideClick]="false"
+>
+</dx-load-panel>
