@@ -1,3 +1,11 @@
+
+<!--
+    #########################################################################################
+
+    main
+
+    #########################################################################################
+-->
 <div id='corpvaluation01_main'>
   <div id='corpvaluation01_container'>
     <h3>기업가치평가</h3>
@@ -29,6 +37,7 @@
                         <input matInput placeholder="영구성장률" [(ngModel)]='DCF_PGR' type="number">
                     </mat-form-field>
                     <button mat-raised-button color="accent" (click)='CalDCF()'>실행</button>
+                    <button mat-raised-button color="accent" (click)='CalDCF()'>Excel</button>
                 </div>
     
             </mat-tab>
@@ -64,12 +73,93 @@
   
 </div>
 
+<!--
+    #########################################################################################
+
+    Flow Canvas
+
+    #########################################################################################
+-->
 <div  class='corpvaluation01_main_class' style="height: 200px">
     <div id='canvas_container2' >
-        <drawcanvas id='MyCanvas' #fcvs  [MyId]="'canvas_container2'" [AllowMove]=false ></drawcanvas>
+        <drawcanvas id='MyCanvas' #fcvs  [MyId]="'canvas_container2'" [AllowMove]=false (MouseUp)="Canvas_MouseUp()" ></drawcanvas>
     </div>
 </div>
 
+<!--
+    #########################################################################################
+
+    Grid
+
+    #########################################################################################
+-->
+<div class='corpvaluation01_main_class' style="height: 150px; margin-top: 10px;">
+
+    <dx-data-grid id="gridContainer" 
+                [dataSource]="dsflowResult" 
+                [allowColumnReordering]="true" 
+                [allowColumnResizing]="true"
+                style="height: 130px">
+
+        <dxo-load-panel [enabled]="false"></dxo-load-panel>
+        <dxo-scrolling mode="virtual"></dxo-scrolling>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-selection mode="single"></dxo-selection>
+
+    </dx-data-grid>
+
+</div>
+
+
+<!--
+    #########################################################################################
+
+    Chart
+
+    #########################################################################################
+-->
+<div class='corpvaluation01_main_class' style="height: 300px; margin-top: 10px;">
+
+
+    <dx-chart
+        palette="violet"
+        [dataSource]="ChartDs"
+        >
+        
+        <!-- <dxi-series valueField="value" name="value"></dxi-series> -->
+
+        <dxi-series
+            *ngFor="let isr of ChartSeries"
+            [valueField]="isr.field"
+            [name]="isr.name"
+        >
+
+        </dxi-series>
+
+        <dxo-common-series-settings #seriesSettings
+            argumentField="year"
+            type="spline"
+            
+            >
+        </dxo-common-series-settings>
+        <dxo-size [height]="280"></dxo-size>
+        <dxo-margin [bottom]="20"></dxo-margin>
+        <dxo-common-axis-settings discreteAxisDivisionMode="crossLabels">
+            <dxo-grid [visible]="true"></dxo-grid>
+        </dxo-common-axis-settings>
+        <dxo-legend
+            verticalAlignment="top"
+            horizontalAlignment="right">
+        </dxo-legend>
+    	<dxo-argument-axis [axisDivisionFactor]="60">
+            <dxo-label>
+            	<dxo-format type="decimal"></dxo-format>
+        	</dxo-label>
+    	</dxo-argument-axis>
+        <dxo-tooltip [enabled]="true"></dxo-tooltip>
+    </dx-chart>
+
+</div>
 
 
 <!--

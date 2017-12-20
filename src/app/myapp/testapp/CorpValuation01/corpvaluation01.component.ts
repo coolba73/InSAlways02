@@ -35,6 +35,14 @@ export class CorpValuation01Component{
 
     ResultOK = false;
 
+    dsflowResult : any[] = [];
+
+    ReturnValue : any;
+
+    ChartDs : any[] = [];
+
+    ChartSeries : any[] = [];
+
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     constructor(private service : FlowTest2Service){
@@ -72,14 +80,15 @@ export class CorpValuation01Component{
 
         para["ItemCode"] = "004000";
         para["ValuationModel"] = "DCF";
-        para["WACC"] = 0.065;
-        para["PGR"] = 0.0275;
+        para["WACC"] = this.DCF_WACC;
+        para["PGR"] = this.DCF_PGR;
 
-        let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
+        // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
+        let url = "http://localhost:7071/api/CalCorpValuation";
         
-        let re = await this.service.CallServiceAwait(url,JSON.stringify(para));
+        this.ReturnValue = await this.service.CallServiceAwait(url,JSON.stringify(para));
 
-        console.log(re);
+        console.log(this.ReturnValue);
 
         this.ResultOK = true;
         this.ViewLoadPanel = false;
@@ -95,7 +104,6 @@ export class CorpValuation01Component{
         list.push(["판관비 계산","1"]);
         list.push(["감상비 계산","1"]);
         list.push(["운전자본 계산","1"]);
-        list.push(["영구가치 계산","1"]);
         list.push(["기업가치 계산","1"]);
 
         this.DrawFlow(list);
@@ -179,5 +187,164 @@ export class CorpValuation01Component{
         // this.cvs.SetSeq();
         // this.cvs.Draw();
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    Canvas_MouseUp(){
+
+        let box = <FlowBox>this.cvs.GetCurrentBox();
+
+        if (box === null) return;
+
+        this.dsflowResult = [];
+
+        switch(box.Title)
+        {
+            case "매출 계산" : {
+                this.dsflowResult = this.ToArray(this.ReturnValue["jsales"]);
+                this.ChartDs = this.MakeChartDs(this.ReturnValue["jsales"],"매출");
+                break;
+            }
+            case "매출원가 계산" : {
+                this.dsflowResult = this.ToArray(this.ReturnValue["jCogs"]);
+                this.ChartDs = this.MakeChartDs(this.ReturnValue["jCogs"],"매출원가");
+                break;
+            }
+            case "판관비 계산" : {
+                this.dsflowResult = this.ToArray(this.ReturnValue["jSellingExp"]);
+                this.ChartDs = this.MakeChartDs(this.ReturnValue["jSellingExp"],"판관비");
+                break;
+            }
+            case "감상비 계산" : {
+                this.dsflowResult = this.ToArray(this.ReturnValue["jDepCap"]);
+                this.ChartDs = this.MakeChartDs(this.ReturnValue["jDepCap"],"감상비");
+                break;
+            }
+            case "운전자본 계산" : {
+                this.dsflowResult = this.ToArray(this.ReturnValue["jWorkingCap"]);
+                this.ChartDs = this.MakeChartDs(this.ReturnValue["jWorkingCap"],"운전자본");
+                break;
+            }
+            case "영구가치 계산" : {
+                this.dsflowResult = this.ToArray(this.ReturnValue["jDCF"]);
+                break;
+            }
+            case "기업가치 계산" : {
+                this.dsflowResult = this.ToArray(this.ReturnValue["jDCF"]);
+                break;
+            }
+
+            default:{
+                this.dsflowResult = [];
+                break;
+            }
+        }
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    ToArray(src){
+        let arry = [];
+        let irow = {};
+
+        for ( var k in src)
+        {
+            irow[k] = src[k];
+        }
+        arry.push(irow);
+        return arry;
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    MakeChartDs(src, name){
+
+
+        //----------------------------
+        // Set data
+        //----------------------------
+        let dsRe = [];
+        let item = {};
+
+        for ( let i=2014; i<= 2019 ; i++)
+        {
+            item = {};
+            item["year"] = i.toString();
+            item["value"] = src[i.toString()] ;
+            dsRe.push(item);
+        }
+
+
+        //----------------------------
+        // set series
+        //----------------------------
+        this.ChartSeries = [];
+        let iseries = {};
+
+        iseries["field"] = "value";
+        iseries["name"] = name;
+        this.ChartSeries.push(iseries);
+
+
+        return dsRe;
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    MakeChartDs_Test(src){
+
+        let dsRe = [];
+        let item = {}
+        let year = 2016 - 2
+
+        item = {}
+        item["year"] = year;
+        item["value1"] = 10;
+        item["value2"] = 20;
+        dsRe.push(item);
+
+        item = {}
+        item["year"] = year++;
+        item["value1"] = 10;
+        item["value2"] = 20;
+        dsRe.push(item);
+
+        item = {}
+        item["year"] = year++;
+        item["value1"] = 10;
+        item["value2"] = 20;
+        dsRe.push(item);
+
+        item = {}
+        item["year"] = year++;
+        item["value1"] = 10;
+        item["value2"] = 20;
+        dsRe.push(item);
+
+        item = {}
+        item["year"] = year++;
+        item["value1"] = 10;
+        item["value2"] = 20;
+        dsRe.push(item);
+
+        console.log(dsRe);
+
+
+
+        this.ChartSeries = [];
+        let iseries = {};
+
+        iseries["field"] = "value1";
+        iseries["name"] = "값1";
+        this.ChartSeries.push(iseries);
+
+        iseries = {};
+        iseries["field"] = "value2";
+        iseries["name"] = "값2";
+        this.ChartSeries.push(iseries);
+
+
+        return dsRe;
+    }
+
+
+    
+
 
 }//class

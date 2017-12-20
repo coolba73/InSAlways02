@@ -18,6 +18,7 @@ import {
     , DxContextMenuModule
     ,DxBoxModule
     ,DxTextBoxModule
+    ,DxChartModule
 } from "devextreme-angular";
 
 import { FormsModule }             from "@angular/forms";
@@ -35,6 +36,7 @@ import {
     , MatOptionModule
     , MatFormFieldModule
     , MatSelectModule
+    
    
 } from "@angular/material";
 
@@ -81,6 +83,7 @@ export class EscapeHtmlPipe implements PipeTransform {
         ,DxContextMenuModule
         ,DxBoxModule
         ,DxTextBoxModule
+        , DxChartModule
     ],
     declarations:[
         FlowTestComponent,
