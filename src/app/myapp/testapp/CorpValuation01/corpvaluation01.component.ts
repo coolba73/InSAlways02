@@ -70,44 +70,63 @@ export class CorpValuation01Component{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     async CalDCF()
     {
-        this.ViewLoadPanel = true;
-        this.ResultOK = false;
 
-        //----------------------------
-        // Service Call
-        //----------------------------
-        let para = {};
+        try{
 
-        // para["ItemCode"] = "004000" ;
-        para["ItemCode"] = this.ItemCode ;
-        para["ValuationModel"] = "DCF";
-        para["WACC"] = this.DCF_WACC;
-        para["PGR"] = this.DCF_PGR;
-
-        // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
-        let url = "http://localhost:7071/api/CalCorpValuation";
+            this.cvs.objects = [];
+            this.cvs.Draw();
+            this.ChartDs = [];
+            this.dsflowResult = [];            
         
-        this.ReturnValue = await this.service.CallServiceAwait(url,JSON.stringify(para));
+            this.ViewLoadPanel = true;
+            this.ResultOK = false;
+    
+            //----------------------------
+            // Service Call
+            //----------------------------
+            let para = {};
+    
+            // para["ItemCode"] = "004000" ;
+            para["ItemCode"] = this.ItemCode ;
+            para["ValuationModel"] = "DCF";
+            para["WACC"] = this.DCF_WACC;
+            para["PGR"] = this.DCF_PGR;
+    
+            // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
+            let url = "http://localhost:7071/api/CalCorpValuation";
+            
+    
+            console.log(para);
+    
+            this.ReturnValue = {};
+            this.ReturnValue = await this.service.CallServiceAwait(url,JSON.stringify(para));
+    
+            console.log(this.ReturnValue);
+    
+            this.ResultOK = true;
+            this.ViewLoadPanel = false;
+    
+    
+            //----------------------------
+            // Add Flow
+            //----------------------------
+            let list : [string,string][] = [];
+    
+            list.push(["매출 계산","1"]);
+            list.push(["매출원가 계산","1"]);
+            list.push(["판관비 계산","1"]);
+            list.push(["감상비 계산","1"]);
+            list.push(["운전자본 계산","1"]);
+            list.push(["기업가치 계산","1"]);
+    
+            this.DrawFlow(list);
+        }
+        catch(e){
+            alert(e);
+        }
 
-        console.log(this.ReturnValue);
-
-        this.ResultOK = true;
         this.ViewLoadPanel = false;
-
-
-        //----------------------------
-        // Add Flow
-        //----------------------------
-        let list : [string,string][] = [];
-
-        list.push(["매출 계산","1"]);
-        list.push(["매출원가 계산","1"]);
-        list.push(["판관비 계산","1"]);
-        list.push(["감상비 계산","1"]);
-        list.push(["운전자본 계산","1"]);
-        list.push(["기업가치 계산","1"]);
-
-        this.DrawFlow(list);
+        
 
         
     }
@@ -401,6 +420,48 @@ export class CorpValuation01Component{
         return dsRe;
     }
 
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async btnDCFExcelDown_Click()
+    {
+
+        try{
+
+            this.ViewLoadPanel = true;
+
+            let para = {};
+    
+            // para["ItemCode"] = "004000" ;
+            para["ItemCode"] = this.ItemCode ;
+            para["ValuationModel"] = "DCF_Excel";
+            para["WACC"] = this.DCF_WACC;
+            para["PGR"] = this.DCF_PGR;
+
+            if (this.ReturnValue != undefined)
+                para["CalRe"] = this.ReturnValue;
+
+            console.log(para);
+
+            let url = "http://localhost:7071/api/CalCorpValuation";
+
+            var re = await this.service.CallServiceAwait(url,JSON.stringify(para));
+
+            console.log(re);
+
+            window.location.href = re["uri"];
+
+            // window.location.href = "https://colly.blob.core.windows.net/valuationexcel/%EB%A1%AF%EB%8D%B0%EC%A0%95%EB%B0%80%ED%99%94%ED%95%99_DCF.xlsx";
+            //window.location.href = "https://colly.blob.core.windows.net/valuationexcel/롯데정밀화학_DCF.xlsx";
+
+
+        }
+        catch(e){
+            alert(e);
+        }
+
+        this.ViewLoadPanel = false; 
+
+    }
 
     
 
