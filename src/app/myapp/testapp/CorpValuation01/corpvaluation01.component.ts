@@ -31,6 +31,13 @@ export class CorpValuation01Component{
     DCF_WACC : number = 0.065;
     DCF_PGR : number = 0.0275; //영구성장률
 
+    APV_BETA : number = 0.85; //기업베타
+    APV_DBRT : number = 1.1894;//부채비율
+    APV_TAXRT : number = 0.242;//한계 법인세율
+    APV_INTRT : number = 0.017;//무위험 이자율
+    APV_MKTPM : number = 0.06;//마켓프리미엄
+    APV_PGR : number = 0.0275;//영구성장률
+
     ViewLoadPanel = false;
 
     ResultOK = false;
@@ -42,6 +49,8 @@ export class CorpValuation01Component{
     ChartDs : any[] = [];
 
     ChartSeries : any[] = [];
+
+    CalType = '';
 
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -73,6 +82,8 @@ export class CorpValuation01Component{
 
         try{
 
+            this.CalType = "DCF";
+
             this.cvs.objects = [];
             this.cvs.Draw();
             this.ChartDs = [];
@@ -86,14 +97,22 @@ export class CorpValuation01Component{
             //----------------------------
             let para = {};
     
-            // para["ItemCode"] = "004000" ;
             para["ItemCode"] = this.ItemCode ;
-            para["ValuationModel"] = "DCF";
+            para["ValuationModel"] = "APV";
+
             para["WACC"] = this.DCF_WACC;
             para["PGR"] = this.DCF_PGR;
+
+            para["APV_BETA"] = this.APV_BETA ; //기업베타
+            para["APV_DBRT"] = this.APV_DBRT ; //부채비율  
+            para["APV_TAXRT"] = this.APV_TAXRT; //한계 법인세율
+            para["APV_INTRT"] = this.APV_INTRT; //무위험 이자율
+            para["APV_MKTPM"] = this.APV_MKTPM;//마켓프리미엄
+            para["APV_PGR"] = this.APV_PGR  ; //영구성장률
+
     
-            // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
-            let url = "http://localhost:7071/api/CalCorpValuation";
+            let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
+            // let url = "http://localhost:7071/api/CalCorpValuation";
             
     
             console.log(para);
@@ -243,11 +262,19 @@ export class CorpValuation01Component{
                 break;
             }
             case "영구가치 계산" : {
-                this.dsflowResult = this.ToArray(this.ReturnValue["jDCF"]);
+                if (this.CalType = "DCF")
+                    this.dsflowResult = this.ToArray(this.ReturnValue["jDCF"]);
+                else if (this.CalType = "APV")                    
+                    this.dsflowResult = this.ToArray(this.ReturnValue["APV"]);
+
                 break;
             }
             case "기업가치 계산" : {
-                this.dsflowResult = this.ToArray(this.ReturnValue["jDCF"]);
+                if (this.CalType === "DCF")
+                    this.dsflowResult = this.ToArray(this.ReturnValue["jDCF"]);
+                else if (this.CalType === "APV")
+                    this.dsflowResult = this.ToArray(this.ReturnValue["APV"]);
+
                 break;
             }
 
@@ -443,6 +470,7 @@ export class CorpValuation01Component{
             console.log(para);
 
             let url = "http://localhost:7071/api/CalCorpValuation";
+            // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
 
             var re = await this.service.CallServiceAwait(url,JSON.stringify(para));
 
@@ -462,6 +490,142 @@ export class CorpValuation01Component{
         this.ViewLoadPanel = false; 
 
     }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async btnAPVCal_Click(){
+
+
+        try{
+
+            this.CalType = "APV";
+
+            //----------------------------
+            // init
+            //----------------------------
+            this.cvs.objects = [];
+            this.cvs.Draw();
+            this.ChartDs = [];
+            this.dsflowResult = [];   
+            this.ViewLoadPanel = true;
+
+            //----------------------------
+            // Call Service
+            //----------------------------
+            let para = {};
+    
+            // para["ItemCode"] = "004000" ;
+            para["ItemCode"] = this.ItemCode ;
+            para["ValuationModel"] = "APV";
+
+            para["APV_BETA" ] = this.APV_BETA  ; //기업베타
+            para["APV_DBRT" ] = this.APV_DBRT  ; //부채비율
+            para["APV_TAXRT"] = this.APV_TAXRT ; //한계 법인세율
+            para["APV_INTRT"] = this.APV_INTRT ; //무위험 이자율
+            para["APV_MKTPM"] = this.APV_MKTPM ; //마켓프리미엄
+            para["APV_PGR"  ] = this.APV_PGR   ; //영구성장률
+
+    
+            // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
+            let url = "http://localhost:7071/api/CalCorpValuation";
+    
+            console.log(para);
+    
+            this.ReturnValue = {};
+            this.ReturnValue = await this.service.CallServiceAwait(url,JSON.stringify(para));
+    
+            console.log(this.ReturnValue);
+    
+            this.ResultOK = true;
+            this.ViewLoadPanel = false;
+
+            //----------------------------
+            // Add Flow
+            //----------------------------
+            let list : [string,string][] = [];
+
+            list.push(["매출 계산"    ,"1"]);
+            list.push(["매출원가 계산","1"]);
+            list.push(["판관비 계산" ,"1"]);
+            list.push(["감상비 계산" ,"1"]);
+            list.push(["운전자본 계산","1"]);
+            list.push(["기업가치 계산","1"]);
+
+            this.DrawFlow(list);
+        }
+        catch(e){
+            alert(e);
+        }
+        
+        this.ViewLoadPanel = false;
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async btnAPVExcel_Click(){
+
+        try{
+
+            this.CalType = "APV";
+
+            //----------------------------
+            // init
+            //----------------------------
+            this.cvs.objects = [];
+            this.cvs.Draw();
+            this.ChartDs = [];
+            this.dsflowResult = [];   
+            this.ViewLoadPanel = true;
+
+            //----------------------------
+            // Call Service
+            //----------------------------
+            let para = {};
+    
+            // para["ItemCode"] = "004000" ;
+            para["ItemCode"] = this.ItemCode ;
+            para["ValuationModel"] = "APV_Excel";
+
+            para["APV_BETA" ] = this.APV_BETA  ; //기업베타
+            para["APV_DBRT" ] = this.APV_DBRT  ; //부채비율
+            para["APV_TAXRT"] = this.APV_TAXRT ; //한계 법인세율
+            para["APV_INTRT"] = this.APV_INTRT ; //무위험 이자율
+            para["APV_MKTPM"] = this.APV_MKTPM ; //마켓프리미엄
+            para["APV_PGR"  ] = this.APV_PGR   ; //영구성장률
+
+    
+            // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
+            let url = "http://localhost:7071/api/CalCorpValuation";
+    
+            console.log(para);
+    
+            let re = await this.service.CallServiceAwait(url,JSON.stringify(para));
+
+            this.ResultOK = true;
+            this.ViewLoadPanel = false;
+
+            window.location.href = re["uri"];    
+
+            //----------------------------
+            // Add Flow
+            //----------------------------
+            let list : [string,string][] = [];
+
+            list.push(["매출 계산"    ,"1"]);
+            list.push(["매출원가 계산","1"]);
+            list.push(["판관비 계산" ,"1"]);
+            list.push(["감상비 계산" ,"1"]);
+            list.push(["운전자본 계산","1"]);
+            list.push(["기업가치 계산","1"]);
+
+            this.DrawFlow(list);
+        }
+        catch(e){
+            alert(e);
+        }
+        
+        this.ViewLoadPanel = false;
+    }
+
 
     
 

@@ -50,8 +50,38 @@
                 #########################################################################################
             -->
             <mat-tab label="APV Model">
-    
-    
+            
+                <div style="margin: 10px">
+            
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="기업베타" [(ngModel)]="APV_BETA" type="number">
+                    </mat-form-field>
+            
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="부채비율" [(ngModel)]='APV_DBRT' type="number">
+                    </mat-form-field>
+            
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="한계 법인세율" [(ngModel)]='APV_TAXRT' type="number">
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="무위험 이자율" [(ngModel)]='APV_INTRT' type="number">
+                    </mat-form-field>
+
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="마켓프리미엄" [(ngModel)]='APV_MKTPM' type="number">
+                    </mat-form-field>
+
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="영구성장률" [(ngModel)]='APV_PGR' type="number">
+                    </mat-form-field>
+            
+                    <button mat-raised-button color="accent" (click)='btnAPVCal_Click()'>실행</button>
+                    <button mat-raised-button color="accent" (click)='btnAPVExcel_Click()'>Excel</button>
+
+                </div>
+            
             </mat-tab>
     
             <!--
