@@ -92,7 +92,30 @@
                 #########################################################################################
             -->
             <mat-tab label="RIM Model">
-    
+            
+                <div style="margin: 10px">
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="배당성향" [(ngModel)]="rim_Dividend_payout_ratio" type="number">
+                    </mat-form-field>
+            
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="순이익성장률" [(ngModel)]="rim_Net_profit_growth_rate" type="number">
+                    </mat-form-field>
+
+                    <br>
+            
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="무위험이자율" [(ngModel)]="rim_Risk_free_interest_rate" type="number">
+                    </mat-form-field>
+            
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="시장위험프리미엄" [(ngModel)]="rim_Market_risk_premium" type="number">
+                    </mat-form-field>
+            
+                    <button mat-raised-button color="accent" (click)='btnAPVCal_Click()'>실행</button>
+                    <button mat-raised-button color="accent" (click)='btnAPVExcel_Click()'>Excel</button>
+                </div>
+            
             </mat-tab>
     
         </mat-tab-group>

@@ -38,6 +38,11 @@ export class CorpValuation01Component{
     APV_MKTPM : number = 0.06;//마켓프리미엄
     APV_PGR : number = 0.0275;//영구성장률
 
+    rim_Dividend_payout_ratio   : number = 0.2521;//배당성향 0.2521
+    rim_Net_profit_growth_rate  : number = 0.03  ;//순이익성장률 0.03
+    rim_Risk_free_interest_rate : number = 0.028 ;//무위험이자율 0.028
+    rim_Market_risk_premium     : number = 0.03  ;//시장위험프리미엄 0.03
+
     ViewLoadPanel = false;
 
     ResultOK = false;
@@ -605,19 +610,7 @@ export class CorpValuation01Component{
 
             window.location.href = re["uri"];    
 
-            //----------------------------
-            // Add Flow
-            //----------------------------
-            let list : [string,string][] = [];
-
-            list.push(["매출 계산"    ,"1"]);
-            list.push(["매출원가 계산","1"]);
-            list.push(["판관비 계산" ,"1"]);
-            list.push(["감상비 계산" ,"1"]);
-            list.push(["운전자본 계산","1"]);
-            list.push(["기업가치 계산","1"]);
-
-            this.DrawFlow(list);
+           
         }
         catch(e){
             alert(e);
@@ -626,6 +619,7 @@ export class CorpValuation01Component{
         this.ViewLoadPanel = false;
     }
 
+    
 
     
 
