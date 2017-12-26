@@ -116,8 +116,8 @@ export class CorpValuation01Component{
             para["APV_PGR"] = this.APV_PGR  ; //영구성장률
 
     
-            let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
-            // let url = "http://localhost:7071/api/CalCorpValuation";
+            // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
+            let url = "http://localhost:7071/api/CalCorpValuation";
             
     
             console.log(para);
@@ -235,6 +235,12 @@ export class CorpValuation01Component{
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
     Canvas_MouseUp(){
 
+        if (this.CalType == "RIM")
+        {
+            this.RIM_SetGridData();
+            this.RIM_MakeChart();
+            return;
+        }
 
         this.MakeChart2();
 
@@ -621,6 +627,256 @@ export class CorpValuation01Component{
 
     
 
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async btnRimCal_Click(){
+
+        try{
+
+            this.CalType = "RIM";
+
+            //----------------------------
+            // init
+            //----------------------------
+            this.cvs.objects = [];
+            this.cvs.Draw();
+            this.ChartDs = [];
+            this.dsflowResult = [];   
+            this.ViewLoadPanel = true;
+
+            //----------------------------
+            // Call Service
+            //----------------------------
+            let para = {};
+    
+            // para["ItemCode"] = "004000" ;
+            para["ItemCode"] = this.ItemCode ;
+            para["ValuationModel"] = "RIM";
+
+            para["Dividend_payout_ratio"  ] = this.rim_Dividend_payout_ratio   ;//배당성향 0.2521
+            para["Net_profit_growth_rate" ] = this.rim_Net_profit_growth_rate  ;//순이익성장률 0.03
+            para["Risk_free_interest_rate"] = this.rim_Risk_free_interest_rate ;//무위험이자율 0.028
+            para["Market_risk_premium"    ] = this.rim_Market_risk_premium     ;//시장위험프리미엄 0.03
+
+    
+            // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
+            let url = "http://localhost:7071/api/CalCorpValuation";
+    
+            console.log(para);
+    
+            this.ReturnValue = {};
+            this.ReturnValue = await this.service.CallServiceAwait(url,JSON.stringify(para));
+    
+            console.log(this.ReturnValue);
+    
+            this.ResultOK = true;
+            this.ViewLoadPanel = false;
+
+            //----------------------------
+            // Add Flow
+            //----------------------------
+            let list : [string,string][] = [];
+
+            list.push(["자기자본"   ,"1"]);
+            list.push(["당기순이익" ,"1"]);
+            list.push(["배당액"    ,"1"]);
+            list.push(["ROE"      ,"1"]);
+            list.push(["Spread"   ,"1"]);
+            list.push(["RI"       ,"1"]);
+            list.push(["PV RI"    ,"1"]);
+            list.push(["Valuation","1"]);
+
+            this.DrawFlow(list);
+        }
+        catch(e){
+            alert(e);
+        }
+        
+        this.ViewLoadPanel = false;
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    RIM_SetGridData(){
+        
+        let box = <FlowBox>this.cvs.GetCurrentBox();
+
+        this.dsflowResult = [];
+
+        if (box === null) return;
+
+        switch(box.Title)
+        {
+            case "자기자본":{
+                this.dsflowResult = this.RIM_MakeGridDataSet("equity");
+                break;
+            }
+            case "당기순이익":{
+                this.dsflowResult = this.RIM_MakeGridDataSet("netincome");
+                break;
+            }
+            case "배당액":{
+                this.dsflowResult = this.RIM_MakeGridDataSet("dividend");
+                break;
+            }
+            case "ROE":{
+                this.dsflowResult = this.RIM_MakeGridDataSet("roe");
+                break;
+            }
+            case "Spread":{
+                this.dsflowResult = this.RIM_MakeGridDataSet("spread");
+                break;
+            }
+            case "RI":{
+                this.dsflowResult = this.RIM_MakeGridDataSet("ri");
+                break;
+            }
+            case "PV RI":{
+                this.dsflowResult = this.RIM_MakeGridDataSet("ri_discount");
+                break;
+            }
+            case "Valuation":{
+                let re = [];
+                let item = {};
+                
+                item["Valueofequity"] = this.ReturnValue["Valueofequity"];
+                item["ri_discount_sum"] = this.ReturnValue["ri_discount_sum"];
+
+                re.push(item);
+
+                this.dsflowResult = re;
+                
+                break;
+            }
+        }
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    RIM_MakeGridDataSet(column : string){
+
+        let re = [];
+        let item = {};
+
+        for ( let i  = 2016 ; i<= 2026 ; i++){
+            item[i.toString()] = this.ReturnValue[i.toString() + "_" + column];
+        }
+
+        re.push(item);
+        return re;
+
+    }
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    RIM_MakeChart(){
+        
+        let obj = this.cvs.GetSelectedBoxes();
+
+        let dsRe = [];
+        let item = {};
+        let valuecnt = 0;
+        let sourcename = "";
+        let src :any[];
+        this.ChartSeries = [];
+        let iseries = {};
+        this.ChartDs = [];
+        let value:any;
+
+        for ( let i=2016; i<= 2026 ; i++)
+        {
+            item = {};
+            item["year"] = i.toString();
+
+            valuecnt=0;
+
+            for(let ibox of obj)
+            {
+                
+                switch(ibox.Title)
+                {
+                    case"자기자본":{ value = this.ReturnValue[i.toString()+"_equity"] ;  break;}
+                    case"당기순이익":{ value = this.ReturnValue[i.toString()+"_netincome"] ;  break;}
+                    case"배당액":{ value = this.ReturnValue[i.toString()+"_dividend"] ;  break;}
+                    case"ROE":{ value = this.ReturnValue[i.toString()+"_roe"] ;  break;}
+                    case"Spread":{ value = this.ReturnValue[i.toString()+"_spread"] ;  break;}
+                    case"RI":{ value = this.ReturnValue[i.toString()+"_ri"] ;  break;}
+                    case"PV RI":{ value = this.ReturnValue[i.toString()+"_ri_discount"] ;  break;}
+                }
+
+                valuecnt++;
+                item["value" + valuecnt] = value ;
+                
+                if (i===2016){
+                    iseries = {};
+                    iseries["field"] = "value"+ valuecnt;
+                    iseries["name"] = ibox.Title;
+                    this.ChartSeries.push(iseries);
+                }
+
+            }
+
+            dsRe.push(item);
+        }
+
+
+        console.log(dsRe);
+
+        this.ChartDs = dsRe;
+        
+    }
+
+
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    async btnRimExcel_Click(){
+
+        try{
+
+            this.CalType = "RIM_Excel";
+
+            //----------------------------
+            // init
+            //----------------------------
+            this.cvs.objects = [];
+            this.cvs.Draw();
+            this.ChartDs = [];
+            this.dsflowResult = [];   
+            this.ViewLoadPanel = true;
+
+            //----------------------------
+            // Call Service
+            //----------------------------
+            let para = {};
+    
+            // para["ItemCode"] = "004000" ;
+            para["ItemCode"] = this.ItemCode ;
+            para["ValuationModel"] = "RIM_Excel";
+
+            para["Dividend_payout_ratio"  ] = this.rim_Dividend_payout_ratio   ;//배당성향 0.2521
+            para["Net_profit_growth_rate" ] = this.rim_Net_profit_growth_rate  ;//순이익성장률 0.03
+            para["Risk_free_interest_rate"] = this.rim_Risk_free_interest_rate ;//무위험이자율 0.028
+            para["Market_risk_premium"    ] = this.rim_Market_risk_premium     ;//시장위험프리미엄 0.03
+
+    
+            // let url = "https://insalwaysfuncapp01.azurewebsites.net/api/CalCorpValuation?code=1/gOeF50B1a9zjRvjmc33RNG7Fvuxchcc2ByTfLsysJXR0jDHdyBWQ==";
+            let url = "http://localhost:7071/api/CalCorpValuation";
+    
+            console.log(para);
+    
+            this.ReturnValue = {};
+            let re = await this.service.CallServiceAwait(url,JSON.stringify(para));
+    
+            this.ResultOK = true;
+            this.ViewLoadPanel = false;
+
+            console.log(re);
+
+            window.location.href = re["uri"];
+           
+        }
+        catch(e){
+            alert(e);
+        }
+        
+        this.ViewLoadPanel = false;
+    }
     
 
 
