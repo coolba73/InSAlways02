@@ -24,6 +24,7 @@ import 'rxjs/add/operator/catch';
 import { Observable } from "rxjs/Observable";
 import { FormArrayName } from "@angular/forms/src/directives/reactive_directives/form_group_name";
 import { Menu, MenuService } from "./menu.service";
+import { PuTreemapComponent } from "../../popup/putreemap/putreemap.component";
 
 
 declare var $: any;
@@ -102,6 +103,7 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
     @ViewChild("cboTargetSource") cboTargetSource :DxSelectBoxComponent;
     @ViewChild("txtResultColumnName") txtResultColumnName : DxTextBoxComponent;
     @ViewChild("cboCutRateAColumn") cboCutRateAColumn : DxSelectBoxComponent;
+    @ViewChild("popupTreeMap") puTreeMap : PuTreemapComponent;
 
 
     //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
@@ -167,6 +169,11 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                                 }
                                 ,{
                                     text:'Set Title'
+                                },{
+                                    text:"Chart",
+                                    items:[
+                                        { text : 'TreeMap'}
+                                    ]
                                 }
                                 
                             ];
@@ -1094,6 +1101,11 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
                 console.log(this.finCanvas.GetCurrentBox().ErrorMessage);
                 break;
             }
+            case "TreeMap":{
+
+                this.OpenTreeMap();            
+                break;
+            }
            
         }
     }
@@ -1383,7 +1395,57 @@ export class FlowTest02Component implements OnInit, AfterViewInit{
         }        
     }
     
-    
+    //________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+    OpenTreeMap(){
+        
+        let flow =  <FlowBox>this.finCanvas.GetCurrentBox();
+        let retData = JSON.parse(flow.ResultDataJsonString);
+
+        // let dsTemp =  
+        // [
+        //     {
+        //         name: "Africa",
+        //         items: [{
+        //                     value: 21324000,
+        //                     name: "Lagos",
+        //                     country: "Nigeria"
+        //                 }, {
+        //                     value: 9735000,
+        //                     name: "Kinshasa",
+        //                     country: "Democratic Republic of the Congo"
+        //                 }, {
+        //                     value: 9278441,
+        //                     name: "Cairo",
+        //                     country: "Egypt"
+        //                 }]
+        //     }
+        // ];
+
+        let item = {};
+        let items = [];
+
+        for (let i of retData["Result"]){
+            item = {};
+            item["value"] = i["InvestRate"];
+            item["name"] = i["ItemName"];
+            items.push(item);
+        }
+
+        let re = {};
+
+        re["name"] = "item";
+        re["items"] = items;
+
+        let dsRe = [];
+
+        dsRe.push(re);
+
+        console.log(dsRe);
+
+        this.puTreeMap.DsTreeMap = dsRe;
+        this.puTreeMap.Open();
+        
+    }
    
 
     

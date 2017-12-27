@@ -7,6 +7,7 @@ import { DrawCanvasComponent } from "./core/material/drawcanvas/drawcanvas.compo
 import { NgInit } from "./testapp/flowtest02/flowtest02.component";
 import { CorpValuation01Component } from "./testapp/CorpValuation01/corpvaluation01.component";
 import { PuItemListComponent } from "./popup/puitemlist/puitemlist.component";
+import { PuTreemapComponent } from "./popup/putreemap/putreemap.component";
 
 import { 
       DevExtremeModule 
@@ -19,6 +20,7 @@ import {
     ,DxBoxModule
     ,DxTextBoxModule
     ,DxChartModule
+    ,DxTreeMapModule
 } from "devextreme-angular";
 
 import { FormsModule }             from "@angular/forms";
@@ -84,6 +86,7 @@ export class EscapeHtmlPipe implements PipeTransform {
         ,DxBoxModule
         ,DxTextBoxModule
         , DxChartModule
+        ,DxTreeMapModule
     ],
     declarations:[
         FlowTestComponent,
@@ -92,7 +95,8 @@ export class EscapeHtmlPipe implements PipeTransform {
         EscapeHtmlPipe,
         NgInit,
         CorpValuation01Component,
-        PuItemListComponent
+        PuItemListComponent,
+        PuTreemapComponent
         
     ]
 })
